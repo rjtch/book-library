@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: books-api
+spec:
+  selector:
+    service: books-api
+  ports:
+    - name: "zipkin"
+      port: 9411
+      targetPort: 9411
+    - name: "books-api"
+      port: 3000
+      targetPort: 3000
+    - name: "books-api-debug"
+      port: 4000
+      targetPort: 4000
+    - name: "metrics"
+      port: 3001
+      targetPort: 3001
+    - name: "metrics-debug"
+      port: 4001
+      targetPort: 4001
+status:
+  loadBalancer: {}
