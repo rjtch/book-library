@@ -12,6 +12,7 @@ require (
 	github.com/go-playground/universal-translator v0.17.0
 	github.com/google/go-cmp v0.3.1
 	github.com/google/uuid v1.1.1
+	github.com/gorilla/mux v1.6.2
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
@@ -19,6 +20,7 @@ require (
 	github.com/openzipkin/zipkin-go v0.2.2
 	github.com/pkg/errors v0.8.1
 	github.com/rakyll/statik v0.1.7
+	github.com/ribice/golang-swaggerui-example v0.0.0-20180611180427-1e7622a30e50
 	go.opencensus.io v0.22.2
 	golang.org/x/crypto v0.0.0-20191206172530-e9b2fee46413
 	golang.org/x/net v0.0.0-20200222125558-5a598a2470a0 // indirect

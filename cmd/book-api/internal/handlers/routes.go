@@ -11,7 +11,6 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-
 // API constructs an http.Handler with all application routes defined.
 func API(build string, shutdown chan os.Signal, log *log.Logger, db *sqlx.DB, authenticator *auth.Authenticator) http.Handler {
 
@@ -59,7 +58,7 @@ func API(build string, shutdown chan os.Signal, log *log.Logger, db *sqlx.DB, au
 	app.Handle("POST", "/v1/categories", ct.Create, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
 	app.Handle("PUT", "/v1/categories/:id", ct.Update, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
 	app.Handle("DELETE", "/v1/categories/:id", ct.Delete, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
-//	app.Handle("GET", "/v1/categories/:id", ct.Retreive, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
+	//	app.Handle("GET", "/v1/categories/:id", ct.Retreive, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
 
 	// Register loans endpoints.
 	l := Loan{
@@ -71,16 +70,14 @@ func API(build string, shutdown chan os.Signal, log *log.Logger, db *sqlx.DB, au
 	app.Handle("DELETE", "/v1/loans/:id", l.Delete, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
 	app.Handle("GET", "/v1/loans/:id", l.Retrieve, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
 
-//register swagger
-//	statikFS, err := fs.New()
-//	if err != nil {
-//		panic(err)
-//	}
-//
-////	staticServer := http.FileServer(statikFS)
-//	sh := http.StripPrefix("/swaggerui/", staticServer)
-//	app.Handle("/swaggerui/", web.Handler(sh), mid.HasRole(auth.RoleAdmin))
+	// statikFS, err := fs.New()
+	// if err != nil {
+	// 	panic(err)
+	// }
 
+	// staticServer := http.FileServer(statikFS)
+	// sh := http.StripPrefix("/swaggerui/", staticServer)
+	// app.Handle("GET", "/swaggerui/", web.Handler(sh))
 	return app
 }
 
