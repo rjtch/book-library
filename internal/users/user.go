@@ -78,6 +78,29 @@ func Retrieve(ctx context.Context, claims auth.Claims, db *sqlx.DB, id string) (
 	return &u, nil
 }
 
+// Retrieve gets the actual user from the database.
+func RetrieveMe(ctx context.Context, claims auth.Claims, db *sqlx.DB)(*User, error) {
+	ctx, span := trace.StartSpan(ctx, "internal.users.RetrieveMe")
+	defer span.End()
+
+	// If you are not an admin and looking to retrieve someone else then you are rejected.
+	claims, ok := ctx.Value(auth.Key).(auth.Claims)
+	if !ok {
+		return nil, errors.Wrap(nil, "claims missing from context")
+	}
+
+	var u User
+	const q = `SELECT current_user`
+	if err := db.GetContext(ctx, &u, q); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, ErrNotFound
+		}
+		return nil, errors.Wrapf(err, "selecting users %q")
+	}
+
+	return &u, nil
+}
+
 // Create inserts a new users into the database.
 func Create(ctx context.Context, db *sqlx.DB, n NewUser, now time.Time) (*User, error) {
 	ctx, span := trace.StartSpan(ctx, "internal.users.Create")
