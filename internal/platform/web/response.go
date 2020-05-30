@@ -3,12 +3,12 @@ package web
 import (
 	"context"
 	"encoding/json"
-	"github.com/pkg/errors"
 	"net/http"
 	"reflect"
 	"time"
-)
 
+	"github.com/pkg/errors"
+)
 
 const (
 	AllowOriginKey      string = "Access-Control-Allow-Origin"
@@ -61,12 +61,12 @@ func Respond(ctx context.Context, w http.ResponseWriter, data interface{}, statu
 	// Finally, we set the client cookie for "token" as the JWT we just generated
 	// we also set an expiry time which is the same as the token itself
 	http.SetCookie(w, &http.Cookie{
-		Name:       "Access-Token",
-		Value:      token.String(),
-		Expires:    time.Now().Add(30).UTC(),
-		MaxAge:     600000000,
-		Secure:     false,
-		HttpOnly:   true,
+		Name:     "Access-Token",
+		Value:    token.String(),
+		Expires:  time.Now().Add(30).UTC(),
+		MaxAge:   600000000,
+		Secure:   false,
+		HttpOnly: true,
 	})
 
 	//Send the result back to the client

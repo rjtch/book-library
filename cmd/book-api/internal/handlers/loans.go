@@ -31,6 +31,12 @@ func (l *Loan) List(ctx context.Context, w http.ResponseWriter, r *http.Request,
 	}
 
 	loans, err := loans.List(ctx, claims, l.db)
+	for _, l := range loans {
+		if l.UserID != claims.Subject {
+			return errors.Wrap(nil, "your are not allow to execute this action")
+		}
+	}
+
 	if err != nil {
 		return err
 	}
@@ -48,7 +54,7 @@ func (l *Loan) Retrieve(ctx context.Context, w http.ResponseWriter, r *http.Requ
 		return errors.New("claims missing from context")
 	}
 
-	loan, err := loans.Retrieve(ctx, claims, params["id"], l.db)
+	loan, err := loans.Retrieve(ctx, claims, params["id"], l.db, claims.Subject)
 	if err != nil {
 		switch err {
 		case books.ErrForbidden:
@@ -77,15 +83,12 @@ func (l *Loan) Create(ctx context.Context, w http.ResponseWriter, r *http.Reques
 		return errors.New("web value missing from context")
 	}
 
-	if !claims.HasRole(auth.RoleAdmin) {
-		return errors.New("you don't have role to execute this action")
-	}
-
 	v, ok := ctx.Value(web.KeyValues).(*web.Values)
 	if !ok {
 		return web.NewShutdownError("web value missing from context")
 	}
 
+	//TODO check always do this thing in repository layer
 	book, err := books.Retrieve(ctx, params["id"], l.db)
 	if err != nil {
 		return errors.Wrapf(err, "Book: %+v", &book)
@@ -93,7 +96,7 @@ func (l *Loan) Create(ctx context.Context, w http.ResponseWriter, r *http.Reques
 
 	var nl loans.NewLoan
 	if err := web.Decode(r, &nl); err != nil {
-		return errors.Wrap(err, "")
+		return errors.Wrap(err, "Error when decoding the request's body")
 	}
 
 	loan, err := loans.InitNewLoan(ctx, claims, nl, v.Now, book.ID, l.db)
@@ -132,7 +135,7 @@ func (l *Loan) Update(ctx context.Context, w http.ResponseWriter, r *http.Reques
 		return errors.Wrap(err, "")
 	}
 
-	loan, err := loans.Retrieve(ctx, claims, params["id"], l.db)
+	loan, err := loans.Retrieve(ctx, claims, params["id"], l.db, claims.Subject)
 	if err != nil {
 		return errors.New("you don't have wright to execute this action")
 	}
@@ -167,10 +170,6 @@ func (l *Loan) Delete(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	claims, ok := ctx.Value(auth.Key).(auth.Claims)
 	if !ok {
 		return errors.New("claims missing from context")
-	}
-
-	if claims.HasRole(auth.RoleAdmin) {
-		return errors.New("you don't have role to execute this action")
 	}
 
 	err := loans.EndUpALoan(ctx, claims, v.Now, params["id"], l.db)
