@@ -58,7 +58,7 @@ func API(build string, shutdown chan os.Signal, log *log.Logger, db *sqlx.DB, au
 	app.Handle("POST", "/v1/categories", ct.Create, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
 	app.Handle("PUT", "/v1/categories/:id", ct.Update, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
 	app.Handle("DELETE", "/v1/categories/:id", ct.Delete, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
-	//	app.Handle("GET", "/v1/categories/:id", ct.Retreive, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
+	app.Handle("GET", "/v1/categories/:id", ct.Retreive, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
 
 	// Register loans endpoints.
 	l := Loan{

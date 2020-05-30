@@ -3,13 +3,14 @@ package handlers
 import (
 	"context"
 	"fmt"
+	"net/http"
+
 	"github.com/book-library/internal/platform/auth"
 	"github.com/book-library/internal/platform/web"
 	"github.com/book-library/internal/users"
 	"github.com/jmoiron/sqlx"
 	errors "github.com/pkg/errors"
 	"go.opencensus.io/trace"
-	"net/http"
 )
 
 //User represents the Users API method handler set.
@@ -30,7 +31,7 @@ func (u *User) List(ctx context.Context, w http.ResponseWriter, r *http.Request,
 		}
 	}
 
-	usr, err := users.List(ctx, claims ,u.db)
+	usr, err := users.List(ctx, claims, u.db)
 	if err != nil {
 		return err
 	}

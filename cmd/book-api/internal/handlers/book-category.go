@@ -132,3 +132,29 @@ func (c *BookCategory) Delete(ctx context.Context, w http.ResponseWriter, r *htt
 
 	return web.Respond(ctx, w, nil, http.StatusOK)
 }
+
+//Retreive returns the value of a specified users from the system to the world
+func (c *BookCategory) Retreive(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
+	ctx, span := trace.StartSpan(ctx, "handlers.users.Retrieve")
+	defer span.End()
+
+	claims, ok := ctx.Value(auth.Key).(auth.Claims)
+	if !ok {
+		return errors.New("claims missing from context")
+	}
+
+	cat, err := category.Retrieve(ctx, claims, c.db, params["id"])
+	if err != nil {
+		switch err {
+		case category.ErrForbidden:
+			return web.NewRequestError(err, http.StatusForbidden)
+		case category.ErrInvalidID:
+			return web.NewRequestError(err, http.StatusBadRequest)
+		case category.ErrNotFound:
+			return web.NewRequestError(err, http.StatusNotFound)
+		default:
+			return errors.Wrapf(err, "ID: %s", params["id"])
+		}
+	}
+	return web.Respond(ctx, w, cat, http.StatusOK)
+}

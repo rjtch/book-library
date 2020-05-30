@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: sales-api
+  name: books-api
 spec:
   replicas: 1
   strategy: {}
