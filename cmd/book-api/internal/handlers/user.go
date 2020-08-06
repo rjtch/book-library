@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"fmt"
 	"github.com/book-library/internal/platform/auth"
 	"github.com/book-library/internal/platform/web"
 	"github.com/book-library/internal/users"
@@ -10,7 +9,22 @@ import (
 	errors "github.com/pkg/errors"
 	"go.opencensus.io/trace"
 	"net/http"
+	"time"
 )
+
+const (
+	AllowOriginKey      string = "Access-Control-Allow-Origin"
+	AllowCredentialsKey        = "Access-Control-Allow-Credentials"
+	AllowHeadersKey            = "Access-Control-Allow-Headers"
+	AllowMethodsKey            = "Access-Control-Allow-Methods"
+	MaxAgeKey                  = "Access-Control-Max-Age"
+
+	OriginKey         = "Origin"
+	RequestMethodKey  = "Access-Control-Request-Method"
+	RequestHeadersKey = "Access-Control-Request-Headers"
+	ExposeHeadersKey  = "Access-Control-Expose-Headers"
+)
+
 
 //User represents the Users API method handler set.
 type User struct {
@@ -178,11 +192,6 @@ func (u *User) TokenAuthenticator(ctx context.Context, w http.ResponseWriter, r 
 
 	claims, err := users.Authenticate(ctx, u.db, v.Now, email, pass)
 
-	fmt.Println("EMAIL ", email)
-	fmt.Println("PASSWORD ", pass)
-	fmt.Println("ERRRROORRR ", err)
-	fmt.Println("CLAIMS ", claims)
-
 	if err != nil {
 		switch err {
 		case users.ErrAuthenticationFailure:
@@ -202,5 +211,28 @@ func (u *User) TokenAuthenticator(ctx context.Context, w http.ResponseWriter, r 
 		return errors.Wrap(err, "generating token")
 	}
 
-	return web.Respond(ctx, w, tk, http.StatusOK)
+	// Finally, we set the client cookie for "token" as the JWT we just generated
+	// we also set an expiry time which is the same as the token itself
+	http.SetCookie(w, &http.Cookie{
+		Name:       "ACCESS-COOKIE",
+		Value:      tk.Token,
+		Expires:    time.Now().Add(30).UTC(),
+		MaxAge:     600000000,
+		Secure:     false,
+		HttpOnly:   true,
+	})
+
+	// Set the content type and headers once we know marshaling has succeeded.
+	w.Header().Set("Content-Type", "application/json")
+	enableCors(&w)
+
+	return web.Respond(ctx, w, "ACCESS GRANTED", http.StatusOK)
+}
+
+//enableCors enables cross origin control
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set(AllowOriginKey, "*")
+	(*w).Header().Set(AllowCredentialsKey, "*")
+	(*w).Header().Set(AllowHeadersKey, "*")
+	(*w).Header().Set(OriginKey, "*")
 }

@@ -23,7 +23,6 @@ import (
 	zipkinHTTP "github.com/openzipkin/zipkin-go/reporter/http"
 	"github.com/pkg/errors"
 	"go.opencensus.io/trace"
-	_ "github.com/rakyll/statik/fs"
 )
 
 // build is the git version of this program. It is set using build flags in the makefile.

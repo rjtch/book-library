@@ -5,22 +5,6 @@ import (
 	"encoding/json"
 	"github.com/pkg/errors"
 	"net/http"
-	"reflect"
-	"time"
-)
-
-
-const (
-	AllowOriginKey      string = "Access-Control-Allow-Origin"
-	AllowCredentialsKey        = "Access-Control-Allow-Credentials"
-	AllowHeadersKey            = "Access-Control-Allow-Headers"
-	AllowMethodsKey            = "Access-Control-Allow-Methods"
-	MaxAgeKey                  = "Access-Control-Max-Age"
-
-	OriginKey         = "Origin"
-	RequestMethodKey  = "Access-Control-Request-Method"
-	RequestHeadersKey = "Access-Control-Request-Headers"
-	ExposeHeadersKey  = "Access-Control-Expose-Headers"
 )
 
 //Respond converts Go value to JSON and sends it to the client
@@ -47,27 +31,6 @@ func Respond(ctx context.Context, w http.ResponseWriter, data interface{}, statu
 	if err != nil {
 		return err
 	}
-
-	// Convert the response value to String
-	token := reflect.ValueOf(data)
-
-	// Set the content type and headers once we know marshaling has succeeded.
-	w.Header().Set("Content-Type", "application/json")
-	enableCors(&w)
-
-	//write the status code to the response
-	w.WriteHeader(statusCode)
-
-	// Finally, we set the client cookie for "token" as the JWT we just generated
-	// we also set an expiry time which is the same as the token itself
-	http.SetCookie(w, &http.Cookie{
-		Name:       "Access-Token",
-		Value:      token.String(),
-		Expires:    time.Now().Add(30).UTC(),
-		MaxAge:     600000000,
-		Secure:     false,
-		HttpOnly:   true,
-	})
 
 	//Send the result back to the client
 	if _, err := w.Write(jsonData); err != nil {
@@ -102,12 +65,4 @@ func ResponseError(ctx context.Context, w http.ResponseWriter, err error) error 
 		return err
 	}
 	return nil
-}
-
-//enableCors enables cross origin control
-func enableCors(w *http.ResponseWriter) {
-	(*w).Header().Set(AllowOriginKey, "*")
-	(*w).Header().Set(AllowCredentialsKey, "*")
-	(*w).Header().Set(AllowHeadersKey, "*")
-	(*w).Header().Set(OriginKey, "*")
 }
