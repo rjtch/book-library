@@ -20,13 +20,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="09a71e76-57f8-480b-b781-1432f253bf13" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/session/sessionManager.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/alexedwards/scs/postgresstore/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/alexedwards/scs/postgresstore/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/alexedwards/scs/postgresstore/go.mod" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/alexedwards/scs/postgresstore/go.sum" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/alexedwards/scs/postgresstore/postgresstore.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/notice.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmd/book-api/internal/handlers/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/book-api/internal/handlers/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/book-api/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/book-api/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/platform/web/response.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/platform/web/response.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/private.pem" beforeDir="false" afterPath="$PROJECT_DIR$/private.pem" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/platform/auth/roles.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/platform/auth/roles.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/schema/migrate.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/schema/migrate.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/users/models.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/users/models.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/users/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/users/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/github.com/lib/pq/.travis.yml" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/.travis.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/github.com/lib/pq/CONTRIBUTING.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/github.com/lib/pq/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/github.com/lib/pq/conn.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/conn.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/github.com/lib/pq/copy.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/copy.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/github.com/lib/pq/notify.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/notify.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/github.com/lib/pq/user_posix.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/user_posix.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/modules.txt" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/modules.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,11 +62,15 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1XoaO62SWeg6MmChTpZME3KGxvZ" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="DatabaseDriversLRU" value="postgresql" />
     <property name="DefaultGoTemplateProperty" value="Go File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
@@ -69,6 +90,9 @@
     <property name="two.files.diff.last.used.folder" value="$PROJECT_DIR$/../service/internal/user" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/internal/session" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/cmd/book-api" />
     </key>
@@ -104,9 +128,9 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Go Test.TestLoan in github.com/book-library/internal/loan" />
       <item itemvalue="Go Build.go build github.com/book-library/cmd/admin" />
       <item itemvalue="Go Build.go build github.com/book-library/cmd/book-api" />
+      <item itemvalue="Go Test.TestLoan in github.com/book-library/internal/loan" />
     </list>
     <recent_temporary>
       <list>
@@ -133,6 +157,10 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="VgoProject">
     <integration-enabled>true</integration-enabled>
@@ -196,10 +224,18 @@
       <screen x="67" y="27" width="1613" height="1023" />
     </state>
     <state width="263" height="500" key="HiddenNamespacesPopup/67.27.1613.1023@67.27.1613.1023" timestamp="1596730181605" />
+    <state x="456" y="283" width="824" height="508" key="IDE.errors.dialog" timestamp="1596743613473">
+      <screen x="67" y="27" width="1613" height="1023" />
+    </state>
+    <state x="456" y="283" width="824" height="508" key="IDE.errors.dialog/67.27.1613.1023@67.27.1613.1023" timestamp="1596743613473" />
     <state x="362" y="172" width="1151" height="730" key="SettingsEditor" timestamp="1596665142635">
       <screen x="67" y="27" width="1613" height="1023" />
     </state>
     <state x="362" y="172" width="1151" height="730" key="SettingsEditor/67.27.1613.1023@67.27.1613.1023" timestamp="1596665142635" />
+    <state width="604" height="446" key="SwitcherDM" timestamp="1597321563305">
+      <screen x="67" y="27" width="1613" height="1023" />
+    </state>
+    <state width="604" height="446" key="SwitcherDM/67.27.1613.1023@67.27.1613.1023" timestamp="1597321563305" />
     <state width="806" height="512" key="XDebugger.FullValuePopup" timestamp="1596730986189">
       <screen x="67" y="27" width="1613" height="1023" />
     </state>

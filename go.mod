@@ -4,6 +4,7 @@ go 1.12
 
 require (
 	contrib.go.opencensus.io/exporter/zipkin v0.1.1
+	github.com/alexedwards/scs/postgresstore v0.0.0-20200729112010-8c9ddd400378
 	github.com/ardanlabs/conf v1.2.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/dimfeld/httptreemux/v5 v5.0.2
@@ -15,10 +16,9 @@ require (
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
-	github.com/lib/pq v1.3.0
+	github.com/lib/pq v1.4.0
 	github.com/openzipkin/zipkin-go v0.2.2
 	github.com/pkg/errors v0.8.1
-	github.com/rakyll/statik v0.1.7
 	go.opencensus.io v0.22.2
 	golang.org/x/crypto v0.0.0-20191206172530-e9b2fee46413
 	golang.org/x/net v0.0.0-20200222125558-5a598a2470a0 // indirect

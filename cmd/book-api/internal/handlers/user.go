@@ -214,7 +214,7 @@ func (u *User) TokenAuthenticator(ctx context.Context, w http.ResponseWriter, r 
 	// Finally, we set the client cookie for "token" as the JWT we just generated
 	// we also set an expiry time which is the same as the token itself
 	http.SetCookie(w, &http.Cookie{
-		Name:       "ACCESS-COOKIE",
+		Name:       "SESSION-COOKIE",
 		Value:      tk.Token,
 		Expires:    time.Now().Add(30).UTC(),
 		MaxAge:     600000000,
@@ -226,7 +226,7 @@ func (u *User) TokenAuthenticator(ctx context.Context, w http.ResponseWriter, r 
 	w.Header().Set("Content-Type", "application/json")
 	enableCors(&w)
 
-	return web.Respond(ctx, w, "ACCESS GRANTED", http.StatusOK)
+	return web.Respond(ctx, w, "YOUR ACCESS WAS GRANTED", http.StatusOK)
 }
 
 //enableCors enables cross origin control

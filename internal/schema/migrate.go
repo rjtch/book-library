@@ -42,7 +42,7 @@ CREATE TABLE books (
 
 	PRIMARY KEY (book_id)
 );`,
-	},{
+	}, {
 		Version:     2,
 		Description: "Add users",
 		Script: `
@@ -58,7 +58,7 @@ CREATE TABLE users (
 
 	PRIMARY KEY (user_id)
 );`,
-	},{
+	}, {
 		Version:     3,
 		Description: "Add category",
 		Script: `
@@ -73,7 +73,7 @@ CREATE TABLE categories (
 
 	PRIMARY KEY (category_id)
 );`,
-	},{
+	}, {
 		Version:     4,
 		Description: "Add loan",
 		Script: `
@@ -90,6 +90,15 @@ CREATE TABLE loans (
 	PRIMARY KEY (loan_id),
 
 	FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE
-);`,
+);
+
+CREATE TABLE sessions (
+	token TEXT PRIMARY KEY,
+	data BYTEA NOT NULL,
+	expiry TIMESTAMPTZ NOT NULL
+);
+
+    CREATE INDEX sessions_expiry_idx ON sessions (expiry);
+`,
 	},
 }

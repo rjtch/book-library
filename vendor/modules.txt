@@ -1,5 +1,7 @@
 # contrib.go.opencensus.io/exporter/zipkin v0.1.1
 contrib.go.opencensus.io/exporter/zipkin
+# github.com/alexedwards/scs/postgresstore v0.0.0-20200729112010-8c9ddd400378
+github.com/alexedwards/scs/postgresstore
 # github.com/ardanlabs/conf v1.2.0
 github.com/ardanlabs/conf
 # github.com/dgrijalva/jwt-go v3.2.0+incompatible
@@ -30,7 +32,7 @@ github.com/jmoiron/sqlx
 github.com/jmoiron/sqlx/reflectx
 # github.com/leodido/go-urn v1.2.0
 github.com/leodido/go-urn
-# github.com/lib/pq v1.3.0
+# github.com/lib/pq v1.4.0
 github.com/lib/pq
 github.com/lib/pq/oid
 github.com/lib/pq/scram

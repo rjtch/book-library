@@ -14,7 +14,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-const usersCollection = "users"
 
 var (
 	// ErrNotFound is used when a specific User is requested but does not exist.
@@ -194,9 +193,6 @@ func Authenticate(ctx context.Context, db *sqlx.DB, now time.Time, email, passwo
 	const q = `SELECT * FROM users WHERE email = $1`
 	var u User
 	if err := db.GetContext(ctx, &u, q, email); err != nil {
-
-		fmt.Println("ERROOOORR ", err)
-		fmt.Println("USERS ", u)
 		// Normally we would return ErrNotFound in this scenario but we do not want
 		// to leak to an unauthenticated users which emails are in the system.
 		if err == sql.ErrNoRows {
@@ -215,6 +211,15 @@ func Authenticate(ctx context.Context, db *sqlx.DB, now time.Time, email, passwo
 	// If we are this far the request is valid. Create some claims for the users
 	// and generate their token.
 	claims := auth.NewClaims(u.ID, u.Roles, now, time.Hour)
-	fmt.Println("CLAIMS ", claims)
+
+	//save the claim as session-token or drop if claim is nil
+	const t = `INSERT INTO sessions (token, data, expiry) VALUES ($1, $2, $3)`
+	str := fmt.Sprint(claims)
+	_, err := db.ExecContext(
+		ctx, t, "session-token", []byte(str), time.Now().Add(3600))
+	if err != nil {
+		return auth.Claims{}, errors.Wrap(err, "Session expired or not existed")
+	}
+
 	return claims, nil
 }
