@@ -2,29 +2,16 @@ package handlers
 
 import (
 	"context"
+	"fmt"
+	"net/http"
+
 	"github.com/book-library/internal/platform/auth"
 	"github.com/book-library/internal/platform/web"
 	"github.com/book-library/internal/users"
 	"github.com/jmoiron/sqlx"
 	errors "github.com/pkg/errors"
 	"go.opencensus.io/trace"
-	"net/http"
-	"time"
 )
-
-const (
-	AllowOriginKey      string = "Access-Control-Allow-Origin"
-	AllowCredentialsKey        = "Access-Control-Allow-Credentials"
-	AllowHeadersKey            = "Access-Control-Allow-Headers"
-	AllowMethodsKey            = "Access-Control-Allow-Methods"
-	MaxAgeKey                  = "Access-Control-Max-Age"
-
-	OriginKey         = "Origin"
-	RequestMethodKey  = "Access-Control-Request-Method"
-	RequestHeadersKey = "Access-Control-Request-Headers"
-	ExposeHeadersKey  = "Access-Control-Expose-Headers"
-)
-
 
 //User represents the Users API method handler set.
 type User struct {
@@ -44,7 +31,7 @@ func (u *User) List(ctx context.Context, w http.ResponseWriter, r *http.Request,
 		}
 	}
 
-	usr, err := users.List(ctx, claims ,u.db)
+	usr, err := users.List(ctx, claims, u.db)
 	if err != nil {
 		return err
 	}
@@ -73,6 +60,32 @@ func (u *User) Retrieve(ctx context.Context, w http.ResponseWriter, r *http.Requ
 			return web.NewRequestError(err, http.StatusNotFound)
 		default:
 			return errors.Wrapf(err, "ID: %s", params["id"])
+		}
+	}
+	return web.Respond(ctx, w, user, http.StatusOK)
+}
+
+//Retrieve returns the value of a specified users from the system to the world
+func (u *User) RetrieveMe(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
+	ctx, span := trace.StartSpan(ctx, "handlers.users.Retrieve")
+	defer span.End()
+
+	claims, ok := ctx.Value(auth.Key).(auth.Claims)
+	if !ok {
+		return errors.New("claims missing from context")
+	}
+
+	user, err := users.RetrieveMe(ctx, claims, u.db)
+	if err != nil {
+		switch err {
+		case users.ErrForbidden:
+			return web.NewRequestError(err, http.StatusForbidden)
+		case users.ErrInvalidID:
+			return web.NewRequestError(err, http.StatusBadRequest)
+		case users.ErrNotFound:
+			return web.NewRequestError(err, http.StatusNotFound)
+		default:
+			return errors.Wrapf(err, "ID: %s", nil)
 		}
 	}
 	return web.Respond(ctx, w, user, http.StatusOK)
@@ -192,6 +205,11 @@ func (u *User) TokenAuthenticator(ctx context.Context, w http.ResponseWriter, r 
 
 	claims, err := users.Authenticate(ctx, u.db, v.Now, email, pass)
 
+	fmt.Println("EMAIL ", email)
+	fmt.Println("PASSWORD ", pass)
+	fmt.Println("ERRRROORRR ", err)
+	fmt.Println("CLAIMS ", claims)
+
 	if err != nil {
 		switch err {
 		case users.ErrAuthenticationFailure:
@@ -211,28 +229,5 @@ func (u *User) TokenAuthenticator(ctx context.Context, w http.ResponseWriter, r 
 		return errors.Wrap(err, "generating token")
 	}
 
-	// Finally, we set the client cookie for "token" as the JWT we just generated
-	// we also set an expiry time which is the same as the token itself
-	http.SetCookie(w, &http.Cookie{
-		Name:       "SESSION-COOKIE",
-		Value:      tk.Token,
-		Expires:    time.Now().Add(30).UTC(),
-		MaxAge:     600000000,
-		Secure:     false,
-		HttpOnly:   true,
-	})
-
-	// Set the content type and headers once we know marshaling has succeeded.
-	w.Header().Set("Content-Type", "application/json")
-	enableCors(&w)
-
-	return web.Respond(ctx, w, "YOUR ACCESS WAS GRANTED", http.StatusOK)
-}
-
-//enableCors enables cross origin control
-func enableCors(w *http.ResponseWriter) {
-	(*w).Header().Set(AllowOriginKey, "*")
-	(*w).Header().Set(AllowCredentialsKey, "*")
-	(*w).Header().Set(AllowHeadersKey, "*")
-	(*w).Header().Set(OriginKey, "*")
+	return web.Respond(ctx, w, tk, http.StatusOK)
 }

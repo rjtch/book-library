@@ -49,12 +49,18 @@ func List(ctx context.Context, db *sqlx.DB) ([]BookCategory, error) {
 }
 
 //Retrieve gets the specific bookCategory from the database
-func Retrieve(ctx context.Context, db *sqlx.DB, id string) (*BookCategory, error) {
+func Retrieve(ctx context.Context, user auth.Claims, db *sqlx.DB, id string) (*BookCategory, error) {
 	ctx, span := trace.StartSpan(ctx, "internal.book-category.Retrieve")
 	defer span.End()
 
 	if _, err := uuid.Parse(id); err != nil {
 		return nil, ErrInvalidID
+	}
+
+	// If you do not have the admin role ...
+	// then get outta here!
+	if !user.HasRole(auth.RoleUser) {
+		return nil, ErrForbidden
 	}
 
 	var b BookCategory
@@ -71,9 +77,15 @@ func Retrieve(ctx context.Context, db *sqlx.DB, id string) (*BookCategory, error
 }
 
 //RetrieveByCategory gets the specific bookCategory from the database by categoryName
-func RetrieveByCategory(ctx context.Context, db *sqlx.DB, categoryName string) (*BookCategory, error) {
+func RetrieveByCategory(ctx context.Context, user auth.Claims, db *sqlx.DB, categoryName string) (*BookCategory, error) {
 	ctx, span := trace.StartSpan(ctx, "internal.book-category.Retrieve")
 	defer span.End()
+
+	// If you do not have the admin role ...
+	// then get outta here!
+	if !user.HasRole(auth.RoleUser) {
+		return nil, ErrForbidden
+	}
 
 	var b BookCategory
 	const q = `SELECT * FROM categories WHERE name = $1`
@@ -134,7 +146,7 @@ func Update(ctx context.Context, id string, upd UpdateBookCategory, now time.Tim
 		return ErrForbidden
 	}
 
-	category, err := Retrieve(ctx, db, id)
+	category, err := Retrieve(ctx, user, db, id)
 	if err != nil {
 		return err
 	}
@@ -191,7 +203,7 @@ func Delete(ctx context.Context, id string, user auth.Claims, db *sqlx.DB) error
 	const q = `DELETE FROM categories WHERE category_id = $1`
 
 	if _, err := db.ExecContext(ctx, q, id); err != nil {
-		 return errors.Wrapf(err, "deleting category %s", id)
+		return errors.Wrapf(err, "deleting category %s", id)
 	}
 
 	return nil
