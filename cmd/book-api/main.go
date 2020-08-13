@@ -16,12 +16,14 @@ import (
 	"contrib.go.opencensus.io/exporter/zipkin"
 	"github.com/ardanlabs/conf"
 	"github.com/book-library/cmd/book-api/internal/handlers"
+	_ "github.com/book-library/cmd/book-api/internal/swaggerui"
 	"github.com/book-library/internal/platform/auth"
 	"github.com/book-library/internal/platform/database"
 	"github.com/dgrijalva/jwt-go"
 	openzipkin "github.com/openzipkin/zipkin-go"
 	zipkinHTTP "github.com/openzipkin/zipkin-go/reporter/http"
 	"github.com/pkg/errors"
+	_ "github.com/rakyll/statik/fs"
 	"go.opencensus.io/trace"
 )
 
@@ -62,9 +64,9 @@ func run() error {
 		}
 		Auth struct {
 			KeyID          string `conf:"default:1"`
-//			PrivateKeyFile string `conf:"default:/app-library/private.pem"`
-			PrivateKeyFile string `conf:"default:private.pem"`
-			Algorithm      string `conf:"default:RS256"`
+			PrivateKeyFile string `conf:"default:/app-library/private.pem"`
+// 			PrivateKeyFile string `conf:"default:private.pem"`
+			Algorithm string `conf:"default:RS256"`
 		}
 		Zipkin struct {
 			LocalEndpoint string  `conf:"default:0.0.0.0:3000"`

@@ -35,17 +35,6 @@ func List(ctx context.Context, user auth.Claims, db *sqlx.DB) ([]Loan, error) {
 	ctx, span := trace.StartSpan(ctx, "internal.loan.List")
 	defer span.End()
 
-	// If you do not have the admin role ...
-	// then get outta here!
-	//user, ok := ctx.Value(auth.Key).(auth.Claims)
-	//if !ok {
-	//	return nil, errors.New("claims missing from context")
-	//}
-
-	if !user.HasRole(auth.RoleAdmin) {
-		return nil, ErrForbidden
-	}
-
 	loans := []Loan{}
 	const q = `SELECT * FROM loans`
 
@@ -60,6 +49,12 @@ func List(ctx context.Context, user auth.Claims, db *sqlx.DB) ([]Loan, error) {
 func InitNewLoan(ctx context.Context, user auth.Claims, n NewLoan, now time.Time, id string, db *sqlx.DB) (*Loan, error) {
 	ctx, span := trace.StartSpan(ctx, "internal.loan.InitNewLoan")
 	defer span.End()
+
+	// If you do not have the required role or your not authorized ...
+	// then get outta here!
+	if !user.HasRole(auth.RoleUser) {
+		return nil, ErrForbidden
+	}
 
 	loan := Loan{
 		ID:           uuid.New().String(),
@@ -112,30 +107,34 @@ func InitNewLoan(ctx context.Context, user auth.Claims, n NewLoan, now time.Time
 }
 
 //Retrieve retrieves a loan by id
-func Retrieve(ctx context.Context, user auth.Claims, id string, db *sqlx.DB) (*Loan, error) {
+func Retrieve(ctx context.Context, user auth.Claims, book_id string, db *sqlx.DB, user_id string) (*Loan, error) {
 	ctx, span := trace.StartSpan(ctx, "internal.loan.Retrieve")
 	defer span.End()
 
 	// If you do not have the required role or your not authorized ...
 	// then get outta here!
-	if !user.HasRole(auth.RoleAdmin) {
+	if !user.HasRole(auth.RoleUser) {
 		return nil, ErrForbidden
 	}
 
-	if _, err := uuid.Parse(id); err != nil {
+	if _, err := uuid.Parse(book_id); err != nil {
 		return nil, ErrInvalidID
 	}
 
 	//actual retrieven loan
 	var loan Loan
-	const q = `SELECT * FROM loans  WHERE loan_id  = $1`
+	const q = `SELECT * FROM loans  WHERE book_id = $1 AND user_id = $2`
 
-	if err := db.GetContext(ctx, &loan, q, id); err != nil {
+	if err := db.GetContext(ctx, &loan, q, book_id); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, ErrNotFound
 		}
 
-		return nil, errors.Wrapf(err, "selecting loan %q", id)
+		if user_id != user.Id {
+			return nil, ErrForbidden
+		}
+
+		return nil, errors.Wrapf(err, "selecting loan %q", book_id)
 	}
 
 	return &loan, nil
@@ -152,9 +151,11 @@ func EndUpALoan(ctx context.Context, user auth.Claims, now time.Time, id string,
 		return ErrForbidden
 	}
 
-	loan, er := Retrieve(ctx, user, id, db)
+	loan, er := Retrieve(ctx, user, id, db, user.Subject)
 	if er != nil {
-		return ErrInvalidID
+		if id != user.Id {
+			return ErrInvalidID
+		}
 	}
 
 	//get the book which is been lent
@@ -190,19 +191,21 @@ func Update(ctx context.Context, id string, upd UpdateLoan, now time.Time, user 
 	ctx, span := trace.StartSpan(ctx, "internal.Loan.Update")
 	defer span.End()
 
-	// // If you do not have the admin role ...
-	// // then get outta here!
-	//if !user.HasRole(auth.RoleUser) && user.Subject != id {
-	//	return ErrForbidden
-	//}
+	// If you do not have the required role or your not authorized ...
+	// then get outta here!
+	if !user.HasRole(auth.RoleUser) {
+		return ErrForbidden
+	}
 
 	if !user.HasRole(auth.RoleAdmin) {
 		return ErrForbidden
 	}
 
-	loan, err := Retrieve(ctx, user, id, db)
+	loan, err := Retrieve(ctx, user, id, db, user.Subject)
 	if err != nil {
-		return err
+		if id != user.Id {
+			return err
+		}
 	}
 
 	if upd.BookQuantity != nil {
@@ -212,7 +215,6 @@ func Update(ctx context.Context, id string, upd UpdateLoan, now time.Time, user 
 	if upd.ReturnDate != nil {
 		loan.ReturnDate = *upd.ReturnDate
 	}
-
 
 	const q = `UPDATE loans SET
 		"isbn" = $2,
@@ -227,4 +229,31 @@ func Update(ctx context.Context, id string, upd UpdateLoan, now time.Time, user 
 	}
 
 	return nil
+}
+
+/****    HELPERS      ***/
+
+func GetLoansByUuid(ctx context.Context, user auth.Claims, db *sqlx.DB, id string) (*Loan, error){
+	ctx, span := trace.StartSpan(ctx, "internal.Loan.GetLoansByUuid")
+	defer span.End()
+
+	var loan Loan;
+	if user.HasRole(auth.RoleUser) {
+		if id == user.Subject {
+			const q = `SELECT * FROM loans WHERE loan_id = $1 AND user_id = $2`
+			if err := db.GetContext(ctx, &loan, q, id); err != nil {
+				if err == sql.ErrNoRows {
+					return nil, ErrNotFound
+				}
+
+				if id != user.Id {
+					return nil, ErrForbidden
+				}
+
+				return nil, errors.Wrapf(err, "selecting loan %q", id)
+			}
+		}
+	}
+
+	return &loan, nil
 }

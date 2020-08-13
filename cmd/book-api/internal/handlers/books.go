@@ -102,6 +102,11 @@ func (b *Book) Update(ctx context.Context, w http.ResponseWriter, r *http.Reques
 		return errors.New("claims missing from context")
 	}
 
+	// If you are not an admin and looking to retrieve someone else then you are rejected.
+	if !claims.HasRole(auth.RoleAdmin) {
+		return errors.New("not authorized to execute this action")
+	}
+
 	var udp books.UpdateBook
 	if err := web.Decode(r, &udp); err != nil {
 		return errors.Wrap(err, "")
@@ -133,7 +138,7 @@ func (b *Book) Delete(ctx context.Context, w http.ResponseWriter, r *http.Reques
 		return errors.New("claims missing from context")
 	}
 
-	if claims.HasRole(auth.RoleAdmin) {
+	if !claims.HasRole(auth.RoleAdmin) {
 		return errors.New("you don't have role to execute this action")
 	}
 
