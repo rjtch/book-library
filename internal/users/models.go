@@ -39,3 +39,17 @@ type UpdateUser struct {
 	Password        *string  `json:"password"`
 	PasswordConfirm *string  `json:"password_confirm" validate:"omitempty,eqfield=Password"`
 }
+
+// Session contains information needed to manage session-cookie/token.
+type Session struct {
+	Token  string `db:"token" json:"token"`
+	Data   []byte `db:"data" json:"data"`
+	Expiry time.Time `db:"expiry" json:"expiry"`
+}
+
+// UpdateSession update the session-cookie/token.
+type UpdateSession struct {
+	Token  *string `db:"token" json:"token"`
+	NewData   []byte `db:"data" json:"data"`
+	Expiry time.Time `db:"expiry" json:"expiry"`
+}

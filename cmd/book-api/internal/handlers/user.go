@@ -65,6 +65,32 @@ func (u *User) Retrieve(ctx context.Context, w http.ResponseWriter, r *http.Requ
 	return web.Respond(ctx, w, user, http.StatusOK)
 }
 
+//Retrieve returns the value of a specified users from the system to the world
+func (u *User) RetrieveMe(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
+	ctx, span := trace.StartSpan(ctx, "handlers.users.Retrieve")
+	defer span.End()
+
+	claims, ok := ctx.Value(auth.Key).(auth.Claims)
+	if !ok {
+		return errors.New("claims missing from context")
+	}
+
+	user, err := users.RetrieveMe(ctx, claims, u.db)
+	if err != nil {
+		switch err {
+		case users.ErrForbidden:
+			return web.NewRequestError(err, http.StatusForbidden)
+		case users.ErrInvalidID:
+			return web.NewRequestError(err, http.StatusBadRequest)
+		case users.ErrNotFound:
+			return web.NewRequestError(err, http.StatusNotFound)
+		default:
+			return errors.Wrapf(err, "ID: %s", nil)
+		}
+	}
+	return web.Respond(ctx, w, user, http.StatusOK)
+}
+
 //Create creates a new users into the system
 func (u *User) Create(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.users.Create")

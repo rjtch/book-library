@@ -14,6 +14,11 @@ const (
 	RoleUser  = "USER"
 )
 
+type Role struct {
+	RoleAdmin  []string
+	RoleUser []string
+}
+
 // ctxKey represents the type of value for the context key.
 type ctxKey int
 

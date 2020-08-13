@@ -25,23 +25,28 @@ func (l *Loan) List(ctx context.Context, w http.ResponseWriter, r *http.Request,
 	ctx, span := trace.StartSpan(ctx, "handlers.loans.List")
 	defer span.End()
 
+	allLoans := []loans.Loan{};
+
 	claims, ok := ctx.Value(auth.Key).(auth.Claims)
 	if !ok {
 		return errors.New("claims missing from context")
 	}
 
 	loans, err := loans.List(ctx, claims, l.db)
-	for _, l := range loans {
-		if l.UserID != claims.Subject {
-			return errors.Wrap(nil, "your are not allow to execute this action")
-		}
-	}
-
 	if err != nil {
 		return err
 	}
 
-	return web.Respond(ctx, w, loans, http.StatusOK)
+	if len(loans) != 0 {
+		for _, l := range loans {
+			if l.UserID == claims.StandardClaims.Subject {
+				allLoans = append(allLoans, l)
+			}
+		}
+	} else {
+		return errors.Wrap(nil, "your are not allow to execute this action")
+	}
+	return web.Respond(ctx, w, allLoans, http.StatusOK)
 }
 
 //Retrieve returns the value of a specified Loan from the system to the world
