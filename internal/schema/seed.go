@@ -37,7 +37,7 @@ INSERT INTO books (book_id, title, isbn, category, authors, description ,quantit
 	'2019-01-01 00:00:01.000001+00'),
 	('a2b0639f-2cc6-44b8-b97b-15d69dbb511e', 'angular', 'fsn22', 'computer-science' ,'Bob Andre', 'learn the best way 2' 
 	,'1' ,'2019-01-01 00:00:01.000001+00', '2019-01-01 00:00:01.000001+00'),
-	('4ef52818-7f53-47ad-ae4a-b271b63f0a96', 'go programming language', 'bsn23', 'computer-science' ,'Google', 'learn the best way 3' ,'1' ,'2019-01-01 00:00:01.000001+00', '2019-01-01 00:00:01.000001+00')
+	('4ef52818-7f53-47ad-ae4a-b271b63f0a96', 'go programming language', 'bsn23', 'computer-science' ,'Google', 'learn the best way 3' ,'3' ,'2019-01-01 00:00:01.000001+00', '2019-01-01 00:00:01.000001+00')
 	ON CONFLICT DO NOTHING;
 	
 INSERT INTO categories (category_id, name, books_in, books_out, date_created, date_updated) VALUES 
@@ -46,6 +46,9 @@ INSERT INTO categories (category_id, name, books_in, books_out, date_created, da
 
 INSERT INTO loans (loan_id, title, isbn, quantity, book_id, loan_date, date_return, user_id) 
 	VALUES ('10b57268-50dc-11ea-8d77-2e728ce88125', 'go programming language', 'bsn23', '1', '4ef52818-7f53-47ad-ae4a-b271b63f0a96', '2019-01-01 00:00:01.000001+00', '2019-01-01 00:00:01.000001+00',
-	'5cf37266-3473-4006-984f-9325122678b7') 
+	'5cf37266-3473-4006-984f-9325122678b7') ,
+
+	('e85c41c6-a2ab-11ea-bb37-0242ac130002', 'angular', 'fsn22', '1', 'a2b0639f-2cc6-44b8-b97b-15d69dbb511e', '2019-01-01 00:00:01.000001+00', '2019-01-01 00:00:01.000001+00',
+	'45b5fbd3-755f-4379-8f07-a58d4a30fa2f') 
 	ON CONFLICT DO NOTHING;
 `

@@ -1,16 +1,17 @@
 package category_test
 
 import (
+	"testing"
+	"time"
+
 	category "github.com/book-library/internal/book-category"
 	"github.com/book-library/internal/platform/auth"
 	"github.com/book-library/internal/tests"
 	"github.com/google/go-cmp/cmp"
 	"github.com/pkg/errors"
-	"testing"
-	"time"
 )
 
-func TestCategory(t *testing.T)  {
+func TestCategory(t *testing.T) {
 	db, teardown := tests.NewUnit(t)
 	defer teardown()
 
@@ -32,7 +33,7 @@ func TestCategory(t *testing.T)  {
 				CategoryName:     "computer-science",
 				NumberOfBooksIn:  1,
 				NumberOfBooksOut: 2,
-				DateCreated: now,
+				DateCreated:      now,
 			}
 
 			//test category creation
@@ -43,7 +44,7 @@ func TestCategory(t *testing.T)  {
 			t.Logf("\t%s\tShould be able to create new book-category.", tests.Success)
 
 			//tests category retrieve
-			savedCat, err := category.Retrieve(ctx, db, cat.ID)
+			savedCat, err := category.Retrieve(ctx, claims, db, cat.ID)
 			if err != nil {
 				t.Fatalf("\t%s\tShould be able to retreive book-category : %s.", tests.Failed, err)
 			}
@@ -57,19 +58,19 @@ func TestCategory(t *testing.T)  {
 
 			//tests category updated
 			uctg := category.UpdateBookCategory{
-				CategoryName: tests.StringPointer("computer-science"),
+				CategoryName:     tests.StringPointer("computer-science"),
 				NumberOfBooksIn:  tests.IntPointer(0),
 				NumberOfBooksOut: tests.IntPointer(3),
-				DateUpdated: tests.DatePointer(now),
+				DateUpdated:      tests.DatePointer(now),
 			}
 
-			if err := category.Update(ctx, savedCat.ID, uctg, now,  claims, db); err != nil{
+			if err := category.Update(ctx, savedCat.ID, uctg, now, claims, db); err != nil {
 				t.Fatalf("\t%s\tShould be able to update category : %s.", tests.Failed, err)
 			}
 			t.Logf("\t%s\tShould get back the updated category.", tests.Success)
 
-			savedCat, err = category.Retrieve(ctx, db, cat.ID)
-			if (err != nil) {
+			savedCat, err = category.Retrieve(ctx, claims, db, cat.ID)
+			if err != nil {
 				t.Fatalf("\t%s\tShould be able to retreive updated category : %s.", tests.Failed, err)
 			}
 			t.Logf("\t%s\tShould get back the updated category.", tests.Success)
@@ -89,7 +90,7 @@ func TestCategory(t *testing.T)  {
 			t.Logf("\t%s\tShould be able to delete category.", tests.Success)
 
 			//check if category is retreivable
-			savedCat, err = category.Retrieve(ctx, db, cat.ID)
+			savedCat, err = category.Retrieve(ctx, claims, db, cat.ID)
 			if errors.Cause(err) != category.ErrNotFound {
 				t.Fatalf("\t%s\tShould be able NOT to retreive category : %s.", tests.Failed, err)
 			}
