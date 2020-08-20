@@ -16,13 +16,9 @@ const (
 	AllowOriginKey      string = "Access-Control-Allow-Origin"
 	AllowCredentialsKey        = "Access-Control-Allow-Credentials"
 	AllowHeadersKey            = "Access-Control-Allow-Headers"
-	AllowMethodsKey            = "Access-Control-Allow-Methods"
-	MaxAgeKey                  = "Access-Control-Max-Age"
-
+	// default names for cookies and headers
+	defaultJWTCookieName  = "SESSION-COOKIE"
 	OriginKey         = "Origin"
-	RequestMethodKey  = "Access-Control-Request-Method"
-	RequestHeadersKey = "Access-Control-Request-Headers"
-	ExposeHeadersKey  = "Access-Control-Expose-Headers"
 )
 
 
@@ -172,7 +168,7 @@ func (u *User) Delete(ctx context.Context, w http.ResponseWriter, r *http.Reques
 }
 
 //TokenAuthenticator handles request to authenticate the users and expects a request using Basic Auth with the User's email
-//and password. It reponds with a jwt
+//and password. It responds with a jwt
 func (u *User) TokenAuthenticator(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.users.TokenAuthenticator")
 	defer span.End()
@@ -214,12 +210,13 @@ func (u *User) TokenAuthenticator(ctx context.Context, w http.ResponseWriter, r 
 	// Finally, we set the client cookie for "token" as the JWT we just generated
 	// we also set an expiry time which is the same as the token itself
 	http.SetCookie(w, &http.Cookie{
-		Name:       "SESSION-COOKIE",
+		Name:       defaultJWTCookieName,
 		Value:      tk.Token,
-		Expires:    time.Now().Add(30).UTC(),
-		MaxAge:     600000000,
+		MaxAge:     int(claims.ExpiresAt),
 		Secure:     false,
 		HttpOnly:   true,
+		Path: "/v1/",
+		Raw: claims.Subject,
 	})
 
 	// Set the content type and headers once we know marshaling has succeeded.
@@ -227,6 +224,66 @@ func (u *User) TokenAuthenticator(ctx context.Context, w http.ResponseWriter, r 
 	enableCors(&w)
 
 	return web.Respond(ctx, w, "YOUR ACCESS WAS GRANTED", http.StatusOK)
+}
+
+//RefreshToken refreshes a given claims by issuing a new token
+func (u *User) RefreshToken(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
+	ctx, span := trace.StartSpan(ctx, "handlers.users.RefreshToken")
+	defer span.End()
+
+	_, ok := ctx.Value(web.KeyValues).(*web.Values)
+	if !ok {
+		return web.NewShutdownError("web value missing from context")
+	}
+
+	cookie, _ := r.Cookie(defaultJWTCookieName)
+	if cookie.Value == "" {
+		err := errors.New("expected session-cookie")
+		return web.NewRequestError(err, http.StatusUnauthorized)
+	}
+
+	claims, err := users.RefreshesToken(ctx, u.db, cookie.Raw)
+	if err != nil {
+		return web.NewRequestError(err, http.StatusConflict)
+	}
+
+	token, err := u.authenticator.GenerateToken(claims)
+
+	if err != nil {
+		return errors.Wrap(err, "generating token")
+	}
+
+	cookie.Value = token
+	cookie.Expires = time.Unix(claims.ExpiresAt, 0)
+
+	//add cookies back int the header
+	//TODO check also how to manage for xsrf-token
+	http.SetCookie(w, cookie)
+	return web.Respond(ctx, w, "Refreshed token", http.StatusOK)
+}
+
+func (u *User) Logout(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
+	ctx, span := trace.StartSpan(ctx, "handlers.users.Logout")
+	defer span.End()
+
+	_, ok := ctx.Value(web.KeyValues).(*web.Values)
+	if !ok {
+		return web.NewShutdownError("web value missing from context")
+	}
+
+	cookie, _ := r.Cookie(defaultJWTCookieName)
+	if cookie.Value == "" {
+		err := errors.New("expected session-cookie")
+		return web.NewRequestError(err, http.StatusUnauthorized)
+	}
+
+	err := users.Logout(ctx, u.db, cookie.Raw)
+	if err != nil {
+		return errors.Wrap(err, "could not logout cookie already expired")
+	}
+
+	http.SetCookie(w, nil)
+	return web.Respond(ctx, w, "logout was successful", http.StatusOK)
 }
 
 //enableCors enables cross origin control

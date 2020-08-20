@@ -2,14 +2,17 @@ package mid
 
 import (
 	"context"
-	"net/http"
-	"strings"
-
 	"github.com/book-library/internal/platform/auth"
-	"go.opencensus.io/trace"
-
 	"github.com/book-library/internal/platform/web"
 	errors "github.com/pkg/errors"
+	"go.opencensus.io/trace"
+	"net/http"
+)
+
+const (
+	// default names for cookies and headers
+	defaultJWTCookieName  = "SESSION-COOKIE"
+	defaultXSRFCookieName = "XSRF-TOKEN"
 )
 
 //ErrForbidden is returned when a users doesn't have the required roles for doing an action
@@ -29,13 +32,20 @@ func Authentication(authenticator *auth.Authenticator) web.Middleware {
 			ctx, span := trace.StartSpan(ctx, "internal.mid.Authentication")
 			defer span.End()
 
-			parts := strings.Split(r.Header.Get("Authorization"), " ")
-			if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
-				err := errors.New("expected authorization header format: Bearer <token>")
+			//parts := strings.Split(r.Header.Get("Authorization"), " ")
+			//if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
+			//	err := errors.New("expected authorization header format: Bearer <token>")
+			//	return web.NewRequestError(err, http.StatusUnauthorized)
+			//}
+
+			cookie, _ := r.Cookie(defaultJWTCookieName)
+			if cookie.Value == "" {
+				err := errors.New("expected session-cookie")
 				return web.NewRequestError(err, http.StatusUnauthorized)
 			}
+			parts := cookie.Value
 
-			claims, err := authenticator.ParseClaims(parts[1])
+			claims, err := authenticator.ParseClaims(parts)
 			if err != nil {
 				return web.NewRequestError(err, http.StatusUnauthorized)
 			}

@@ -20,30 +20,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="09a71e76-57f8-480b-b781-1432f253bf13" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/internal/session/sessionManager.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/alexedwards/scs/postgresstore/LICENSE" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/alexedwards/scs/postgresstore/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/alexedwards/scs/postgresstore/go.mod" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/alexedwards/scs/postgresstore/go.sum" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/alexedwards/scs/postgresstore/postgresstore.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/notice.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/79b4e001-6647-4f11-b5de-50a0630f3041.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/79b4e001-6647-4f11-b5de-50a0630f3041.xml.tmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/79b4e001-6647-4f11-b5de-50a0630f3041/storage_v2/_src_/database/postgres.edMnLQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/79b4e001-6647-4f11-b5de-50a0630f3041/storage_v2/_src_/database/postgres.edMnLQ/schema/information_schema.FNRwLQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/79b4e001-6647-4f11-b5de-50a0630f3041/storage_v2/_src_/database/postgres.edMnLQ/schema/information_schema.FNRwLQ.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/79b4e001-6647-4f11-b5de-50a0630f3041/storage_v2/_src_/database/postgres.edMnLQ/schema/pg_catalog.0S1ZNQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/79b4e001-6647-4f11-b5de-50a0630f3041/storage_v2/_src_/database/postgres.edMnLQ/schema/pg_catalog.0S1ZNQ.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/79b4e001-6647-4f11-b5de-50a0630f3041/storage_v2/_src_/database/postgres.edMnLQ/schema/public.abK9xQ.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/book-api/internal/handlers/routes.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/book-api/internal/handlers/routes.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmd/book-api/internal/handlers/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/book-api/internal/handlers/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/platform/auth/roles.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/platform/auth/roles.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/mid/auth.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/mid/auth.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/schema/migrate.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/schema/migrate.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/users/models.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/users/models.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/session/sessionManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/session/sessionManager.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/users/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/users/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/github.com/lib/pq/.travis.yml" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/.travis.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/github.com/lib/pq/CONTRIBUTING.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/github.com/lib/pq/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/github.com/lib/pq/conn.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/conn.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/github.com/lib/pq/copy.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/copy.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/github.com/lib/pq/notify.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/notify.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/github.com/lib/pq/user_posix.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/github.com/lib/pq/user_posix.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/modules.txt" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/modules.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -184,46 +178,46 @@
       <screen x="67" y="27" width="1613" height="1023" />
     </state>
     <state x="583" y="362" width="570" height="350" key="#Notifications/67.27.1613.1023@67.27.1613.1023" timestamp="1596664725069" />
-    <state x="461" y="122" width="800" height="721" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1596730117771">
+    <state x="461" y="122" width="800" height="721" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1597793697414">
       <screen x="67" y="27" width="1613" height="1023" />
     </state>
-    <state x="461" y="122" width="800" height="721" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.1613.1023@67.27.1613.1023" timestamp="1596730117771" />
-    <state width="1567" height="2" key="GridCell.Tab.0.bottom" timestamp="1596732348578">
+    <state x="461" y="122" width="800" height="721" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.1613.1023@67.27.1613.1023" timestamp="1597793697414" />
+    <state width="1567" height="275" key="GridCell.Tab.0.bottom" timestamp="1597928884217">
       <screen x="67" y="27" width="1613" height="1023" />
     </state>
-    <state width="1567" height="2" key="GridCell.Tab.0.bottom/67.27.1613.1023@67.27.1613.1023" timestamp="1596732348578" />
-    <state width="1567" height="2" key="GridCell.Tab.0.center" timestamp="1596732348577">
+    <state width="1567" height="275" key="GridCell.Tab.0.bottom/67.27.1613.1023@67.27.1613.1023" timestamp="1597928884217" />
+    <state width="1567" height="275" key="GridCell.Tab.0.center" timestamp="1597928884216">
       <screen x="67" y="27" width="1613" height="1023" />
     </state>
-    <state width="1567" height="2" key="GridCell.Tab.0.center/67.27.1613.1023@67.27.1613.1023" timestamp="1596732348577" />
-    <state width="1567" height="2" key="GridCell.Tab.0.left" timestamp="1596732348577">
+    <state width="1567" height="275" key="GridCell.Tab.0.center/67.27.1613.1023@67.27.1613.1023" timestamp="1597928884216" />
+    <state width="1567" height="275" key="GridCell.Tab.0.left" timestamp="1597928884216">
       <screen x="67" y="27" width="1613" height="1023" />
     </state>
-    <state width="1567" height="2" key="GridCell.Tab.0.left/67.27.1613.1023@67.27.1613.1023" timestamp="1596732348577" />
-    <state width="1567" height="2" key="GridCell.Tab.0.right" timestamp="1596732348578">
+    <state width="1567" height="275" key="GridCell.Tab.0.left/67.27.1613.1023@67.27.1613.1023" timestamp="1597928884216" />
+    <state width="1567" height="275" key="GridCell.Tab.0.right" timestamp="1597928884217">
       <screen x="67" y="27" width="1613" height="1023" />
     </state>
-    <state width="1567" height="2" key="GridCell.Tab.0.right/67.27.1613.1023@67.27.1613.1023" timestamp="1596732348578" />
-    <state width="1567" height="2" key="GridCell.Tab.1.bottom" timestamp="1596732348580">
+    <state width="1567" height="275" key="GridCell.Tab.0.right/67.27.1613.1023@67.27.1613.1023" timestamp="1597928884217" />
+    <state width="1567" height="275" key="GridCell.Tab.1.bottom" timestamp="1597928884220">
       <screen x="67" y="27" width="1613" height="1023" />
     </state>
-    <state width="1567" height="2" key="GridCell.Tab.1.bottom/67.27.1613.1023@67.27.1613.1023" timestamp="1596732348580" />
-    <state width="1567" height="2" key="GridCell.Tab.1.center" timestamp="1596732348579">
+    <state width="1567" height="275" key="GridCell.Tab.1.bottom/67.27.1613.1023@67.27.1613.1023" timestamp="1597928884220" />
+    <state width="1567" height="275" key="GridCell.Tab.1.center" timestamp="1597928884219">
       <screen x="67" y="27" width="1613" height="1023" />
     </state>
-    <state width="1567" height="2" key="GridCell.Tab.1.center/67.27.1613.1023@67.27.1613.1023" timestamp="1596732348579" />
-    <state width="1567" height="2" key="GridCell.Tab.1.left" timestamp="1596732348578">
+    <state width="1567" height="275" key="GridCell.Tab.1.center/67.27.1613.1023@67.27.1613.1023" timestamp="1597928884219" />
+    <state width="1567" height="275" key="GridCell.Tab.1.left" timestamp="1597928884218">
       <screen x="67" y="27" width="1613" height="1023" />
     </state>
-    <state width="1567" height="2" key="GridCell.Tab.1.left/67.27.1613.1023@67.27.1613.1023" timestamp="1596732348578" />
-    <state width="1567" height="2" key="GridCell.Tab.1.right" timestamp="1596732348579">
+    <state width="1567" height="275" key="GridCell.Tab.1.left/67.27.1613.1023@67.27.1613.1023" timestamp="1597928884218" />
+    <state width="1567" height="275" key="GridCell.Tab.1.right" timestamp="1597928884219">
       <screen x="67" y="27" width="1613" height="1023" />
     </state>
-    <state width="1567" height="2" key="GridCell.Tab.1.right/67.27.1613.1023@67.27.1613.1023" timestamp="1596732348579" />
-    <state width="263" height="500" key="HiddenNamespacesPopup" timestamp="1596730181605">
+    <state width="1567" height="275" key="GridCell.Tab.1.right/67.27.1613.1023@67.27.1613.1023" timestamp="1597928884219" />
+    <state width="263" height="500" key="HiddenNamespacesPopup" timestamp="1597864985113">
       <screen x="67" y="27" width="1613" height="1023" />
     </state>
-    <state width="263" height="500" key="HiddenNamespacesPopup/67.27.1613.1023@67.27.1613.1023" timestamp="1596730181605" />
+    <state width="263" height="500" key="HiddenNamespacesPopup/67.27.1613.1023@67.27.1613.1023" timestamp="1597864985113" />
     <state x="456" y="283" width="824" height="508" key="IDE.errors.dialog" timestamp="1596743613473">
       <screen x="67" y="27" width="1613" height="1023" />
     </state>
@@ -244,12 +238,40 @@
       <screen x="67" y="27" width="1613" height="1023" />
     </state>
     <state x="654" y="452" width="428" height="170" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/67.27.1613.1023@67.27.1613.1023" timestamp="1596730720091" />
+    <state x="537" y="183" width="672" height="678" key="search.everywhere.popup" timestamp="1597788862151">
+      <screen x="67" y="27" width="1613" height="1023" />
+    </state>
+    <state x="537" y="183" width="672" height="678" key="search.everywhere.popup/67.27.1613.1023@67.27.1613.1023" timestamp="1597788862151" />
     <state x="598" y="451" width="540" height="172" key="vcs.readOnlyHandler.ReadOnlyStatusDialog" timestamp="1596664847684">
       <screen x="67" y="27" width="1613" height="1023" />
     </state>
     <state x="598" y="451" width="540" height="172" key="vcs.readOnlyHandler.ReadOnlyStatusDialog/67.27.1613.1023@67.27.1613.1023" timestamp="1596664847684" />
   </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/platform/auth/auth.go</url>
+          <line>130</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/users/user.go</url>
+          <line>197</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/users/user.go</url>
+          <line>217</line>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/users/user.go</url>
+          <line>220</line>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
     <watches-manager>
       <configuration name="GoTestRunConfiguration">
         <watch expression="loans" />
