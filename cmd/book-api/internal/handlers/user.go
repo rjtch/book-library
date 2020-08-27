@@ -2,16 +2,12 @@ package handlers
 
 import (
 	"context"
-	"fmt"
-	"net/http"
-
 	"github.com/book-library/internal/platform/auth"
 	"github.com/book-library/internal/platform/web"
 	"github.com/book-library/internal/users"
 	"github.com/jmoiron/sqlx"
 	errors "github.com/pkg/errors"
 	"go.opencensus.io/trace"
-<<<<<<< HEAD
 	"net/http"
 	"time"
 )
@@ -23,8 +19,6 @@ const (
 	// default names for cookies and headers
 	defaultJWTCookieName  = "SESSION-COOKIE"
 	OriginKey         = "Origin"
-=======
->>>>>>> 6191059382904e1a47291e22bc825b49845081e0
 )
 
 //User represents the Users API method handler set.
@@ -219,11 +213,6 @@ func (u *User) TokenAuthenticator(ctx context.Context, w http.ResponseWriter, r 
 
 	claims, err := users.Authenticate(ctx, u.db, v.Now, email, pass)
 
-	fmt.Println("EMAIL ", email)
-	fmt.Println("PASSWORD ", pass)
-	fmt.Println("ERRRROORRR ", err)
-	fmt.Println("CLAIMS ", claims)
-
 	if err != nil {
 		switch err {
 		case users.ErrAuthenticationFailure:
@@ -243,7 +232,6 @@ func (u *User) TokenAuthenticator(ctx context.Context, w http.ResponseWriter, r 
 		return errors.Wrap(err, "generating token")
 	}
 
-<<<<<<< HEAD
 	// Finally, we set the client cookie for "token" as the JWT we just generated
 	// we also set an expiry time which is the same as the token itself
 	http.SetCookie(w, &http.Cookie{
@@ -303,23 +291,33 @@ func (u *User) Logout(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	ctx, span := trace.StartSpan(ctx, "handlers.users.Logout")
 	defer span.End()
 
+	//TODO put user_id in the url after logged in
 	_, ok := ctx.Value(web.KeyValues).(*web.Values)
 	if !ok {
 		return web.NewShutdownError("web value missing from context")
 	}
 
+	//get user_id from the url
+	id := params["user_id"]
+	err := users.Logout(ctx, u.db, id)
+	if err != nil {
+		return errors.Wrap(err, "could not logout cookie already expired")
+	}
+
+	//get actual cookie from request
 	cookie, _ := r.Cookie(defaultJWTCookieName)
 	if cookie.Value == "" {
 		err := errors.New("expected session-cookie")
 		return web.NewRequestError(err, http.StatusUnauthorized)
 	}
 
-	err := users.Logout(ctx, u.db, cookie.Raw)
-	if err != nil {
-		return errors.Wrap(err, "could not logout cookie already expired")
-	}
+	//invalidate cookies after session is deleted from the db
+	cookie.MaxAge = 0
+	cookie.Expires = time.Now()
 
-	http.SetCookie(w, nil)
+	//send the invalidated cookie back to the client
+	http.SetCookie(w, cookie)
+
 	return web.Respond(ctx, w, "logout was successful", http.StatusOK)
 }
 
@@ -329,7 +327,4 @@ func enableCors(w *http.ResponseWriter) {
 	(*w).Header().Set(AllowCredentialsKey, "*")
 	(*w).Header().Set(AllowHeadersKey, "*")
 	(*w).Header().Set(OriginKey, "*")
-=======
-	return web.Respond(ctx, w, tk, http.StatusOK)
->>>>>>> 6191059382904e1a47291e22bc825b49845081e0
 }

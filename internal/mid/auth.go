@@ -32,23 +32,19 @@ func Authentication(authenticator *auth.Authenticator) web.Middleware {
 			ctx, span := trace.StartSpan(ctx, "internal.mid.Authentication")
 			defer span.End()
 
-			//parts := strings.Split(r.Header.Get("Authorization"), " ")
-			//if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
-			//	err := errors.New("expected authorization header format: Bearer <token>")
-			//	return web.NewRequestError(err, http.StatusUnauthorized)
-			//}
-
-			cookie, _ := r.Cookie(defaultJWTCookieName)
-			if cookie.Value == "" {
+			cookie, err := r.Cookie(defaultJWTCookieName)
+			if err != nil {
 				err := errors.New("expected session-cookie")
 				return web.NewRequestError(err, http.StatusUnauthorized)
 			}
-			parts := cookie.Value
 
+			parts := cookie.Value
 			claims, err := authenticator.ParseClaims(parts)
 			if err != nil {
 				return web.NewRequestError(err, http.StatusUnauthorized)
 			}
+
+			//TODO check if session-cookie is expired or if user is already logged out
 
 			//Add claims to context so that they can be checked later on
 			ctx = context.WithValue(ctx, auth.Key, claims)

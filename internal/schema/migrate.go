@@ -99,7 +99,7 @@ CREATE TABLE sessions (
     user_id UUID ,
 	token TEXT,
 	data BYTEA NOT NULL,
-	expiry TIMESTAMPTZ NOT NULL,
+	expiry TIMESTAMP NOT NULL,
 
 	FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );`,

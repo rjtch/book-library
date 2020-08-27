@@ -3,6 +3,7 @@ package users
 import (
 	"context"
 	"database/sql"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"time"
@@ -242,9 +243,13 @@ func Authenticate(ctx context.Context, db *sqlx.DB, now time.Time, email, passwo
 
 	//save the claim as session-token or drop if claim is nil
 	const t = `INSERT INTO sessions (user_id, token, data, expiry) VALUES ($1, $2, $3, $4)`
+	//convert claims in string
 	str := fmt.Sprint(claims)
+	timer := time.Now().Add(10)
+	//encode converted string in base64
+	encoded := base64.StdEncoding.EncodeToString([]byte(str))
 	_, err := db.ExecContext(
-		ctx, t, u.ID, defaultJWTCookieName, []byte(str), time.Hour)
+		ctx, t, u.ID, defaultJWTCookieName, []byte(encoded), timer)
 	if err != nil {
 		return auth.Claims{}, errors.Wrap(err, "Session expired or not existed")
 	}
@@ -273,7 +278,7 @@ func RefreshesToken(ctx context.Context, db *sqlx.DB, user_id string) (auth.Clai
 	if err != nil {
 		return auth.Claims{}, errors.Wrap(err, "unable to convert byte data back")
 	}
-	if isExpired(claim) {
+	if IsExpired(claim) {
 		tk.Expiry = time.Now().Add(3600)
 	}
 
@@ -306,16 +311,10 @@ func Logout(ctx context.Context, db *sqlx.DB, user_id string) error {
 		return errors.Wrap(err, "selecting single token")
 	}
 
-	var claim auth.Claims
-	err := json.Unmarshal(tk.Data, &claim)
-	if err != nil {
-		return errors.Wrap(err, "unable to convert byte data back")
-	}
-
 	//save the claim as session-token or drop if claim is nil
-	const t = `DELETE * FROM sessions WHERE id = $1`
-	_, err = db.ExecContext(
-		ctx, t, tk.Token, tk.Data, tk.Expiry)
+	const t = `DELETE FROM sessions WHERE user_id = $1`
+	_, err := db.ExecContext(
+		ctx, t, user_id)
 	if err != nil {
 		return errors.Wrap(err, "Deleting session-token")
 	}
@@ -323,7 +322,30 @@ func Logout(ctx context.Context, db *sqlx.DB, user_id string) error {
 	return nil
 }
 
-//isExpired verifies iif the given claim has expired or not.
-func isExpired(claims auth.Claims) bool {
+//IsExpired verifies iif the given claim has expired or not.
+func IsExpired(claims auth.Claims) bool {
 	return !claims.VerifyExpiresAt(time.Now().Unix(), true)
+}
+
+func IsLoggedOut(ctx context.Context, db *sqlx.DB, user_id string) (bool, error){
+	ctx, span := trace.StartSpan(ctx, "internal.users.IsLoggedOut")
+	defer span.End()
+
+	const q = `SELECT * FROM sessions WHERE user_id = $1`
+	var tk Session
+	if err := db.GetContext(ctx, &tk, q, user_id); err != nil {
+		// Normally we would return ErrNotFound in this scenario but we do not want
+		// to leak to an unauthenticated users which emails are in the system.
+		if err == sql.ErrNoRows {
+			return false, ErrNotFound
+		}
+
+		return false, errors.Wrap(err, "selecting single token")
+	}
+
+	if &tk == nil {
+		return true, errors.Wrap(nil, "token has already been deleted")
+	}
+
+	return true, errors.Wrap(nil, "token has already been deleted")
 }
