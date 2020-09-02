@@ -27,7 +27,7 @@ func API(build string, shutdown chan os.Signal, log *log.Logger, db *sqlx.DB, au
 
 	// Register users management and authentication endpoints.
 	u := User{
-		db:            db,
+		Db:            db,
 		authenticator: authenticator,
 	}
 

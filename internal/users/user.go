@@ -299,6 +299,7 @@ func Logout(ctx context.Context, db *sqlx.DB, user_id string) error {
 	ctx, span := trace.StartSpan(ctx, "internal.users.Logout")
 	defer span.End()
 
+	//TODO make sure user is not logged in many times
 	const q = `SELECT * FROM sessions WHERE user_id = $1`
 	var tk Session
 	if err := db.GetContext(ctx, &tk, q, user_id); err != nil {
@@ -344,8 +345,8 @@ func IsLoggedOut(ctx context.Context, db *sqlx.DB, user_id string) (bool, error)
 	}
 
 	if &tk == nil {
-		return true, errors.Wrap(nil, "token has already been deleted")
+		return true, nil
 	}
 
-	return true, errors.Wrap(nil, "token has already been deleted")
+	return true, nil
 }

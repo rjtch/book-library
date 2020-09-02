@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/book-library/internal/platform/auth"
 	"github.com/book-library/internal/platform/web"
+	"github.com/book-library/internal/users"
 	errors "github.com/pkg/errors"
 	"go.opencensus.io/trace"
 	"net/http"
@@ -21,6 +22,7 @@ var ErrForbidden = web.NewRequestError(
 	http.StatusForbidden,
 )
 
+
 //Authentication validates a jwt from the Authorization header
 func Authentication(authenticator *auth.Authenticator) web.Middleware {
 
@@ -35,16 +37,20 @@ func Authentication(authenticator *auth.Authenticator) web.Middleware {
 			cookie, err := r.Cookie(defaultJWTCookieName)
 			if err != nil {
 				err := errors.New("expected session-cookie")
-				return web.NewRequestError(err, http.StatusUnauthorized)
+				return web.NewRequestError(err, http.StatusBadRequest)
 			}
 
 			parts := cookie.Value
 			claims, err := authenticator.ParseClaims(parts)
 			if err != nil {
-				return web.NewRequestError(err, http.StatusUnauthorized)
+				return web.NewRequestError(err, http.StatusBadRequest)
 			}
 
-			//TODO check if session-cookie is expired or if user is already logged out
+			//TODO check if session-cookie is expired or if user has already logged out
+			if users.IsExpired(claims) {
+				err = errors.New("expired session-cookie")
+
+			}
 
 			//Add claims to context so that they can be checked later on
 			ctx = context.WithValue(ctx, auth.Key, claims)

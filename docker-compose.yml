@@ -26,22 +26,22 @@ services:
       - 4001:4001 # DEBUG API
 
   #This is the core CRUD based service.
-#  books-api:
-#    container_name: books-api
-#    networks:
-#      - shared-network
-#    image: ${PROJECT}/books-api
-#    ports:
-#      - 3000:3000 # CRUD API
-#      - 4000:4000 # DEBUG API
-#    environment:
-#      - BOOKS_DB_HOST=book_db
-#      - BOOKS_DB_DISABLE_TLS=1 # This is only disabled for our development enviroment.
-#      # - GODEBUG=gctrace=1
-#    depends_on:
-#      - metrics
-#      - zipkin
-#      - db
+  books-api:
+    container_name: books-api
+    networks:
+      - shared-network
+    image: ${PROJECT}/books-api
+    ports:
+      - 3000:3000 # CRUD API
+      - 4000:4000 # DEBUG API
+    environment:
+      - BOOKS_DB_HOST=book_db
+      - BOOKS_DB_DISABLE_TLS=1 # This is only disabled for our development enviroment.
+      # - GODEBUG=gctrace=1
+    depends_on:
+      - metrics
+      - zipkin
+      - db
 
   # This starts a local PostgreSQL DB.
   db:
