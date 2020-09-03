@@ -279,9 +279,15 @@ func RefreshesToken(ctx context.Context, db *sqlx.DB, user_id string) (auth.Clai
 		return auth.Claims{}, errors.Wrap(err, "unable to convert byte data back")
 	}
 	if IsExpired(claim) {
-		tk.Expiry = time.Now().Add(3600)
+		t := `DELETE FROM sessions WHERE expiry < current_timestamp`
+		_, err := db.ExecContext(
+			ctx, t, user_id)
+		if err != nil {
+			return auth.Claims{}, errors.Wrap(err, "Deleting session-token")
+		}
 	}
 
+	tk.Expiry = time.Now().Add(3600)
 	//save the claim as session-token or drop if claim is nil
 	const t = `INSERT INTO sessions (token, data, expiry) VALUES ($1, $2, $3)`
 	_, err = db.ExecContext(

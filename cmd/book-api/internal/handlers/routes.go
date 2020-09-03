@@ -67,11 +67,11 @@ func API(build string, shutdown chan os.Signal, log *log.Logger, db *sqlx.DB, au
 	l := Loan{
 		db: db,
 	}
-	app.Handle("GET", "/v1/users/:user_id/loans", l.List, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
-	app.Handle("POST", "/v1/users/:user_id/loans", l.Create, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
-	app.Handle("PUT", "/v1/users/:user_id/loans/:id", l.Update, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
-	app.Handle("DELETE", "/v1/users/:user_id/loans/:id", l.Delete, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
-	app.Handle("GET", "/v1/users/:user_id/loans/:id", l.Retrieve, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
+	app.Handle("GET", "/v1/user/:user_id/loans", l.List, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
+	app.Handle("POST", "/v1/user/:user_id/loans", l.Create, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
+	app.Handle("PUT", "/v1/user/:user_id/loans/:id", l.Update, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
+	app.Handle("DELETE", "/v1/user/:user_id/loans/:id", l.Delete, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
+	app.Handle("GET", "/v1/user/:user_id/loans/:id", l.Retrieve, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
 
 	return app
 }

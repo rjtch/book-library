@@ -22,7 +22,6 @@ var ErrForbidden = web.NewRequestError(
 	http.StatusForbidden,
 )
 
-
 //Authentication validates a jwt from the Authorization header
 func Authentication(authenticator *auth.Authenticator) web.Middleware {
 
@@ -40,16 +39,23 @@ func Authentication(authenticator *auth.Authenticator) web.Middleware {
 				return web.NewRequestError(err, http.StatusBadRequest)
 			}
 
-			parts := cookie.Value
-			claims, err := authenticator.ParseClaims(parts)
+			//check if validity of the claim
+			claims, err := authenticator.ParseClaims(cookie.Value)
 			if err != nil {
 				return web.NewRequestError(err, http.StatusBadRequest)
 			}
 
-			//TODO check if session-cookie is expired or if user has already logged out
+			//compare the claim from the cookie with to one from the context
+			//if !reflect.DeepEqual(clms, claims) {
+			//	err := errors.New("error when parsing the claim")
+			//	return web.NewRequestError(err, http.StatusForbidden)
+			//}
+
+			//TODO add xrsf token for better security
+
+			// check if session-cookie is expired or if user has already logged out
 			if users.IsExpired(claims) {
 				err = errors.New("expired session-cookie")
-
 			}
 
 			//Add claims to context so that they can be checked later on

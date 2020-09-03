@@ -18,8 +18,8 @@ const (
 	AllowCredentialsKey        = "Access-Control-Allow-Credentials"
 	AllowHeadersKey            = "Access-Control-Allow-Headers"
 	// default names for cookies and headers
-	defaultJWTCookieName  = "SESSION-COOKIE"
-	OriginKey         = "Origin"
+	defaultJWTCookieName = "SESSION-COOKIE"
+	OriginKey            = "Origin"
 )
 
 //User represents the Users API method handler set.
@@ -33,21 +33,17 @@ func (u *User) List(ctx context.Context, w http.ResponseWriter, r *http.Request,
 	ctx, span := trace.StartSpan(ctx, "handlers.users.List")
 	defer span.End()
 
-	//get user_id from the url
-	//TODO fidn a way to get the user_id
-	id := params["user_id"]
-
-	//check if token does already exist
-	ok, err := users.IsLoggedOut(ctx, u.Db, id)
-	if !ok {
-		return web.NewRequestError(err, http.StatusUnauthorized)
-	}
-
 	claims, ok := ctx.Value(auth.Key).(auth.Claims)
 	if !ok {
 		if !claims.HasRole(auth.RoleAdmin) {
 			return errors.New("claims missing from context")
 		}
+	}
+
+	//check if token does already exist
+	ok, err := users.IsLoggedOut(ctx, u.Db, claims.Subject)
+	if !ok {
+		return web.NewRequestError(err, http.StatusUnauthorized)
 	}
 
 	usr, err := users.List(ctx, claims, u.Db)
@@ -63,18 +59,17 @@ func (u *User) Retrieve(ctx context.Context, w http.ResponseWriter, r *http.Requ
 	ctx, span := trace.StartSpan(ctx, "handlers.users.Retrieve")
 	defer span.End()
 
-	//get user_id from the url
-	id := params["user_id"]
-
-	//check if token does already exist
-	ok, err := users.IsLoggedOut(ctx, u.Db, id)
+	claims, ok := ctx.Value(auth.Key).(auth.Claims)
 	if !ok {
-		return web.NewRequestError(err, http.StatusUnauthorized)
+		if !claims.HasRole(auth.RoleUser) {
+			return errors.New("claims missing from context")
+		}
 	}
 
-	claims, ok := ctx.Value(auth.Key).(auth.Claims)
-	if ok {
-		return errors.New("claims missing from context")
+	//check if token does already exist
+	ok, err := users.IsLoggedOut(ctx, u.Db, claims.Subject)
+	if !ok {
+		return web.NewRequestError(err, http.StatusUnauthorized)
 	}
 
 	user, err := users.Retrieve(ctx, claims, u.Db, params["id"])
@@ -133,11 +128,15 @@ func (u *User) Create(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	ctx, span := trace.StartSpan(ctx, "handlers.users.Create")
 	defer span.End()
 
-	//get user_id from the url
-	id := params["user_id"]
+	claims, ok := ctx.Value(auth.Key).(auth.Claims)
+	if !ok {
+		if !claims.HasRole(auth.RoleUser) {
+			return errors.New("claims missing from context")
+		}
+	}
 
 	//check if token does already exist
-	ok, err := users.IsLoggedOut(ctx, u.Db, id)
+	ok, err := users.IsLoggedOut(ctx, u.Db, claims.Subject)
 	if !ok {
 		return web.NewRequestError(err, http.StatusUnauthorized)
 	}
@@ -291,13 +290,13 @@ func (u *User) TokenAuthenticator(ctx context.Context, w http.ResponseWriter, r 
 	// Finally, we set the client cookie for "token" as the JWT we just generated
 	// we also set an expiry time which is the same as the token itself
 	http.SetCookie(w, &http.Cookie{
-		Name:       defaultJWTCookieName,
-		Value:      tk.Token,
-		MaxAge:     int(claims.ExpiresAt),
-		Secure:     false,
-		HttpOnly:   true,
-		Path: "/v1/",
-		Raw: claims.StandardClaims.Subject,
+		Name:     defaultJWTCookieName,
+		Value:    tk.Token,
+		MaxAge:   int(claims.ExpiresAt),
+		Path:     "/v1/",
+		Raw:      claims.StandardClaims.Subject,
+		Secure:   false,
+		HttpOnly: true,
 	})
 
 	// Set the content type and headers once we know marshaling has succeeded.
