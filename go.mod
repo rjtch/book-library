@@ -20,6 +20,7 @@ require (
 	github.com/lib/pq v1.4.0
 	github.com/openzipkin/zipkin-go v0.2.2
 	github.com/pkg/errors v0.8.1
+	github.com/rakyll/statik v0.1.7
 	go.opencensus.io v0.22.2
 	golang.org/x/crypto v0.0.0-20191206172530-e9b2fee46413
 	golang.org/x/net v0.0.0-20200222125558-5a598a2470a0 // indirect

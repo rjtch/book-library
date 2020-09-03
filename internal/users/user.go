@@ -3,6 +3,8 @@ package users
 import (
 	"context"
 	"database/sql"
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -13,7 +15,6 @@ import (
 	"go.opencensus.io/trace"
 	"golang.org/x/crypto/bcrypt"
 )
-
 
 var (
 	// ErrNotFound is used when a specific User is requested but does not exist.
@@ -28,6 +29,11 @@ var (
 
 	// ErrForbidden occurs when a users tries to do something that is forbidden to them according to our access control policies.
 	ErrForbidden = errors.New("Attempted action is not allowed")
+)
+
+const (
+	defaultJWTCookieName  = "SESSION-COOKIE"
+	defaultXSRFCookieName = "XSRF-TOKEN"
 )
 
 // List retrieves a list of existing users from the database.
@@ -236,13 +242,117 @@ func Authenticate(ctx context.Context, db *sqlx.DB, now time.Time, email, passwo
 	claims := auth.NewClaims(u.ID, u.Roles, now, time.Hour)
 
 	//save the claim as session-token or drop if claim is nil
-	const t = `INSERT INTO sessions (token, data, expiry) VALUES ($1, $2, $3)`
+	const t = `INSERT INTO sessions (user_id, token, data, expiry) VALUES ($1, $2, $3, $4)`
+	//convert claims in string
 	str := fmt.Sprint(claims)
+	timer := time.Now().Add(10)
+	//encode converted string in base64
+	encoded := base64.StdEncoding.EncodeToString([]byte(str))
 	_, err := db.ExecContext(
-		ctx, t, "session-token", []byte(str), time.Now().Add(3600))
+		ctx, t, u.ID, defaultJWTCookieName, []byte(encoded), timer)
 	if err != nil {
 		return auth.Claims{}, errors.Wrap(err, "Session expired or not existed")
 	}
 
 	return claims, nil
+}
+
+func RefreshesToken(ctx context.Context, db *sqlx.DB, user_id string) (auth.Claims, error) {
+	ctx, span := trace.StartSpan(ctx, "internal.users.RefreshToken")
+	defer span.End()
+
+	const q = `SELECT * FROM sessions WHERE user_id = $1`
+	var tk Session
+	if err := db.GetContext(ctx, &tk, q, user_id); err != nil {
+		// Normally we would return ErrNotFound in this scenario but we do not want
+		// to leak to an unauthenticated users which emails are in the system.
+		if err == sql.ErrNoRows {
+			return auth.Claims{}, ErrNotFound
+		}
+
+		return auth.Claims{}, errors.Wrap(err, "selecting single token")
+	}
+
+	var claim auth.Claims
+	err := json.Unmarshal(tk.Data, &claim)
+	if err != nil {
+		return auth.Claims{}, errors.Wrap(err, "unable to convert byte data back")
+	}
+	if IsExpired(claim) {
+		t := `DELETE FROM sessions WHERE expiry < current_timestamp`
+		_, err := db.ExecContext(
+			ctx, t, user_id)
+		if err != nil {
+			return auth.Claims{}, errors.Wrap(err, "Deleting session-token")
+		}
+	}
+
+	tk.Expiry = time.Now().Add(3600)
+	//save the claim as session-token or drop if claim is nil
+	const t = `INSERT INTO sessions (token, data, expiry) VALUES ($1, $2, $3)`
+	_, err = db.ExecContext(
+		ctx, t, tk.Token, tk.Data, tk.Expiry)
+	if err != nil {
+		return auth.Claims{}, errors.Wrap(err, "Session expired or not existed")
+	}
+
+	return claim, nil
+}
+
+//Logout deletes user's session-token from the database which invalidates all existing cookies
+//in browsers
+func Logout(ctx context.Context, db *sqlx.DB, user_id string) error {
+	ctx, span := trace.StartSpan(ctx, "internal.users.Logout")
+	defer span.End()
+
+	//TODO make sure user is not logged in many times
+	const q = `SELECT * FROM sessions WHERE user_id = $1`
+	var tk Session
+	if err := db.GetContext(ctx, &tk, q, user_id); err != nil {
+		// Normally we would return ErrNotFound in this scenario but we do not want
+		// to leak to an unauthenticated users which emails are in the system.
+		if err == sql.ErrNoRows {
+			return ErrNotFound
+		}
+
+		return errors.Wrap(err, "selecting single token")
+	}
+
+	//save the claim as session-token or drop if claim is nil
+	const t = `DELETE FROM sessions WHERE user_id = $1`
+	_, err := db.ExecContext(
+		ctx, t, user_id)
+	if err != nil {
+		return errors.Wrap(err, "Deleting session-token")
+	}
+
+	return nil
+}
+
+//IsExpired verifies iif the given claim has expired or not.
+func IsExpired(claims auth.Claims) bool {
+	return !claims.VerifyExpiresAt(time.Now().Unix(), true)
+}
+
+func IsLoggedOut(ctx context.Context, db *sqlx.DB, user_id string) (bool, error){
+	ctx, span := trace.StartSpan(ctx, "internal.users.IsLoggedOut")
+	defer span.End()
+
+	const q = `SELECT * FROM sessions WHERE user_id = $1`
+	var tk Session
+	if err := db.GetContext(ctx, &tk, q, user_id); err != nil {
+		// Normally we would return ErrNotFound in this scenario but we do not want
+		// to leak to an unauthenticated users which emails are in the system.
+		if err == sql.ErrNoRows {
+			return false, ErrNotFound
+		}
+
+		return false, errors.Wrap(err, "selecting single token")
+	}
+
+	if &tk == nil {
+		return true, nil
+	}
+
+	return true, nil
 }

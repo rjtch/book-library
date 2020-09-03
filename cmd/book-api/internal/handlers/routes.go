@@ -27,7 +27,7 @@ func API(build string, shutdown chan os.Signal, log *log.Logger, db *sqlx.DB, au
 
 	// Register users management and authentication endpoints.
 	u := User{
-		db:            db,
+		Db:            db,
 		authenticator: authenticator,
 	}
 
@@ -36,10 +36,12 @@ func API(build string, shutdown chan os.Signal, log *log.Logger, db *sqlx.DB, au
 	app.Handle("GET", "/v1/users/:id", u.Retrieve, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
 	app.Handle("PUT", "/v1/users/:id", u.Update, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
 	app.Handle("DELETE", "/v1/users/:id", u.Delete, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
-	app.Handle("GET", "/v1/users/me", u.RetrieveMe, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
+	app.Handle("GET", "/v1/users/:user-id/me", u.RetrieveMe, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
 
-	// This route is not authenticated
+	// This routes are not authenticated
 	app.Handle("GET", "/v1/users/token", u.TokenAuthenticator)
+	app.Handle("GET", "/v1/users/refresh-token", u.RefreshToken)
+	app.Handle("POST", "/v1/users/:user_id/logout", u.Logout)
 
 	// Register books endpoints.
 	bk := Book{
@@ -65,27 +67,12 @@ func API(build string, shutdown chan os.Signal, log *log.Logger, db *sqlx.DB, au
 	l := Loan{
 		db: db,
 	}
-	app.Handle("GET", "/v1/loans", l.List, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
-	app.Handle("POST", "/v1/loans", l.Create, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
-	app.Handle("PUT", "/v1/loans/:id", l.Update, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
-	app.Handle("DELETE", "/v1/loans/:id", l.Delete, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
-	app.Handle("GET", "/v1/loans/:id", l.Retrieve, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
+	app.Handle("GET", "/v1/user/:user_id/loans", l.List, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
+	app.Handle("POST", "/v1/user/:user_id/loans", l.Create, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
+	app.Handle("PUT", "/v1/user/:user_id/loans/:id", l.Update, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
+	app.Handle("DELETE", "/v1/user/:user_id/loans/:id", l.Delete, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
+	app.Handle("GET", "/v1/user/:user_id/loans/:id", l.Retrieve, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
 
-	// statikFS, err := fs.New()
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// staticServer := http.FileServer(statikFS)
-	// sh := http.StripPrefix("/swaggerui/", staticServer)
-	// app.Handle("GET", "/swaggerui/", web.Handler(sh))
 	return app
 }
 
-// CreateRepoReq contains request data for create repo API
-type CreateRepoReq struct {
-	// Name of the repository
-	Name string `json:"name"`
-	// Public defines whether created repository should be public or not
-	Public bool `json:"public"`
-}

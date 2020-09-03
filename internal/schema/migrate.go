@@ -90,15 +90,18 @@ CREATE TABLE loans (
 	PRIMARY KEY (loan_id),
 
 	FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE
-);
-
+);`,
+	}, {
+		Version:     5,
+		Description: "Add session-cookies",
+		Script: `
 CREATE TABLE sessions (
-	token TEXT PRIMARY KEY,
+    user_id UUID ,
+	token TEXT,
 	data BYTEA NOT NULL,
-	expiry TIMESTAMPTZ NOT NULL
-);
+	expiry TIMESTAMP NOT NULL,
 
-    CREATE INDEX sessions_expiry_idx ON sessions (expiry);
-`,
+	FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);`,
 	},
 }

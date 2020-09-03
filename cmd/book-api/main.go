@@ -64,8 +64,8 @@ func run() error {
 		}
 		Auth struct {
 			KeyID          string `conf:"default:1"`
-			PrivateKeyFile string `conf:"default:/app-library/private.pem"`
-// 			PrivateKeyFile string `conf:"default:private.pem"`
+//			PrivateKeyFile string `conf:"default:/app-library/private.pem"`
+ 			PrivateKeyFile string `conf:"default:private.pem"`
 			Algorithm string `conf:"default:RS256"`
 		}
 		Zipkin struct {
@@ -218,6 +218,7 @@ func run() error {
 		return errors.Wrap(err, "server error")
 
 	case sig := <-shutdown:
+
 		log.Printf("main : %v : Start shutdown", sig)
 
 		// Give outstanding requests a deadline for completion.

@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="1ae3a7b8-c077-4cca-9834-e139cbf8b86c" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ef3f1d0f-87d1-42d5-9e05-067e0f6f825a.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/ef3f1d0f-87d1-42d5-9e05-067e0f6f825a.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ef3f1d0f-87d1-42d5-9e05-067e0f6f825a/storage_v2/_src_/database/postgres.edMnLQ/schema/information_schema.FNRwLQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/ef3f1d0f-87d1-42d5-9e05-067e0f6f825a/storage_v2/_src_/database/postgres.edMnLQ/schema/information_schema.FNRwLQ.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ef3f1d0f-87d1-42d5-9e05-067e0f6f825a/storage_v2/_src_/database/postgres.edMnLQ/schema/pg_catalog.0S1ZNQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/ef3f1d0f-87d1-42d5-9e05-067e0f6f825a/storage_v2/_src_/database/postgres.edMnLQ/schema/pg_catalog.0S1ZNQ.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ef3f1d0f-87d1-42d5-9e05-067e0f6f825a/storage_v2/_src_/database/postgres.edMnLQ/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/ef3f1d0f-87d1-42d5-9e05-067e0f6f825a/storage_v2/_src_/database/postgres.edMnLQ/schema/public.abK9xQ.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/book-library-ui/src/app/common/services/interceptor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/book-library-ui/src/app/common/services/interceptor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/book-api/internal/handlers/routes.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/book-api/internal/handlers/routes.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/book-api/internal/handlers/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/book-api/internal/handlers/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/book-api/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/book-api/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/mid/auth.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/mid/auth.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/users/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/users/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/private.pem" beforeDir="false" afterPath="$PROJECT_DIR$/private.pem" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" path="/usr/local/Cellar/go/1.13.4/libexec" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GoDepProject">
+    <integration-enabled>true</integration-enabled>
+    <exec-path>/usr/local/bin/dep</exec-path>
+  </component>
+  <component name="GoLibraries">
+    <option name="indexEntireGoPath" value="false" />
+  </component>
+  <component name="ProjectId" id="1XoaO62SWeg6MmChTpZME3KGxvZ" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="DatabaseDriversLRU" value="postgresql" />
+    <property name="DefaultGoTemplateProperty" value="Go File" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="go.sdk.automatically.set" value="true" />
+    <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
+    <property name="go.vendoring.notification.had.been.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/../service/cmd/sales-api/internal/handlers/user.go" />
+    <property name="two.files.diff.last.used.folder" value="$PROJECT_DIR$/../service/internal/user" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/cmd/book-api" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/builds" />
+      <recent name="$PROJECT_DIR$/books" />
+      <recent name="$PROJECT_DIR$/metrics" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Go Build.go build github.com/book-library/cmd/book-api">
+    <configuration name="go build github.com/book-library/cmd/book-api" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="book-library" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <filePath value="$PROJECT_DIR$/cmd/book-api/main.go" />
+      <package value="github.com/book-library/cmd/book-api" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build tests.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="book-library" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/internal/tests/tests.go" />
+      <package value="github.com/book-library" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestBooks/postBook400 in github.com/book-library/cmd/book-api/internal/tests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="book-library" />
+      <working_directory value="$PROJECT_DIR$/cmd/book-api/internal/tests" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/book-library/cmd/book-api/internal/tests" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestBooks$/^postBook400$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestUsers in github.com/book-library/cmd/book-api/internal/tests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="book-library" />
+      <working_directory value="$PROJECT_DIR$/cmd/book-api/internal/tests" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/book-library/cmd/book-api/internal/tests" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestUsers$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestUsers/getToken401 in github.com/book-library/cmd/book-api/internal/tests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="book-library" />
+      <working_directory value="$PROJECT_DIR$/cmd/book-api/internal/tests" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/book-library/cmd/book-api/internal/tests" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestUsers$/^getToken401$" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Go Test.TestBooks/postBook400 in github.com/book-library/cmd/book-api/internal/tests" />
+      <item itemvalue="Go Test.TestUsers in github.com/book-library/cmd/book-api/internal/tests" />
+      <item itemvalue="Go Test.TestUsers/getToken401 in github.com/book-library/cmd/book-api/internal/tests" />
+      <item itemvalue="Go Build.go build tests.go" />
+      <item itemvalue="Go Build.go build github.com/book-library/cmd/book-api" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Build.go build github.com/book-library/cmd/book-api" />
+        <item itemvalue="Go Build.go build tests.go" />
+        <item itemvalue="Go Test.TestUsers/getToken401 in github.com/book-library/cmd/book-api/internal/tests" />
+        <item itemvalue="Go Test.TestUsers in github.com/book-library/cmd/book-api/internal/tests" />
+        <item itemvalue="Go Test.TestBooks/postBook400 in github.com/book-library/cmd/book-api/internal/tests" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="Makefile" />
+  </component>
+  <component name="VgoProject">
+    <integration-enabled>true</integration-enabled>
+    <environment>
+      <map>
+        <entry key="GOPROXY" value="direct" />
+      </map>
+    </environment>
+    <proxy>direct</proxy>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="727" y="1415" key="#Go_Linter" timestamp="1590861021199">
+      <screen x="237" y="1103" width="1440" height="877" />
+    </state>
+    <state x="727" y="1415" key="#Go_Linter/0.23.1920.1012/237.1103.1440.877@237.1103.1440.877" timestamp="1590861021199" />
+    <state x="110" y="44" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1598134675736">
+      <screen x="0" y="23" width="1440" height="833" />
+    </state>
+    <state x="110" y="44" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.833@0.23.1440.833" timestamp="1598134675736" />
+    <state x="347" y="1125" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1920.1012/237.1103.1440.877@237.1103.1440.877" timestamp="1590862090425" />
+    <state x="147" y="50" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1920.1057/237.1103.1440.833@0.23.1920.1057" timestamp="1596727842558" />
+    <state x="775" y="1238" key="#com.intellij.ide.macro.MacrosDialog" timestamp="1590862086291">
+      <screen x="237" y="1103" width="1440" height="877" />
+    </state>
+    <state x="775" y="1238" key="#com.intellij.ide.macro.MacrosDialog/0.23.1920.1012/237.1103.1440.877@237.1103.1440.877" timestamp="1590862086291" />
+    <state x="408" y="182" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1598378241170">
+      <screen x="0" y="23" width="1440" height="833" />
+    </state>
+    <state x="408" y="182" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.23.1440.833@0.23.1440.833" timestamp="1598378241170" />
+    <state x="595" y="172" key="#go_build_tests.go" timestamp="1599159798932">
+      <screen x="0" y="23" width="1920" height="1057" />
+    </state>
+    <state x="595" y="172" key="#go_build_tests.go/0.23.1920.1057/138.1103.1680.973@0.23.1920.1057" timestamp="1599159798932" />
+    <state x="100" y="123" width="1240" height="633" key="DiffContextDialog" timestamp="1597499002458">
+      <screen x="0" y="23" width="1440" height="833" />
+    </state>
+    <state x="100" y="123" width="1240" height="633" key="DiffContextDialog/0.23.1440.833@0.23.1440.833" timestamp="1597499002458" />
+    <state x="842" y="1258" key="EnvironmentVariablesDialog" timestamp="1590862023484">
+      <screen x="237" y="1103" width="1440" height="877" />
+    </state>
+    <state x="842" y="1258" key="EnvironmentVariablesDialog/0.23.1920.1012/237.1103.1440.877@237.1103.1440.877" timestamp="1590862023484" />
+    <state width="1725" height="382" key="GridCell.Tab.0.bottom" timestamp="1599161831436">
+      <screen x="0" y="23" width="1920" height="1057" />
+    </state>
+    <state width="1398" height="2" key="GridCell.Tab.0.bottom/0.23.1440.832@0.23.1440.832" timestamp="1590916693966" />
+    <state width="1398" height="253" key="GridCell.Tab.0.bottom/0.23.1440.833@0.23.1440.833" timestamp="1598819123695" />
+    <state width="1398" height="220" key="GridCell.Tab.0.bottom/0.23.1920.1012/237.1103.1440.877@237.1103.1440.877" timestamp="1590862212632" />
+    <state width="1398" height="437" key="GridCell.Tab.0.bottom/0.23.1920.1013/237.1103.1440.877@237.1103.1440.877" timestamp="1599005264347" />
+    <state width="1725" height="382" key="GridCell.Tab.0.bottom/0.23.1920.1057/138.1103.1680.973@0.23.1920.1057" timestamp="1599161831436" />
+    <state width="1725" height="382" key="GridCell.Tab.0.center" timestamp="1599161831436">
+      <screen x="0" y="23" width="1920" height="1057" />
+    </state>
+    <state width="1398" height="2" key="GridCell.Tab.0.center/0.23.1440.832@0.23.1440.832" timestamp="1590916693965" />
+    <state width="1398" height="253" key="GridCell.Tab.0.center/0.23.1440.833@0.23.1440.833" timestamp="1598819123692" />
+    <state width="1398" height="220" key="GridCell.Tab.0.center/0.23.1920.1012/237.1103.1440.877@237.1103.1440.877" timestamp="1590862212631" />
+    <state width="1398" height="437" key="GridCell.Tab.0.center/0.23.1920.1013/237.1103.1440.877@237.1103.1440.877" timestamp="1599005264346" />
+    <state width="1725" height="382" key="GridCell.Tab.0.center/0.23.1920.1057/138.1103.1680.973@0.23.1920.1057" timestamp="1599161831436" />
+    <state width="1725" height="382" key="GridCell.Tab.0.left" timestamp="1599161831435">
+      <screen x="0" y="23" width="1920" height="1057" />
+    </state>
+    <state width="1398" height="2" key="GridCell.Tab.0.left/0.23.1440.832@0.23.1440.832" timestamp="1590916693965" />
+    <state width="1398" height="253" key="GridCell.Tab.0.left/0.23.1440.833@0.23.1440.833" timestamp="1598819123690" />
+    <state width="1398" height="220" key="GridCell.Tab.0.left/0.23.1920.1012/237.1103.1440.877@237.1103.1440.877" timestamp="1590862212631" />
+    <state width="1398" height="437" key="GridCell.Tab.0.left/0.23.1920.1013/237.1103.1440.877@237.1103.1440.877" timestamp="1599005264345" />
+    <state width="1725" height="382" key="GridCell.Tab.0.left/0.23.1920.1057/138.1103.1680.973@0.23.1920.1057" timestamp="1599161831435" />
+    <state width="1725" height="382" key="GridCell.Tab.0.right" timestamp="1599161831436">
+      <screen x="0" y="23" width="1920" height="1057" />
+    </state>
+    <state width="1398" height="2" key="GridCell.Tab.0.right/0.23.1440.832@0.23.1440.832" timestamp="1590916693966" />
+    <state width="1398" height="253" key="GridCell.Tab.0.right/0.23.1440.833@0.23.1440.833" timestamp="1598819123693" />
+    <state width="1398" height="220" key="GridCell.Tab.0.right/0.23.1920.1012/237.1103.1440.877@237.1103.1440.877" timestamp="1590862212632" />
+    <state width="1398" height="437" key="GridCell.Tab.0.right/0.23.1920.1013/237.1103.1440.877@237.1103.1440.877" timestamp="1599005264346" />
+    <state width="1725" height="382" key="GridCell.Tab.0.right/0.23.1920.1057/138.1103.1680.973@0.23.1920.1057" timestamp="1599161831436" />
+    <state width="1725" height="382" key="GridCell.Tab.1.bottom" timestamp="1599161828617">
+      <screen x="0" y="23" width="1920" height="1057" />
+    </state>
+    <state width="1398" height="2" key="GridCell.Tab.1.bottom/0.23.1440.832@0.23.1440.832" timestamp="1590916693966" />
+    <state width="1398" height="197" key="GridCell.Tab.1.bottom/0.23.1440.833@0.23.1440.833" timestamp="1598819123544" />
+    <state width="1398" height="2" key="GridCell.Tab.1.bottom/0.23.1920.1013/237.1103.1440.877@237.1103.1440.877" timestamp="1599005168058" />
+    <state width="1725" height="382" key="GridCell.Tab.1.bottom/0.23.1920.1057/138.1103.1680.973@0.23.1920.1057" timestamp="1599161828617" />
+    <state width="1725" height="382" key="GridCell.Tab.1.center" timestamp="1599161828616">
+      <screen x="0" y="23" width="1920" height="1057" />
+    </state>
+    <state width="1398" height="2" key="GridCell.Tab.1.center/0.23.1440.832@0.23.1440.832" timestamp="1590916693966" />
+    <state width="1398" height="197" key="GridCell.Tab.1.center/0.23.1440.833@0.23.1440.833" timestamp="1598819123541" />
+    <state width="1398" height="2" key="GridCell.Tab.1.center/0.23.1920.1013/237.1103.1440.877@237.1103.1440.877" timestamp="1599005168057" />
+    <state width="1725" height="382" key="GridCell.Tab.1.center/0.23.1920.1057/138.1103.1680.973@0.23.1920.1057" timestamp="1599161828616" />
+    <state width="1725" height="382" key="GridCell.Tab.1.left" timestamp="1599161828615">
+      <screen x="0" y="23" width="1920" height="1057" />
+    </state>
+    <state width="1398" height="2" key="GridCell.Tab.1.left/0.23.1440.832@0.23.1440.832" timestamp="1590916693966" />
+    <state width="1398" height="197" key="GridCell.Tab.1.left/0.23.1440.833@0.23.1440.833" timestamp="1598819123540" />
+    <state width="1398" height="2" key="GridCell.Tab.1.left/0.23.1920.1013/237.1103.1440.877@237.1103.1440.877" timestamp="1599005168057" />
+    <state width="1725" height="382" key="GridCell.Tab.1.left/0.23.1920.1057/138.1103.1680.973@0.23.1920.1057" timestamp="1599161828615" />
+    <state width="1725" height="382" key="GridCell.Tab.1.right" timestamp="1599161828616">
+      <screen x="0" y="23" width="1920" height="1057" />
+    </state>
+    <state width="1398" height="2" key="GridCell.Tab.1.right/0.23.1440.832@0.23.1440.832" timestamp="1590916693966" />
+    <state width="1398" height="197" key="GridCell.Tab.1.right/0.23.1440.833@0.23.1440.833" timestamp="1598819123542" />
+    <state width="1398" height="2" key="GridCell.Tab.1.right/0.23.1920.1013/237.1103.1440.877@237.1103.1440.877" timestamp="1599005168058" />
+    <state width="1725" height="382" key="GridCell.Tab.1.right/0.23.1920.1057/138.1103.1680.973@0.23.1920.1057" timestamp="1599161828616" />
+    <state width="324" height="552" key="HiddenNamespacesPopup" timestamp="1599148483639">
+      <screen x="0" y="23" width="1920" height="1057" />
+    </state>
+    <state width="243" height="435" key="HiddenNamespacesPopup/0.23.1440.833@0.23.1440.833" timestamp="1598562443904" />
+    <state width="324" height="552" key="HiddenNamespacesPopup/0.23.1920.1057/138.1103.1680.973@0.23.1920.1057" timestamp="1599148483639" />
+    <state width="324" height="551" key="HiddenNamespacesPopup/0.23.1920.1057/237.1103.1440.833@0.23.1920.1057" timestamp="1596727849332" />
+    <state x="458" y="1161" key="SettingsEditor" timestamp="1590861005728">
+      <screen x="237" y="1103" width="1440" height="877" />
+    </state>
+    <state x="458" y="1161" key="SettingsEditor/0.23.1920.1012/237.1103.1440.877@237.1103.1440.877" timestamp="1590861005728" />
+    <state x="677" y="451" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1599156835440">
+      <screen x="0" y="23" width="1920" height="1057" />
+    </state>
+    <state x="508" y="360" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.23.1440.832@0.23.1440.832" timestamp="1590872260189" />
+    <state x="677" y="451" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.23.1920.1057/138.1103.1680.973@0.23.1920.1057" timestamp="1599156835440" />
+    <state x="421" y="28" width="598" height="822" key="find.popup" timestamp="1597497349929">
+      <screen x="0" y="23" width="1440" height="833" />
+    </state>
+    <state x="421" y="28" width="598" height="822" key="find.popup/0.23.1440.833@0.23.1440.833" timestamp="1597497349929" />
+    <state x="468" y="159" key="git4idea.branch.GitSmartOperationDialog" timestamp="1597502669362">
+      <screen x="0" y="23" width="1440" height="833" />
+    </state>
+    <state x="468" y="159" key="git4idea.branch.GitSmartOperationDialog/0.23.1440.833@0.23.1440.833" timestamp="1597502669362" />
+    <state x="513" y="219" width="894" height="863" key="search.everywhere.popup" timestamp="1599161930433">
+      <screen x="0" y="23" width="1920" height="1057" />
+    </state>
+    <state x="385" y="178" width="670" height="679" key="search.everywhere.popup/0.23.1440.832@0.23.1440.832" timestamp="1590877663256" />
+    <state x="622" y="1266" width="670" height="716" key="search.everywhere.popup/0.23.1920.1013/237.1103.1440.877@237.1103.1440.877" timestamp="1599000897581" />
+    <state x="513" y="219" width="894" height="863" key="search.everywhere.popup/0.23.1920.1057/138.1103.1680.973@0.23.1920.1057" timestamp="1599161930433" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cmd/book-api/internal/handlers/loans.go</url>
+          <line>24</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/users/user.go</url>
+          <line>40</line>
+          <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cmd/book-api/internal/handlers/user.go</url>
+          <line>255</line>
+          <option name="timeStamp" value="27" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cmd/book-api/internal/handlers/user.go</url>
+          <line>32</line>
+          <option name="timeStamp" value="28" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/mid/auth.go</url>
+          <line>32</line>
+          <option name="timeStamp" value="29" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="GoTestRunConfiguration">
+        <watch expression="loans" />
+      </configuration>
+    </watches-manager>
+  </component>
+</project>
