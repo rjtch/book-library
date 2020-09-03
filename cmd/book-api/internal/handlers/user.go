@@ -34,6 +34,7 @@ func (u *User) List(ctx context.Context, w http.ResponseWriter, r *http.Request,
 	defer span.End()
 
 	//get user_id from the url
+	//TODO fidn a way to get the user_id
 	id := params["user_id"]
 
 	//check if token does already exist
