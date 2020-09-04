@@ -22,12 +22,12 @@ COPY internal internal
 # Build the admin tool so we can have it in the container. This should change
 # often so do this first.
 WORKDIR /go/src/github.com/book-library/cmd/${PACKAGE_PREFIX}admin
-RUN go build -mod=readonly -ldflags "-X main.build=${VCS_REF}"
+RUN go build -mod=readonly
 
 # Build the service binary. We are doing this last since this will be different
 # every time we run through this process.
 WORKDIR /go/src/github.com/book-library/cmd/${PACKAGE_PREFIX}${PACKAGE_NAME}
-RUN go build -mod=readonly -ldflags "-X main.build=${VCS_REF}"
+RUN go build -mod=readonly
 
 #-------------------------------------------------------------------------------------#
 
@@ -58,7 +58,7 @@ COPY vendor vendor
 # Build the service binary. We are doing this last since this will be different
 # every time we run through this process.
 WORKDIR /go/src/github.com/book-library/cmd/${PACKAGE_PREFIX}${PACKAGE_NAME}
-RUN go build -mod=readonly -ldflags "-X main.build=${VCS_REF}"
+RUN go build -mod=readonly
 
 
 # Run the Go Binary in Alpine.
