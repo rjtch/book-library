@@ -11,7 +11,7 @@ RUN mkdir -p github.com/book-library
 # Copy the module files first and then download the dependencies. If this
 # doesn't change, we won't need to do this again in future builds.
 COPY go.* github.com/book-library/
-WORKDIR /go/src/github.com/book-library
+WORKDIR github.com/book-library
 RUN go mod download
 
 # Copy the source code into the container.
