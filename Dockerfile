@@ -21,12 +21,12 @@ COPY internal internal
 
 # Build the admin tool so we can have it in the container. This should change
 # often so do this first.
-WORKDIR github.com/book-library/cmd/${PACKAGE_PREFIX}admin
+WORKDIR github.com/book-library/cmd/admin
 RUN go build -mod=readonly
 
 # Build the service binary. We are doing this last since this will be different
 # every time we run through this process.
-WORKDIR github.com/book-library/cmd/${PACKAGE_PREFIX}${PACKAGE_NAME}
+WORKDIR github.com/book-library/cmd/book-api
 RUN go build -mod=readonly
 
 #-------------------------------------------------------------------------------------#
@@ -57,7 +57,7 @@ COPY vendor vendor
 
 # Build the service binary. We are doing this last since this will be different
 # every time we run through this process.
-WORKDIR github.com/book-library/cmd/${PACKAGE_PREFIX}${PACKAGE_NAME}
+WORKDIR github.com/book-library/cmd/admin
 RUN go build -mod=readonly
 
 
@@ -67,6 +67,6 @@ ARG BUILD_DATE
 ARG VCS_REF
 ARG PACKAGE_NAME
 ARG PACKAGE_PREFIX
-COPY --from=build_metrics github.com/book-library/cmd/${PACKAGE_PREFIX}${PACKAGE_NAME}/${PACKAGE_NAME} /app-library/main
+COPY --from=build_metrics github.com/book-library/cmd/sidebar/metrics/metrics /app-library/main
 WORKDIR /app-library
 CMD /app-library/main
