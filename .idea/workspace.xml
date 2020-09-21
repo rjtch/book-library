@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1ae3a7b8-c077-4cca-9834-e139cbf8b86c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/scripts/build_go_mod.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/deploy_openshift.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/promote_oc_image_to_dockerhub.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.github/workflows/main.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/main.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/book-library-api/book_library_api.yml" beforeDir="false" afterPath="$PROJECT_DIR$/book-library-api/book_library_api.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
