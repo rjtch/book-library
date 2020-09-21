@@ -1,4 +1,4 @@
-FROM golang:1.13 as build_books-api
+FROM golang:1.13 as build_books_api
 ENV CGO_ENABLED 0
 ARG VCS_REF
 ARG PACKAGE_NAME
@@ -21,13 +21,13 @@ COPY internal internal
 
 # Build the admin tool so we can have it in the container. This should change
 # often so do this first.
-WORKDIR github.com/book-library/cmd/admin
-RUN go build -mod=readonly
+WORKDIR github.com/book-library/cmd/${PACKAGE_PREFIX}admin
+RUN go build -mod=readonly -ldflags "-X main.build=${VCS_REF}"
 
 # Build the service binary. We are doing this last since this will be different
 # every time we run through this process.
-WORKDIR github.com/book-library/cmd/book-api
-RUN go build -mod=readonly
+WORKDIR github.com/book-library/cmd/${PACKAGE_PREFIX}${PACKAGE_NAME}
+RUN go build -mod=readonly -ldflags "-X main.build=${VCS_REF}"
 
 #-------------------------------------------------------------------------------------#
 
@@ -45,7 +45,7 @@ RUN mkdir -p github.com/book-library
 # Copy the module files first and then download the dependencies. If this
 # doesn't change, we won't need to do this again in future builds.
 COPY go.* github.com/book-library/
-WORKDIR github.com/book-library
+WORKDIR /go/src/github.com/book-library
 RUN go mod download
 
 # Copy the source code into the container.
@@ -57,8 +57,8 @@ COPY vendor vendor
 
 # Build the service binary. We are doing this last since this will be different
 # every time we run through this process.
-WORKDIR github.com/book-library/cmd/admin
-RUN go build -mod=readonly
+WORKDIR github.com/book-library/cmd/${PACKAGE_PREFIX}${PACKAGE_NAME}
+RUN go build -mod=readonly -ldflags "-X main.build=${VCS_REF}"
 
 
 # Run the Go Binary in Alpine.
@@ -67,6 +67,6 @@ ARG BUILD_DATE
 ARG VCS_REF
 ARG PACKAGE_NAME
 ARG PACKAGE_PREFIX
-COPY --from=build_metrics github.com/book-library/cmd/sidebar/metrics/metrics /app-library/main
+COPY --from=build_metrics github.com/book-library/cmd/${PACKAGE_PREFIX}${PACKAGE_NAME}/${PACKAGE_NAME} /app-library/main
 WORKDIR /app-library
 CMD /app-library/main

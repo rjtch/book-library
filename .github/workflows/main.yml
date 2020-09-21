@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: test and build
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
@@ -13,19 +13,54 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  lint:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      - name: OpenShift Action
-      uses: redhat-developer/openshift-actions@v1.1
-      with:
-        version: 'latest'
-        openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_URL }}
-        parameters: '{"apitoken": "${{ secrets.API_TOKEN }}", "acceptUntrustedCerts": "true"}'
-        cmd: |
-          'version'
-          'start-build nodejs-ex --follow'
-          'status'
+#    steps:
+#      - name: Git Action
+#          uses: redhat-developer/openshift-actions@v1.1
+#          with:
+#            version: 'latest'
+#            openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_URL }}
+#            parameters: '{"apitoken": "${{ secrets.API_TOKEN }}", "acceptUntrustedCerts": "true"}'
+#            cmd: |
+#              'version'
+#              'start-build nodejs-ex --follow'
+#              'status'
+
+      - name: Install Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.13.x
+
+      - name: Install golangci-lint
+        uses: actions/setup-go@v1
+        run: |
+          go get github.com/golangci/golangci-lint/cmd/golangci-lint
+
+      - name: Run linters
+          run: |
+            export PATH=$PATH:$(go env GOPATH)/bin
+            ./pre-commit
+
+    build:
+      runs-on: ubuntu-latest
+      needs: [lint, test]
+      steps:
+        - name: Install Go
+          uses: actions/setup-go@v1
+          with:
+            go-version: 1.13.x
+        - name: Checkout code
+          uses: actions/checkout@v1
+        - name: build
+          run: |
+            export GO111MODULE=on
+            GOOS=linux   GOARCH=amd64 go build -o bin/ci-test-linux-amd64
+        - name: upload artifacts
+          uses: actions/upload-artifact@master
+          with:
+            name: binaries
+            path: bin/
