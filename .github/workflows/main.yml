@@ -32,17 +32,17 @@ jobs:
 
   build-metrics:
     runs-on: ubuntu-latest
-      steps:
-          - uses: actions/checkout@v2
-            - name: Setup Go
-              uses: actions/setup-go@v2
-              with:
-                go-version: '1.13.0'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.13.0'
 
-            - name: Install dependencies
-              run: |
-                go version
-                go get -u golang.org/x/lint/golint
+      - name: Install dependencies
+        run: |
+          go version
+          go get -u golang.org/x/lint/golint
 
-            - name: Run build
-              run:  make metrics
+      - name: Run build
+        run:  make metrics
