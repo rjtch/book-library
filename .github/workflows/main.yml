@@ -22,5 +22,5 @@ jobs:
         go get -u golang.org/x/lint/golint
 
     - name: Run build
-      run:  make build
+      run:  make all
             make keys
