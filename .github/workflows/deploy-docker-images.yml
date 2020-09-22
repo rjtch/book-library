@@ -4,6 +4,11 @@ on:
     branches:
       - develop
 
+env:
+  PROJECT: book-library
+  DOCKERIMAGE: hergytchuinkou/book-library-kit
+  APPNAME: adorsys.book-library
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -21,3 +26,19 @@ jobs:
         run: |
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/book-library-kit:${{ github.sha }}
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/book-library-kit:latest
+
+  openshift-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: OpenShift Action
+        uses: redhat-developer/openshift-actions@v1.1
+        with:
+          version: 'latest'
+          openshift_server_url: 'openshift-registry.adorsys.de'
+          parameters: '{"apitoken": "${{ secrets.api.token }}", "acceptUntrustedCerts": "true"}'
+          cmd: |
+            oc project ${PROJECT}
+            oc new-build --strategy docker --binary --docker-image ${DOCKERIMAGE} --name ${APPNAME}
+            oc start-build ${APPNAME} --from-dir . --follow
+            oc new-app ${PROJECT}/${APPNAME}:latest
+            oc expose svc/"${APPNAME}"
