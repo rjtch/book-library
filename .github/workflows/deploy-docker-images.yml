@@ -35,7 +35,7 @@ jobs:
         with:
           version: 'latest'
           openshift_server_url: 'openshift-registry.adorsys.de'
-          parameters: '{"apitoken": "${{ secrets.api.token }}", "acceptUntrustedCerts": "true"}'
+          parameters: '{"apitoken": "${{ secrets.api-token }}", "acceptUntrustedCerts": "true"}'
           cmd: |
             oc project ${PROJECT}
             oc new-build --strategy docker --binary --docker-image ${DOCKERIMAGE} --name ${APPNAME}
