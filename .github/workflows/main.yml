@@ -24,3 +24,4 @@ jobs:
     - name: Run build
       run:  make all
             make keys
+            make test
