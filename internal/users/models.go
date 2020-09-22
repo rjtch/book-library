@@ -42,8 +42,9 @@ type UpdateUser struct {
 
 // Session contains information needed to manage session-cookie/token.
 type Session struct {
-	Token  string `db:"token" json:"token"`
-	Data   []byte `db:"data" json:"data"`
+	Id     string    `db:"user_id" json:"user_id"`
+	Token  string    `db:"token" json:"token"`
+	Data   []byte    `db:"data" json:"data"`
 	Expiry time.Time `db:"expiry" json:"expiry"`
 }
 

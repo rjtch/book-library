@@ -2,14 +2,18 @@ package mid
 
 import (
 	"context"
-	"net/http"
-	"strings"
-
 	"github.com/book-library/internal/platform/auth"
-	"go.opencensus.io/trace"
-
 	"github.com/book-library/internal/platform/web"
+	"github.com/book-library/internal/users"
 	errors "github.com/pkg/errors"
+	"go.opencensus.io/trace"
+	"net/http"
+)
+
+const (
+	// default names for cookies and headers
+	defaultJWTCookieName  = "SESSION-COOKIE"
+	defaultXSRFCookieName = "XSRF-TOKEN"
 )
 
 //ErrForbidden is returned when a users doesn't have the required roles for doing an action
@@ -29,15 +33,29 @@ func Authentication(authenticator *auth.Authenticator) web.Middleware {
 			ctx, span := trace.StartSpan(ctx, "internal.mid.Authentication")
 			defer span.End()
 
-			parts := strings.Split(r.Header.Get("Authorization"), " ")
-			if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
-				err := errors.New("expected authorization header format: Bearer <token>")
-				return web.NewRequestError(err, http.StatusUnauthorized)
+			cookie, err := r.Cookie(defaultJWTCookieName)
+			if err != nil {
+				err := errors.New("expected session-cookie")
+				return web.NewRequestError(err, http.StatusBadRequest)
 			}
 
-			claims, err := authenticator.ParseClaims(parts[1])
+			//check if validity of the claim
+			claims, err := authenticator.ParseClaims(cookie.Value)
 			if err != nil {
-				return web.NewRequestError(err, http.StatusUnauthorized)
+				return web.NewRequestError(err, http.StatusBadRequest)
+			}
+
+			//compare the claim from the cookie with to one from the context
+			//if !reflect.DeepEqual(clms, claims) {
+			//	err := errors.New("error when parsing the claim")
+			//	return web.NewRequestError(err, http.StatusForbidden)
+			//}
+
+			//TODO add xrsf token for better security
+
+			// check if session-cookie is expired or if user has already logged out
+			if users.IsExpired(claims) {
+				err = errors.New("expired session-cookie")
 			}
 
 			//Add claims to context so that they can be checked later on

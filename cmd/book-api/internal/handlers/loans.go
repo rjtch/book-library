@@ -25,6 +25,15 @@ func (l *Loan) List(ctx context.Context, w http.ResponseWriter, r *http.Request,
 	ctx, span := trace.StartSpan(ctx, "handlers.loans.List")
 	defer span.End()
 
+	//get user_id from the url
+	id := params["user_id"]
+
+	//check if token does already exist
+	ok, err := users.IsLoggedOut(ctx, l.db, id)
+	if !ok {
+		return web.NewRequestError(err, http.StatusUnauthorized)
+	}
+
 	allLoans := []loans.Loan{};
 
 	claims, ok := ctx.Value(auth.Key).(auth.Claims)
@@ -54,6 +63,15 @@ func (l *Loan) Retrieve(ctx context.Context, w http.ResponseWriter, r *http.Requ
 	ctx, span := trace.StartSpan(ctx, "handlers.loans.Retrieve")
 	defer span.End()
 
+	//get user_id from the url
+	id := params["user_id"]
+
+	//check if token does already exist
+	ok, err := users.IsLoggedOut(ctx, l.db, id)
+	if !ok {
+		return web.NewRequestError(err, http.StatusUnauthorized)
+	}
+
 	claims, ok := ctx.Value(auth.Key).(auth.Claims)
 	if !ok {
 		return errors.New("claims missing from context")
@@ -79,6 +97,15 @@ func (l *Loan) Retrieve(ctx context.Context, w http.ResponseWriter, r *http.Requ
 func (l *Loan) Create(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.loans.Create")
 	defer span.End()
+
+	//get user_id from the url
+	id := params["user_id"]
+
+	//check if token does already exist
+	ok, err := users.IsLoggedOut(ctx, l.db, id)
+	if !ok {
+		return web.NewRequestError(err, http.StatusUnauthorized)
+	}
 
 	//we retreive hier as claim the Value(state of each request) because we are in this case creating a new users
 	//so he doesn't have any claim and role yet and have to be created first thats why a keyValue from the web
@@ -125,6 +152,15 @@ func (l *Loan) Update(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	ctx, span := trace.StartSpan(ctx, "handlers.loans.Update")
 	defer span.End()
 
+	//get user_id from the url
+	id := params["user_id"]
+
+	//check if token does already exist
+	ok, err := users.IsLoggedOut(ctx, l.db, id)
+	if !ok {
+		return web.NewRequestError(err, http.StatusUnauthorized)
+	}
+
 	v, ok := ctx.Value(web.KeyValues).(*web.Values)
 	if !ok {
 		return errors.New("web value missing from context")
@@ -167,6 +203,15 @@ func (l *Loan) Delete(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	ctx, span := trace.StartSpan(ctx, "handlers.loans.Delete")
 	defer span.End()
 
+	//get user_id from the url
+	id := params["user_id"]
+
+	//check if token does already exist
+	ok, err := users.IsLoggedOut(ctx, l.db, id)
+	if !ok {
+		return web.NewRequestError(err, http.StatusUnauthorized)
+	}
+
 	v, ok := ctx.Value(web.KeyValues).(*web.Values)
 	if !ok {
 		return errors.New("web value missing from context")
@@ -177,7 +222,7 @@ func (l *Loan) Delete(ctx context.Context, w http.ResponseWriter, r *http.Reques
 		return errors.New("claims missing from context")
 	}
 
-	err := loans.EndUpALoan(ctx, claims, v.Now, params["id"], l.db)
+	err = loans.EndUpALoan(ctx, claims, v.Now, params["id"], l.db)
 	if err != nil {
 		switch err {
 		case users.ErrForbidden:

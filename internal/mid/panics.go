@@ -37,7 +37,7 @@ func Panics(log *log.Logger) web.Middleware {
 			}()
 
 			//Call the next Handler and set its return value in the err variable.
-			return after(ctx, w, r, param)
+ 			return after(ctx, w, r, param)
 		}
 		return h
 	}
