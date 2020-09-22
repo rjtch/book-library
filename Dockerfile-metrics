@@ -17,7 +17,7 @@ RUN go mod download
 
 # Copy the source code into the container.
 WORKDIR /book-library
-COPY ..
+COPY . .
 
 # Build the service binary. We are doing this last since this will be different
 # every time we run through this process.
