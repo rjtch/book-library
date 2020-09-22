@@ -1,21 +1,23 @@
 name: publish to registry
 on:
-  pull_request:
+  push:
     branches:
       - develop
 
 jobs:
- publish:
-  - uses: actions/checkout@v1
-  - name: Docker login
-    run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
-  - name: Build
-    run: make all
-  - name: Tags
-    run: |
-     docker tag book-library-kit ${{ secrets.DOCKERHUB_USERNAME }}/book-library-kit:${{ github.sha }}
-     docker tag book-library-kit ${{ secrets.DOCKERHUB_USERNAME }}/book-library-kit:latest
-  - name: Push
-    run: |
-     docker push ${{ secrets.DOCKERHUB_USERNAME }}/book-library-kit:${{ github.sha }}
-     docker push ${{ secrets.DOCKER_USERNAME }}/book-library-kit:latest
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Docker login
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Build
+        run: make all
+      - name: Tags
+        run: |
+          docker tag book-library-kit ${{ secrets.DOCKERHUB_USERNAME }}/book-library-kit:${{ github.sha }}
+          docker tag book-library-kit ${{ secrets.DOCKERHUB_USERNAME }}/book-library-kit:latest
+      - name: Push
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/book-library-kit:${{ github.sha }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/book-library-kit:latest
