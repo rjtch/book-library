@@ -6,26 +6,45 @@ on:
 
 env:
   PROJECT: book-library
-  DOCKERIMAGE: hergytchuinkou/book-library-kit
+  DOCKERIMAGE-BOOK-API: hergytchuinkou/book-api-kit
+  DOCKERIMAGE-METRICS: hergytchuinkou/book-metrics-kit
+
   APPNAME: adorsys.book-library
 
 jobs:
-  publish:
+  publish-book-api:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - name: Docker login
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Build
-        run: make all
+        run: make books-api
       - name: Tags
         run: |
-          docker tag book-library-kit ${{ secrets.DOCKERHUB_USERNAME }}/book-library-kit:${{ github.sha }}
-          docker tag book-library-kit ${{ secrets.DOCKERHUB_USERNAME }}/book-library-kit:latest
+          docker tag book-api-kit ${{ secrets.DOCKERHUB_USERNAME }}/book-api-kit:${{ github.sha }}
+          docker tag book-api-kit ${{ secrets.DOCKERHUB_USERNAME }}/book-api-kit:latest
       - name: Push
         run: |
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/book-library-kit:${{ github.sha }}
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/book-library-kit:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/book-api-kit:${{ github.sha }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/book-api-kit:latest
+
+  publish-metrics:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Docker login
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Build
+        run: make books-api
+      - name: Tags
+        run: |
+          docker tag book-metrics-kit ${{ secrets.DOCKERHUB_USERNAME }}/book-metrics-kit:${{ github.sha }}
+          docker tag book-metrics-kit ${{ secrets.DOCKERHUB_USERNAME }}/book-metrics-kit:latest
+      - name: Push
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/book-metrics-kit:${{ github.sha }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/book-metrics-kit:latest
 
   openshift-deploy:
     runs-on: ubuntu-latest
@@ -38,7 +57,9 @@ jobs:
           parameters: '{"apitoken": "${{ secrets.api-token }}", "acceptUntrustedCerts": "true"}'
           cmd: |
             oc project ${PROJECT}
-            oc new-build --strategy docker --binary --docker-image ${DOCKERIMAGE} --name ${APPNAME}
+            oc new-build --strategy docker --binary --docker-image ${DOCKERIMAGE-BOOK-API} --name ${APPNAME}
+            oc new-build --strategy docker --binary --docker-image ${DOCKERIMAGE-METRICS} --name ${APPNAME}
+
             oc start-build ${APPNAME} --from-dir . --follow
-            oc new-app ${PROJECT}/${APPNAME}:latest
+            oc new-app ${APPNAME}:latest
             oc expose svc/"${APPNAME}"
