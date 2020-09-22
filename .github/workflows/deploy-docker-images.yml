@@ -19,4 +19,5 @@ jobs:
           docker tag book-library-kit ${{ secrets.DOCKERHUB_USERNAME }}/book-library-kit:latest
       - name: Push
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/book-library-kit:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/book-library-kit:${{ github.sha }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/book-library-kit:latest
