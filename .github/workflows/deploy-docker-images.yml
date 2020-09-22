@@ -36,7 +36,7 @@ jobs:
       - name: Docker login
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Build
-        run: make books-api
+        run: make metrics
       - name: Tags
         run: |
           docker tag book-metrics-kit ${{ secrets.DOCKERHUB_USERNAME }}/book-metrics-kit:${{ github.sha }}
