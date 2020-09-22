@@ -1,66 +1,31 @@
-# This is a basic workflow to help you get started with Actions
-
 name: test and build
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
 on:
   pull_request:
     branches:
       - develop
       - master
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install Go
-        uses: actions/setup-go@v1
-        with:
-          go-version: 1.13.x
-      - name: Checkout code
-        uses: actions/checkout@v1
-      - name: Install golangci-lint
-        run: |
-          go get github.com/golangci/golangci-lint/cmd/golangci-lint
-      - name: Run linters
-        run: |
-          export PATH=$PATH:$(go env GOPATH)/bin
-          ./pre-commit
-
-  test:
-    strategy:
-      matrix:
-        go-version: [1.12.x, 1.13.x]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install Go
-        if: success()
-        uses: actions/setup-go@v1
-        with:
-          go-version: ${{ matrix.go-version }}
-      - name: Checkout code
-        uses: actions/checkout@v1
-      - name: Run tests
-        run: go test -v -covermode=count
-
   build:
     runs-on: ubuntu-latest
-    needs: [lint, test]
     steps:
-      - name: Install Go
-        uses: actions/setup-go@v1
-        with:
-          go-version: 1.13.x
-      - name: Checkout code
-        uses: actions/checkout@v1
-      - name: build
-        run: |
-          export GO111MODULE=on
-          GOOS=linux   GOARCH=amd64 go build -o bin/ci-test-linux-amd64
-      - name: upload artifacts
-        uses: actions/upload-artifact@master
-        with:
-          name: binaries
-          path: bin/
+    - uses: actions/checkout@v2
+    - name: Setup Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: '1.13.0'
+
+    - name: Install dependencies
+      run: |
+        go version
+        go get -u golang.org/x/lint/golint
+
+    - name: Run build
+      run:  make build
+            make keys
+
+    - name: Run vet & lint
+      run: |
+        go vet .
+        golint .
