@@ -5,7 +5,7 @@ on:
       - develop
 
 jobs:
-  - uses: mr-smithers-excellent/docker-build-push@v4.0
+  - uses: actions/checkout@v1
   - name: Docker login
     run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
   - name: Build
