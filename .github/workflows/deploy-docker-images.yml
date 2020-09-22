@@ -5,6 +5,7 @@ on:
       - develop
 
 jobs:
+ publish:
   - uses: actions/checkout@v1
   - name: Docker login
     run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
