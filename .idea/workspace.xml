@@ -2,8 +2,23 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1ae3a7b8-c077-4cca-9834-e139cbf8b86c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/docker-publish.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/docker-publish.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/deploy-docker-images.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/deploy-docker-images.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/book-library.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ef3f1d0f-87d1-42d5-9e05-067e0f6f825a.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ef3f1d0f-87d1-42d5-9e05-067e0f6f825a/storage_v2/_src_/database/postgres.edMnLQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ef3f1d0f-87d1-42d5-9e05-067e0f6f825a/storage_v2/_src_/database/postgres.edMnLQ/schema/information_schema.FNRwLQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ef3f1d0f-87d1-42d5-9e05-067e0f6f825a/storage_v2/_src_/database/postgres.edMnLQ/schema/information_schema.FNRwLQ.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ef3f1d0f-87d1-42d5-9e05-067e0f6f825a/storage_v2/_src_/database/postgres.edMnLQ/schema/pg_catalog.0S1ZNQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ef3f1d0f-87d1-42d5-9e05-067e0f6f825a/storage_v2/_src_/database/postgres.edMnLQ/schema/pg_catalog.0S1ZNQ.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ef3f1d0f-87d1-42d5-9e05-067e0f6f825a/storage_v2/_src_/database/postgres.edMnLQ/schema/public.abK9xQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/deploy_openshift.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/deploy_openshift.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,8 +130,8 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Go Build.go build tests.go" />
       <item itemvalue="Go Build.go build github.com/book-library/cmd/book-api" />
+      <item itemvalue="Go Build.go build tests.go" />
       <item itemvalue="Go Test.TestBooks/postBook400 in github.com/book-library/cmd/book-api/internal/tests" />
       <item itemvalue="Go Test.TestUsers in github.com/book-library/cmd/book-api/internal/tests" />
       <item itemvalue="Go Test.TestUsers/getToken401 in github.com/book-library/cmd/book-api/internal/tests" />
@@ -161,10 +176,11 @@
       <screen x="0" y="23" width="1920" height="1057" />
     </state>
     <state x="595" y="172" key="#go_build_tests.go/0.23.1920.1057/138.1103.1680.973@0.23.1920.1057" timestamp="1599159798932" />
-    <state x="100" y="123" width="1240" height="633" key="DiffContextDialog" timestamp="1597499002458">
-      <screen x="0" y="23" width="1440" height="833" />
+    <state x="133" y="150" width="1654" height="804" key="DiffContextDialog" timestamp="1600785378223">
+      <screen x="0" y="23" width="1920" height="1057" />
     </state>
     <state x="100" y="123" width="1240" height="633" key="DiffContextDialog/0.23.1440.833@0.23.1440.833" timestamp="1597499002458" />
+    <state x="133" y="150" width="1654" height="804" key="DiffContextDialog/0.23.1920.1057/138.1103.1680.981@0.23.1920.1057" timestamp="1600785378223" />
     <state width="1725" height="349" key="GridCell.Tab.0.bottom" timestamp="1599204933764">
       <screen x="0" y="23" width="1920" height="1057" />
     </state>
@@ -232,11 +248,12 @@
       <screen x="0" y="23" width="1440" height="833" />
     </state>
     <state x="468" y="159" key="git4idea.branch.GitSmartOperationDialog/0.23.1440.833@0.23.1440.833" timestamp="1597502669362" />
-    <state x="513" y="219" width="894" height="863" key="search.everywhere.popup" timestamp="1599161930433">
+    <state x="513" y="219" width="894" height="863" key="search.everywhere.popup" timestamp="1600783630706">
       <screen x="0" y="23" width="1920" height="1057" />
     </state>
     <state x="622" y="1266" width="670" height="716" key="search.everywhere.popup/0.23.1920.1013/237.1103.1440.877@237.1103.1440.877" timestamp="1599000897581" />
     <state x="513" y="219" width="894" height="863" key="search.everywhere.popup/0.23.1920.1057/138.1103.1680.973@0.23.1920.1057" timestamp="1599161930433" />
+    <state x="513" y="219" width="894" height="863" key="search.everywhere.popup/0.23.1920.1057/138.1103.1680.981@0.23.1920.1057" timestamp="1600783630706" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
