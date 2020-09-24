@@ -10,7 +10,7 @@ env:
   DOCKERIMAGE-METRICS: hergytchuinkou/book-metrics-kit
   REGISTRY_DOMAIN: openshift-registry.adorsys.de
 
-  APPNAME: adorsys.book-library
+  APPNAME: book-library
 
 jobs:
   publish-book-api:
@@ -54,7 +54,7 @@ jobs:
         uses: redhat-developer/openshift-actions@v1.1
         with:
           version: 'latest'
-          openshift_server_url: '{"openshift_server_url": "${{secrets.OPENSHIFT_SERVER_URL}}"}'
+          openshift_server_url: ${{secrets.OPENSHIFT_SERVER_URL}}
           parameters: '{"apitoken": "${{ secrets.API_TOKEN }}", "acceptUntrustedCerts": "true"}'
           cmd: |
             oc project ${PROJECT}
