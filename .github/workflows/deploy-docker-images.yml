@@ -8,6 +8,7 @@ env:
   PROJECT: book-library
   DOCKERIMAGE-BOOK-API: hergytchuinkou/book-api-kit
   DOCKERIMAGE-METRICS: hergytchuinkou/book-metrics-kit
+  REGISTRY_DOMAIN: openshift-registry.adorsys.de
 
   APPNAME: adorsys.book-library
 
@@ -53,8 +54,8 @@ jobs:
         uses: redhat-developer/openshift-actions@v1.1
         with:
           version: 'latest'
-          openshift_server_url: 'openshift-registry.adorsys.de'
-          parameters: '{"apitoken": "${{ secrets.API_TOKEN }}", "acceptUntrustedCerts": "true"}'
+          openshift_server_url: 'openshift-registry.adorsys.de/book-library'
+          parameters: '{"apitoken": "${{ secrets.OPENSHIFT_TOKEN }}", "acceptUntrustedCerts": "true"}'
           cmd: |
             oc project ${PROJECT}
             oc new-build --strategy docker --binary --docker-image ${DOCKERIMAGE-BOOK-API} --name ${APPNAME}
