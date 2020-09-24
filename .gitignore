@@ -4,6 +4,7 @@ dep.tree
 
 .idea
 .vscode
+/.vscode
 
 /.idea
 .project
