@@ -2,8 +2,8 @@
 .DS_Store
 dep.tree
 
-.idea/
 .idea
-
-.vscode/
 .vscode
+/.vscode
+
+/.idea

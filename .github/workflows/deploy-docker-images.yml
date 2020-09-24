@@ -54,8 +54,8 @@ jobs:
         uses: redhat-developer/openshift-actions@v1.1
         with:
           version: 'latest'
-          openshift_server_url: 'openshift-registry.adorsys.de/book-library'
-          parameters: '{"apitoken": "${{ secrets.OPENSHIFT_TOKEN }}", "acceptUntrustedCerts": "true"}'
+          openshift_server_url: '{"openshift_server_url": "${{secrets.OPENSHIFT_SERVER_URL}}"}'
+          parameters: '{"apitoken": "${{ secrets.api-token }}", "acceptUntrustedCerts": "true"}'
           cmd: |
             oc project ${PROJECT}
             oc new-build --strategy docker --binary --docker-image ${DOCKERIMAGE-BOOK-API} --name ${APPNAME}
