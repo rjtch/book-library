@@ -3,22 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="1ae3a7b8-c077-4cca-9834-e139cbf8b86c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.github/workflows/deploy-docker-images.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/deploy-docker-images.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/book-library.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ef3f1d0f-87d1-42d5-9e05-067e0f6f825a.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ef3f1d0f-87d1-42d5-9e05-067e0f6f825a/storage_v2/_src_/database/postgres.edMnLQ.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ef3f1d0f-87d1-42d5-9e05-067e0f6f825a/storage_v2/_src_/database/postgres.edMnLQ/schema/information_schema.FNRwLQ.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ef3f1d0f-87d1-42d5-9e05-067e0f6f825a/storage_v2/_src_/database/postgres.edMnLQ/schema/information_schema.FNRwLQ.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ef3f1d0f-87d1-42d5-9e05-067e0f6f825a/storage_v2/_src_/database/postgres.edMnLQ/schema/pg_catalog.0S1ZNQ.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ef3f1d0f-87d1-42d5-9e05-067e0f6f825a/storage_v2/_src_/database/postgres.edMnLQ/schema/pg_catalog.0S1ZNQ.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ef3f1d0f-87d1-42d5-9e05-067e0f6f825a/storage_v2/_src_/database/postgres.edMnLQ/schema/public.abK9xQ.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/deploy_openshift.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/deploy_openshift.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

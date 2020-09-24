@@ -7,3 +7,7 @@ dep.tree
 
 .vscode/
 .vscode
+
+/.idea
+.project
+.classpath
