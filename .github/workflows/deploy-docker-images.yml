@@ -62,9 +62,4 @@ jobs:
           parameters: '{"username": "${{ secrets.USERNAME }}", "password": "${{ secrets.PASSWORD }}", "acceptUntrustedCerts": "true"}'
           cmd: |
             oc project ${PROJECT}
-            oc new-build --strategy docker --binary --docker-image ${DOCKERIMAGE-BOOK-API} --name ${APPNAME}
-            oc new-build --strategy docker --binary --docker-image ${DOCKERIMAGE-METRICS} --name ${APPNAME}
-
-            oc start-build ${APPNAME} --from-dir . --follow
-            oc new-app ${APPNAME}:latest
             oc expose svc/"${APPNAME}"
