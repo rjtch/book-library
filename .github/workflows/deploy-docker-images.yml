@@ -19,8 +19,6 @@ jobs:
       - uses: actions/checkout@v1
       - name: Docker login
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
-      - name: Build
-        run: make books-api
       - name: Tags
         run: |
           docker tag book-api-kit ${{ secrets.DOCKERHUB_USERNAME }}/book-api-kit:${{ github.sha }}
@@ -36,8 +34,6 @@ jobs:
       - uses: actions/checkout@v1
       - name: Docker login
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
-      - name: Build
-        run: make metrics
       - name: Tags
         run: |
           docker tag book-metrics-kit ${{ secrets.DOCKERHUB_USERNAME }}/book-metrics-kit:${{ github.sha }}
@@ -55,10 +51,8 @@ jobs:
         with:
           version: 'latest'
           openshift_server_url: ${{secrets.OPENSHIFT_SERVER_URL}}
-#          parameters: '{"username": "${{ secrets.OPENSHIFT_USERNAME }}",password": "${{ secrets.OPENSHIFT_PASSWORD }}",
-#          "acceptUntrustedCerts": "true"}'
+          parameters: '{"apitoken": "${{ secrets.API_TOKEN }}", "acceptUntrustedCerts": "true"}'
           cmd: |
-            oc login --username=${{secrets.OPENSHIFT_USERNAME}} --password=${{ secrets.OPENSHIFT_PASSWORD }}
             oc project ${PROJECT}
             oc new-build --strategy docker --binary --docker-image ${DOCKERIMAGE-BOOK-API} --name ${APPNAME}
             oc new-build --strategy docker --binary --docker-image ${DOCKERIMAGE-METRICS} --name ${APPNAME}
