@@ -63,5 +63,5 @@ jobs:
           cmd: |
             oc project ${PROJECT}
             oc import-image  hergytchuinkou/book-api-kit:latest
-            oc import-image  hergytchuinkou/book-metrics-kit
+            oc import-image  hergytchuinkou/book-metrics-kit:latest
             
