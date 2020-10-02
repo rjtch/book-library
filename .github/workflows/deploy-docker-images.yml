@@ -62,4 +62,6 @@ jobs:
           parameters: '{"username": "${{ secrets.USERNAME }}", "password": "${{ secrets.PASSWORD }}", "acceptUntrustedCerts": "true"}'
           cmd: |
             oc project ${PROJECT}
-            oc expose svc/"${APPNAME}"
+            oc import-image $DOCKERIMAGE-BOOK-API:latest
+            oc import-image $DOCKERIMAGE-METRICS:latest
+            
