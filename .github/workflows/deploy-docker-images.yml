@@ -60,6 +60,6 @@ jobs:
           cmd: |
             oc project ${PROJECT}
 
-            oc new-app --confirm --allow-missing-images https://github.com/rjtch/book-library
+            oc new-app --allow-missing-images https://github.com/rjtch/book-library
             
             
