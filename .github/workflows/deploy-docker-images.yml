@@ -61,4 +61,6 @@ jobs:
             oc project ${PROJECT}
             oc import-image   --confirm hergytchuinkou/book-api-kit:latest
             oc import-image   --confirm hergytchuinkou/book-metrics-kit:latest
+            oc run hergytchuinkou/book-api-kit:latest
+            oc run hergytchuinkou/book-metrics-kit:latest
             
