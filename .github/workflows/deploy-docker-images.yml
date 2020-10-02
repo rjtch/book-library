@@ -25,11 +25,9 @@ jobs:
         run: make books-api
       - name: Tags
         run: |
-          docker tag book-api-kit ${{ secrets.DOCKERHUB_USERNAME }}/book-api-kit:${{ github.sha }}
           docker tag book-api-kit ${{ secrets.DOCKERHUB_USERNAME }}/book-api-kit:latest
       - name: Push
         run: |
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/book-api-kit:${{ github.sha }}
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/book-api-kit:latest
 
   publish-metrics:
@@ -44,11 +42,9 @@ jobs:
         run: make metrics
       - name: Tags
         run: |
-          docker tag book-metrics-kit ${{ secrets.DOCKERHUB_USERNAME }}/book-metrics-kit:${{ github.sha }}
           docker tag book-metrics-kit ${{ secrets.DOCKERHUB_USERNAME }}/book-metrics-kit:latest
       - name: Push
         run: |
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/book-metrics-kit:${{ github.sha }}
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/book-metrics-kit:latest
 
   openshift-deploy:
