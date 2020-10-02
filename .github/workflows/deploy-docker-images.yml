@@ -62,6 +62,6 @@ jobs:
           parameters: '{"username": "${{ secrets.USERNAME }}", "password": "${{ secrets.PASSWORD }}", "acceptUntrustedCerts": "true"}'
           cmd: |
             oc project ${PROJECT}
-            oc import-image $DOCKERIMAGE-BOOK-API:latest
-            oc import-image $DOCKERIMAGE-METRICS:latest
+            oc import-image  hergytchuinkou/book-api-kit:latest
+            oc import-image  hergytchuinkou/book-metrics-kit
             
