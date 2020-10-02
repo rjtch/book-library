@@ -63,4 +63,5 @@ jobs:
             oc import-image   --confirm hergytchuinkou/book-metrics-kit:latest
             oc run hergytchuinkou/book-api-kit:latest
             oc run hergytchuinkou/book-metrics-kit:latest
+            oc new-app docker-registry.default.svc:5000/book-library/book-library
             
