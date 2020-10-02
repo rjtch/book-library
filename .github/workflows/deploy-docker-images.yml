@@ -60,6 +60,6 @@ jobs:
           cmd: |
             oc project ${PROJECT}
 
-            oc new-app --allow-missing-images golang~https://github.com/rjtch/book-library
+            oc new-app --strategy=docker https://github.com/rjtch/book-library
             
             
