@@ -60,6 +60,6 @@ jobs:
           cmd: |
             oc project ${PROJECT}
 
-            oc new-app --strategy=source https://github.com/rjtch/book-library --source-secret=API_TOKEN
+            oc new-app -i golang:latest https://github.com/rjtch/book-library --source-secret=API_TOKEN
             
             
