@@ -60,6 +60,12 @@ jobs:
           cmd: |
             oc project ${PROJECT}
 
-            oc new-app -i golang:latest https://github.com/rjtch/book-library --source-secret=API_TOKEN
-            
-            
+            oc import-image  --confirm hergytchuinkou/book-api-kit:latest
+            oc import-image  --confirm hergytchuinkou/book-metrics-kit:latest
+            oc new-app --allow-missing-images openzipkin/zipkin:2.11
+            oc new-app --allow-missing-images postgres:11.1-alpine
+
+#            oc new-app --allow-missing-images docker-registry.default.svc:5000/book-library/book-api-kit
+#            oc new-app --confirm --allow-missing-images docker-registry.default.svc:5000/book-library/book-metrics-kit
+#            oc new-app -i golang:latest https://github.com/rjtch/book-library --source-secret=API_TOKEN
+
