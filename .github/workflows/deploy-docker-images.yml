@@ -5,12 +5,12 @@ on:
       - develop
 
 env:
-  PROJECT: book-library
+  PROJECT: book
   DOCKERIMAGE-BOOK-API: hergytchuinkou/book-api-kit
   DOCKERIMAGE-METRICS: hergytchuinkou/book-metrics-kit
   REGISTRY_DOMAIN: openshift-registry.adorsys.de
 
-  APPNAME: book-library
+  APPNAME: book
 
 jobs:
   publish-book-api:
@@ -66,3 +66,7 @@ jobs:
             oc new-app --allow-missing-images postgres:11.1-alpine
 #            oc new-app --allow-missing-images docker-registry.default.svc:5000/book-library/book-api-kit
 #            oc new-app --confirm --allow-missing-images docker-registry.default.svc:5000/book-library/book-metrics-kit
+#            oc new-app -i golang:latest https://github.com/rjtch/book-library --source-secret=API_TOKEN
+            
+            
+>>>>>>> 42884c52e5d5f5bc102863d77e09b783b59d7f41
