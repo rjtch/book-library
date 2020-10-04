@@ -64,11 +64,7 @@ jobs:
             oc import-image  --confirm hergytchuinkou/book-metrics-kit:latest
             oc import-image  --confirm openzipkin/zipkin:2.11
             oc import-image  --confirm postgres:11.1-alpine
-
-            kubectl run docker-registry.default.svc:5000/book/book-api-kit
-            kubectl run docker-registry.default.svc:5000/book/book-metrics-kit
-            kubectl run postgres:11.1-alpine
-            kubectl run openzipkin/zipkin:2.11
+            oc new-app golang~https://github.com/rjtch/book-library.git
             
 #            oc new-app -i golang:latest https://github.com/rjtch/book-library --source-secret=API_TOKEN
 
