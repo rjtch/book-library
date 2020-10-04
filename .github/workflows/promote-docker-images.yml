@@ -65,10 +65,10 @@ jobs:
             oc import-image  --confirm openzipkin/zipkin:2.11
             oc import-image  --confirm postgres:11.1-alpine
 
-            oc new-app --allow-missing-images docker-registry.default.svc:5000/book/book-api-kit
-            oc new-app --allow-missing-images docker-registry.default.svc:5000/book/book-metrics-kit
-            oc new-app --allow-missing-images docker-registry.default.svc:5000/book/postgres 
-            oc new-app --allow-missing-images docker-registry.default.svc:5000/book/zipkin
+            docker push --allow-missing-images docker-registry.default.svc:5000/book/book-api-kit
+            docker push --allow-missing-images docker-registry.default.svc:5000/book/book-metrics-kit
+            docker push --allow-missing-images postgres:11.1-alpine
+            docker push --allow-missing-images postgres
             
 #            oc new-app -i golang:latest https://github.com/rjtch/book-library --source-secret=API_TOKEN
 
