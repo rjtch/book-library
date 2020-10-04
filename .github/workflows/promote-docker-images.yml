@@ -64,7 +64,7 @@ jobs:
             oc import-image  --confirm hergytchuinkou/book-metrics-kit:latest
             oc import-image  --confirm openzipkin/zipkin:2.11
             oc import-image  --confirm postgres:11.1-alpine
-            oc new-app golang~https://github.com/rjtch/book-library.git
+            oc new-app golang~https://github.com/rjtch/book-library.git --strategy=source
             
 #            oc new-app -i golang:latest https://github.com/rjtch/book-library --source-secret=API_TOKEN
 
