@@ -19,7 +19,8 @@ jobs:
         run: |
           go version
           go get -u golang.org/x/lint/golint
-
+      - name: Key  generate
+        run: make keys
       - name: Run build
         run:  make books-api
 
