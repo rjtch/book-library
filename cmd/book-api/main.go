@@ -63,7 +63,7 @@ func run() error {
 			DisableTLS bool   `conf:"default:false"`
 		}
 		Auth struct {
-			KeyID          string `conf:"default:1"`
+			KeyID          string `conf:"default: 1"`
 			PrivateKeyFile string `conf:"default:/app-library/private.pem"`
 // 			PrivateKeyFile string `conf:"default:private.pem"`
 			Algorithm string `conf:"default:RS256"`
@@ -107,12 +107,12 @@ func run() error {
 
 	log.Println("main : Started : Initializing authentication support")
 
-	keyContents, err := ioutil.ReadFile(cfg.Auth.PrivateKeyFile)
+	privateKeyPEM, err := ioutil.ReadFile(cfg.Auth.PrivateKeyFile)
 	if err != nil {
 		return errors.Wrap(err, "reading auth private key")
 	}
 
-	privateKey, err := jwt.ParseRSAPrivateKeyFromPEM(keyContents)
+	privateKey, err := jwt.ParseRSAPrivateKeyFromPEM(privateKeyPEM)
 	if err != nil {
 		return errors.Wrap(err, "parsing auth private key")
 	}

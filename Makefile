@@ -50,10 +50,6 @@ clean:
 	docker volume prune -f
 
 
-# rmv-all:
-#     docker rmi -f $(docker images -aq)
-# 	docker rm -f $(docker ps -aq)
-#
 # deps-reset:
 # 	git checkout -- go.mod
 # 	go mod tidy

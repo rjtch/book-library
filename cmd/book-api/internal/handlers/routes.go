@@ -34,7 +34,7 @@ func API(build string, shutdown chan os.Signal, log *log.Logger, db *sqlx.DB, au
 	app.Handle("GET", "/v1/users", u.List, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
 	app.Handle("POST", "/v1/users", u.Create, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
 	app.Handle("GET", "/v1/users/:id", u.Retrieve, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
-	app.Handle("PUT", "/v1/users/:id", u.Update, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
+	app.Handle("PUT", "/v1/users/:id", u.Update, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
 	app.Handle("DELETE", "/v1/users/:id", u.Delete, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
 	app.Handle("GET", "/v1/users/:user-id/me", u.RetrieveMe, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
 

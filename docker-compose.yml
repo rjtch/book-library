@@ -20,17 +20,19 @@ services:
     container_name: metrics
     networks:
       - shared-network
-    image: ${PROJECT}/metrics
+    image: book-metrics-kit
     ports:
       - 3001:3001 # EXPVAR API
       - 4001:4001 # DEBUG API
+    depends_on:
+      - books-api
 
   #This is the core CRUD based service.
   books-api:
     container_name: books-api
     networks:
       - shared-network
-    image: ${PROJECT}/books-api
+    image: book-api-kit
     ports:
       - 3000:3000 # CRUD API
       - 4000:4000 # DEBUG API
@@ -39,7 +41,6 @@ services:
       - BOOKS_DB_DISABLE_TLS=1 # This is only disabled for our development enviroment.
       # - GODEBUG=gctrace=1
     depends_on:
-      - metrics
       - zipkin
       - db
 

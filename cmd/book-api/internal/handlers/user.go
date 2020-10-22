@@ -130,7 +130,7 @@ func (u *User) Create(ctx context.Context, w http.ResponseWriter, r *http.Reques
 
 	claims, ok := ctx.Value(auth.Key).(auth.Claims)
 	if !ok {
-		if !claims.HasRole(auth.RoleUser) {
+		if !claims.HasRole(auth.RoleAdmin) {
 			return errors.New("claims missing from context")
 		}
 	}
@@ -168,7 +168,7 @@ func (u *User) Update(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	defer span.End()
 
 	//get user_id from the url
-	id := params["user_id"]
+	id := params["id"]
 
 	//check if token does already exist
 	ok, err := users.IsLoggedOut(ctx, u.Db, id)
