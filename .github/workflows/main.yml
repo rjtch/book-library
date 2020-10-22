@@ -24,9 +24,6 @@ jobs:
       - name: Run build
         run:  make books-api
 
-      - name: Generate keys
-        run:  make keys
-
     #    - name: Run Tests
     #     run: make test
 
