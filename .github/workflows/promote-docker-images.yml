@@ -17,8 +17,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Run build
-        run: make books-api
       - name: Docker login
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Build
@@ -33,9 +31,6 @@ jobs:
   publish-metrics:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Run build
-        run: make metrics
       - name: Docker login
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Build
@@ -58,7 +53,7 @@ jobs:
           openshift_server_url: ${{secrets.OPENSHIFT_SERVER_URL}}
           parameters: '{"username": "${{ secrets.USERNAME }}", "password": "${{ secrets.PASSWORD }}", "acceptUntrustedCerts": "true"}'
           cmd: |
-            oc project ${PROJECT}
+            oc project book-library
             oc new-build golang~https://github.com/rjtch/book-library.git --strategy=source
             oc import docker-compose -f docker-compose.yml
 
