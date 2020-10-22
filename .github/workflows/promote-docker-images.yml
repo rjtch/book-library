@@ -21,6 +21,8 @@ jobs:
         run: make books-api
       - name: Docker login
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Key  generate
+        run: make keys
       - name: Build
         run: make books-api
       - name: Tags
