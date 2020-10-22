@@ -10,7 +10,7 @@ env:
   DOCKERIMAGE-METRICS: hergytchuinkou/book-metrics-kit
   REGISTRY_DOMAIN: openshift-registry.adorsys.de
 
-  APPNAME: book
+  APPNAME: book-library
 
 jobs:
   publish-book-api:
@@ -22,7 +22,8 @@ jobs:
       - name: Docker login
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Build
-        run: make books-api
+        run: make keys
+             make books-api
       - name: Tags
         run: |
           docker tag book-api-kit ${{ secrets.DOCKERHUB_USERNAME }}/book-api-kit:latest
