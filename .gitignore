@@ -9,5 +9,7 @@ dep.tree
 
 /.idea
 
-docker
 k8s
+./k8s
+docker
+
