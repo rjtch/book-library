@@ -17,8 +17,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
+      - name: Generate keys
+        run: make keys
+      - name: Run build
+        run: make books-api
       - name: Docker login
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Build
+        run: make books-api
       - name: Tags
         run: |
           docker tag book-api-kit ${{ secrets.DOCKERHUB_USERNAME }}/book-api-kit:latest
@@ -29,8 +35,13 @@ jobs:
   publish-metrics:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v1
+      - name: Run build
+        run: make metrics
       - name: Docker login
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Build
+        run: make metrics
       - name: Tags
         run: |
           docker tag book-metrics-kit ${{ secrets.DOCKERHUB_USERNAME }}/book-metrics-kit:latest
@@ -51,7 +62,6 @@ jobs:
           cmd: |
             oc project book-library
             oc new-build golang~https://github.com/rjtch/book-library.git --strategy=source
-            oc import docker-compose -f docker-compose.yml
 
             oc import-image  --confirm hergytchuinkou/book-api-kit:latest
             oc import-image  --confirm hergytchuinkou/book-metrics-kit:latest
