@@ -9,5 +9,7 @@ dep.tree
 
 /.idea
 
+k8s/openshift
+./k8s/openshift
 docker
-k8s
+
