@@ -3,7 +3,11 @@
 dep.tree
 
 .idea
+.gitignore
 .vscode
 /.vscode
 
 /.idea
+
+docker
+k8s

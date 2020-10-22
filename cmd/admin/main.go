@@ -143,7 +143,7 @@ func useradd(cfg database.Config, email, password string) error {
 	nu := users.NewUser{
 		Email:           email,
 		Password:        password,
-		PasswordConfirm: password,
+//		PasswordConfirm: password,
 		Roles:           []string{auth.RoleAdmin, auth.RoleUser},
 	}
 

@@ -23,7 +23,7 @@ type NewUser struct {
 	Email           string   `json:"email" validate:"required"`
 	Roles           []string `json:"roles" validate:"required"`
 	Password        string   `json:"password" validate:"required"`
-	PasswordConfirm string   `json:"password_confirm" validate:"eqfield=Password"`
+//	PasswordConfirm string   `json:"password_confirm" validate:"eqfield=Password"`
 }
 
 // UpdateUser defines what information may be provided to modify an existing
@@ -50,7 +50,7 @@ type Session struct {
 
 // UpdateSession update the session-cookie/token.
 type UpdateSession struct {
-	Token  *string `db:"token" json:"token"`
-	NewData   []byte `db:"data" json:"data"`
-	Expiry time.Time `db:"expiry" json:"expiry"`
+	Token   *string   `db:"token" json:"token"`
+	NewData []byte    `db:"data" json:"data"`
+	Expiry  time.Time `db:"expiry" json:"expiry"`
 }
