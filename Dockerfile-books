@@ -7,12 +7,12 @@ ARG PACKAGE_PREFIX
 
 # Create a location in the container for the source code. Using the
 # default GOPATH location.
-RUN mkdir -p /go/src/github.com/book-library
+RUN mkdir -p /book-library
 
 # Copy the module files first and then download the dependencies. If this
 # doesn't change, we won't need to do this again in future builds.
-COPY go.* /go/src/github.com/book-library/
-WORKDIR /go/src/github.com/book-library
+COPY go.* /book-library/
+WORKDIR /book-library
 RUN go mod download
 
 # Copy the source code into the container.
@@ -22,12 +22,12 @@ COPY internal internal
 
 # Build the admin tool so we can have it in the container. This should change
 # often so do this first.
-WORKDIR /go/src/github.com/book-library/cmd/${PACKAGE_PREFIX}admin
+WORKDIR /book-library/cmd/${PACKAGE_PREFIX}admin
 RUN go build -ldflags "-X main.build=${VCS_REF}"
 
 # Build the service binary. We are doing this last since this will be different
 # every time we run through this process.
-WORKDIR /go/src/github.com/book-library/cmd/${PACKAGE_PREFIX}${PACKAGE_NAME}
+WORKDIR /book-library/cmd/${PACKAGE_PREFIX}${PACKAGE_NAME}
 RUN go build -ldflags "-X main.build=${VCS_REF}"
 
 
@@ -37,9 +37,9 @@ ARG BUILD_DATE
 ARG VCS_REF
 ARG PACKAGE_NAME
 ARG PACKAGE_PREFIX
-COPY --from=build_books-api /go/src/github.com/book-library/private.pem /app-library/private.pem
-COPY --from=build_books-api /go/src/github.com/book-library/cmd/${PACKAGE_PREFIX}admin/admin /app-library/book-api
-COPY --from=build_books-api /go/src/github.com/book-library/cmd/${PACKAGE_PREFIX}${PACKAGE_NAME}/${PACKAGE_NAME} /app-library/book-api
+COPY --from=build_books-api /book-library/private.pem /app-library/private.pem
+COPY --from=build_books-api /book-library/cmd/${PACKAGE_PREFIX}admin/admin /app-library/book-api
+COPY --from=build_books-api /book-library/cmd/${PACKAGE_PREFIX}${PACKAGE_NAME}/${PACKAGE_NAME} /app-library/book-api
 WORKDIR /app-library
 CMD ["./book-api"]
 
