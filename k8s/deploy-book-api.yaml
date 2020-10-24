@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: books-api
+spec:
+  selector:
+    matchLabels:
+      app: books-api
+  replicas: 1
+  strategy: { }
+  template:
+    metadata:
+      name: books-api
+      labels:
+        app: books-api
+    spec:
+      containers:
+        - name: books-api
+          image: hergytchuinkou/book-api-kit
+          env:
+            - name: postgres
+              value: 0.0.0.0
+          ports:
+            - name: books-api
+              containerPort: 3000
+            - name: debug
+              containerPort: 4000
+          resources: { }
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: books-api
+  labels:
+    name: books-api
+spec:
+  ports:
+    - name: "zipkin"
+      port: 9411
+      targetPort: 9411
+    - name: "books-api"
+      port: 3000
+      targetPort: 3000
+    - name: "books-api-debug"
+      port: 4000
+      targetPort: 4000
+    - name: "metrics"
+      port: 3001
+      targetPort: 3001
+    - name: "metrics-debug"
+      port: 4001
+      targetPort: 4001
+  selector:
+    name: books-api
+status:
+  loadBalancer: { }
