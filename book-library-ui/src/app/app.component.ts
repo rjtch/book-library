@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {NgbModalConfig} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,10 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'book-library-ui';
+
+  constructor(ngbModalConfig: NgbModalConfig) {
+    ngbModalConfig.backdrop = 'static';
+    ngbModalConfig.centered = true;
+    ngbModalConfig.keyboard = false;
+  }
 }
