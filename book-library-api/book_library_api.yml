@@ -1,4 +1,4 @@
-swagger: '2.0'
+openapi: 3.0.1
 info:
   title: Book Library
   description: |
@@ -7,7 +7,6 @@ info:
   license:
     name: Apache-2.0
     url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
-basePath: /v1
 tags:
   - name: users
     description: Users endpoint provided by the Book-Library
@@ -17,8 +16,6 @@ tags:
     description: Book-category endpoint provided by the Book-Library
   - name: books
     description: Books endpoint provided by the Book-Library
-schemes:
-  - http
 paths:
   /v1/users/create:
     post:
@@ -26,25 +23,24 @@ paths:
         - users
       operationId: NewUser
       summary: create new users
+      security:
+        - sessionCookie: [ ]
       description: |
         Simple create interface used to create a new user in the databse
       parameters:
         #header
-        - $ref: "#/components/parameters/X-Request-ID"
-        - $ref: "#/components/parameters/SESSION-COOKIE"
-      security:
-        - SESSION-COOKIE: []
+        - $ref: "#/components/headers/X-Request-ID"
       requestBody:
         description: Create user requestBody
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/202_NewUser"
+              $ref: "#/components/schemas/newUser"
         required: true
-      x-codegen-request-body-name: 200_NewUser
+      x-codegen-request-body-name: NewUser
       responses:
         '202':
-          $ref: "#/components/schemas/202_NewUser"
+          $ref: "#/components/responses/202_NewUser"
           description: sucessful action
         '401':
           $ref: "#/components/responses/401_Unauthorized"
@@ -61,24 +57,22 @@ paths:
       description: |
         Simple update interface used to update an existing user in the database
       operationId: Update
+      security:
+        - sessionCookie: [ ]
       parameters:
-        parameters:
-          #header
-          - $ref: "#/components/parameters/X-Request-ID"
-          - $ref: "#/components/parameters/SESSION-COOKIE"
-        security:
-          - SESSION-COOKIE: []
-          requestBody:
-            description: update user requestBody
-            content:
-              application/json:
-                schema:
-                  $ref: "#/components/schemas/200_UpdateUser"
-            required: true
-          x-codegen-request-body-name: 200_UpdateUser
-          responses:
+        #header
+        - $ref: "#/components/headers/X-Request-ID"
+      requestBody:
+        description: update user requestBody
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/updateUser"
+        required: true
+      x-codegen-request-body-name: UpdateUser
+      responses:
         '200':
-          $ref: "#/components/schemas/200_UpdateUser"
+          $ref: "#/components/responses/200_UpdateUser"
           description: sucessful action
         '401':
           $ref: "#/components/responses/401_Unauthorized"
@@ -95,25 +89,20 @@ paths:
       description: |
         Simple getter interface used to get an existing user by its ID
       operationId: Retreive
+      security:
+        - sessionCookie: [ ]
       parameters:
         #header
-        - $ref: "#/components/parameters/X-Request-ID"
-        - $ref: "#/components/parameters/SESSION-COOKIE"
-      security:
-        - SESSION-COOKIE: []
+        - $ref: "#/components/headers/X-Request-ID"
+        - in: path
+          name: user-id
       responses:
         '200':
           description: successful operation
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/200_UserInfo'
+          $ref: '#/components/responses/200_UserInfo'
         '401':
           $ref: "#/components/responses/401_Unauthorized"
           description: user not authorized
-        '400':
-          $ref: "#/components/responses/400_InvalidID"
-          description: Invalid ID value
         '404':
           $ref: "#/components/responses/404_NotFound"
           description: Not found
@@ -126,17 +115,15 @@ paths:
       description: |
         Simple getter interface used to get all users
       operationId: List
+      security:
+        - sessionCookie: [ ]
       parameters:
         #header
-        - $ref: "#/components/parameters/X-Request-ID"
-        - $ref: "#/components/parameters/SESSION-COOKIE"
+        - $ref: "#/components/headers/X-Request-ID"
       responses:
         '200':
-          description: successful operation
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/200_UserInfoList'
+          description: list of all users
+          $ref: '#/components/responses/200_UserInfoList'
         '400':
           $ref: "#/components/responses/400_InvalidID"
           description: Invalid ID
@@ -154,10 +141,11 @@ paths:
       operationId: Delete
       parameters:
         #header
-        - $ref: "#/components/parameters/X-Request-ID"
-        - $ref: "#/components/parameters/SESSION-COOKIE"
+        - $ref: "#/components/headers/X-Request-ID"
+        - in: path
+          name: user-id
       security:
-        - sessionCookie: []
+        - sessionCookie: [ ]
         #path
         - $ref: "#/components/parameters/user-id"
       responses:
@@ -175,25 +163,23 @@ paths:
           description: user not authorized
 
   /user/login:
-    get:
+    post:
       tags:
         - user
       summary: Logs user into the system
       description: ''
       operationId: logInPost
-      produces:
-        - application/xml
-        - application/json
       parameters:
-        - name: email
-          in: query
-          description: The user name for login
-          required: true
-          type: string
-        - name: password
-          in: query
-          required: true
-          type: string
+        #header
+        - $ref: "#/components/headers/X-Request-ID"
+      requestBody:
+        description: Login request
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/loginRequest"
+        required: true
+      x-codegen-request-body-name: loginRequest
       responses:
         '200':
           $ref: "#/components/responses/200_UserInfo"
@@ -201,182 +187,215 @@ paths:
           $ref: "#/components/responses/401_Unauthorized"
 
   /user/logout:
-    get:
+    post:
       tags:
         - user
-      summary: Logs out current logged in user session
-      description: ''
-      operationId: logoutPost
+      summary: Logout user into the system
+      description: |
+        Simple logout interface used to delete user by ID
+      operationId: logout
+      parameters:
         #header
-        - $ref: "#/components/parameters/X-Request-ID"
-        - $ref: "#/components/parameters/SESSION-COOKIE"
-      produces:
-        - application/json
-      parameters: []
+        - $ref: "#/components/headers/X-Request-ID"
       security:
-        - sessionCookie: []
+        - sessionCookie: [ ]
       responses:
         "200":
           description: nothing returned
         "401":
           $ref: "#/components/responses/401_Unauthorized"
 
-  components:
-    securitySchemes:
-      sessionCookie:
-        type: jwt
-        in: cookie
-        name: SESSION-COOKIE
-        description: |
-          SESSION-COOKIE keeps the connection between the UI and the server and it sets in cookies in the header-response in the browser and
-          is used to verified the identity of the sender each time he calls the server.
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name:
+      description: >
+        keeps the connection between the UI and the server and it sets in cookies in the header-response in the browser and
+        is used to verified the identity of the sender each time he calls the server.
 
-    headers:
-      X-Request-ID:
-        name: X-Request-ID
+  headers:
+    X-Request-ID:
+      name: X-Request-ID
+      required: true
+      description: |
+        In Golang a Unique ID is used in the context-structure to make sure
+        each time a request get through an API it can be identified properly and be canceled any time.
+      example: "99391c7e-ad88-49ec-a2ad-99ddcb1f7721"
+      schema:
+        type: string
+        format: uuid
+    Set-SessionCookie:
+      name: Set-Cookie
+      description: |
+        SessionCookie used to maintain the login session between the frontend and the backend and  is validated using a so called
+        X-XSRF-TOKEN sent with the request header.
+
+        Remember  that the XSRF-TOKEN value must be extracted from the request parameter named X-XSRF-TOKEN
+        and not from a cookie header. This is important to mention as some implementation might return the
+        XSRF-TOKEN to the FinTechUI in form of a cookie.
+      schema:
+        type: string
+        example: Session=ejxs.wersdzxxc23r.asdf; Path=/
+
+  parameters:
+      SESSION-COOKIE:
+        name:
         required: true
-        description: |
-          In Golang a Unique ID is used in the context-structure to make sure
-          each time a request get through an API it can be identified properly and be canceled any time.
-        example: "99391c7e-ad88-49ec-a2ad-99ddcb1f7721"
+        in: header
         schema:
           type: string
-          format: uuid
-      SessionCookie:
-        name: SESSION-COOKIE
+          example: =upUySJYvsUjRuALYqd0Lr82HGz4RZNb_Mxu9WVOQHJGXa71z
+
+      user-id:
+        name: user_id
+        in: path
         required: true
-        description:
-          SESSION-COOKIE keeps the connection between the UI and the server and it sets in cookies in the header-request and response
-          and is used to verified the identity of the sender each he calls the server.
         schema:
           type: string
-          example: SESSION-COOKIE=upUySJYvsUjRuALYqd0Lr82HGz4RZNb_Mxu9WVOQHJGXa71z
 
-      parameters:
-        SessionCookie:
-          name: SESSION-COOKIE
-          required: true
-          in: header
+      book-id:
+        name: book_id
+        required: true
+        in: path
+        schema:
+          type: string
+
+      loan-id:
+        name: loan_id
+        in: path
+        required: true
+        schema:
+          type: string
+
+      categories-id:
+        name: categories_id
+        in: path
+        required: true
+        schema:
+          type: string
+
+  responses:
+    202_NewUser:
+      description: |
+        The new created user. Only admin user can create new user and seed it in the database.
+      headers:
+        X-Request-ID:
+          $ref: "#/components/parameters/X-Request-ID"
+        SESSION-COOKIE:
+          $ref: "#/components/parameters/SESSION-COOKIE"
+      content:
+        application/json:
           schema:
-            type: string
-            example: SESSION-COOKIE=upUySJYvsUjRuALYqd0Lr82HGz4RZNb_Mxu9WVOQHJGXa71z
+            type: object
+            properties:
+              newUser:
+                $ref: "#/components/schemas/newUser"
 
-        user-id:
-          name: user_id
-          in: path
+    200_UpdateUser:
+      description: |
+        The updated user. Only the user itself or an admin can update a user.
+      headers:
+        X-Request-ID:
+          $ref: "#/components/parameters/X-Request-ID"
+        SESSION-COOKIE:
+          $ref: "#/components/parameters/SESSION-COOKIE"
+      content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                updateUser:
+                  $ref: "#/components/schemas/updateUser"
+
+    200_UserInfoList:
+      description: |
+        This object returns the list of all available users. Only an admin can proceed this action.
+      headers:
+        X-Request-ID:
+          $ref: "#/components/parameters/X-Request-ID"
+        SESSION-COOKIE:
+          $ref: "#/components/parameters/SESSION-COOKIE"
+      content:
+          application/json:
+            schema:
+              type: array
+              items:
+                  $ref: "#/components/schemas/userList"
+
+    200_UserInfo:
+      description: |
+        This object returns an available users. Only an admin or the user itself can proceed this action.
+      headers:
+        X-Request-ID:
+          $ref: "#/components/parameters/X-Request-ID"
+        SESSION-COOKIE:
+          $ref: "#/components/parameters/SESSION-COOKIE"
+      content:
+        application/json:
           schema:
-            type: string
+            type: object
+            properties:
+              userInfo:
+                $ref: "#/components/schemas/userInfo"
 
-        booki-id:
-          name: book_id
-          in: path
+    400_BadRequest:
+      description: Bad request
+      headers:
+        X-Request-ID:
+          $ref: "#/components/headers/X-Request-ID"
+        SESSION-COOKIE:
+          $ref: "#/components/parameters/SESSION-COOKIE"
+      content:
+        application/json:
           schema:
-            type: string
+            type: array
+            items:
+              $ref: "#/components/schemas/psuMessage"
 
-        loan-id:
-          name: loan_id
-          in: path
-          schema:
-            type: string
-
-        categories-id:
-          name: categories_id
-          in: path
-          schema:
-            type: string
-
-    responses:
-        202_NewUser:
-          description: |
-            The new created user. Only admin user can create new user and seed it in the database.
-          headers:
-              X-Request-ID:
-                $ref: "#/components/parameters/X-Request-ID"
-              SESSION-COOKIE:
-                $ref: "#/components/parameters/SESSION-COOKIE"
-          content:
-            application/json:
-              $ref: "#/components/schemas/newUser"
-
-        200_UpdateUser:
-          description: |
-            The updated user. Only the user itself or an admin can update a user.
-          headers:
-            X-Request-ID:
-              $ref: "#/components/parameters/X-Request-ID"
-            SESSION-COOKIE:
-              $ref: "#/components/parameters/SESSION-COOKIE"
-            content:
-              application/json:
-                $ref: "#/components/schemas/updateUser"
-
-        200_UserInfoList:
-          description: |
-            This object returns the list of all available users. Only an admin can proceed this action.
-          headers:
-            X-Request-ID:
-              $ref: "#/components/parameters/X-Request-ID"
-            SESSION-COOKIE:
-              $ref: "#/components/parameters/SESSION-COOKIE"
-            content:
-              application/json:
-                $ref: "#/components/schemas/userList"
-
-        200_UserInfo:
-          description: |
-            This object returns an available users. Only an admin or the user itself can proceed this action.
-          headers:
-            X-Request-ID:
-              $ref: "#/components/parameters/X-Request-ID"
-            SESSION-COOKIE:
-              $ref: "#/components/parameters/SESSION-COOKIE"
-          content:
-            application/json:
-              $ref: "#/components/schemas/userInfo"
-
-        400_BadRequest:
-          description: Bad request
-          headers:
-            X-Request-ID:
-              $ref: "#/components/headers/X-Request-ID"
-            SESSION-COOKIE:
-              $ref: "#/components/headers/Set-SessionCookie"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/psuMessage"
-
-          401_Unauthorized:
-            description: |
-              Provided credentials are wrong, not provided or invalid or user has not required roles for executing this action.
-            headers:
-              X-Request-ID:
-                $ref: "#/components/headers/X-Request-ID"
-              SESSION-COOKIE:
-                $ref: "#/components/headers/Reset-Cookies"
-            content:
-              application/json:
-                schema:
+    401_Unauthorized:
+        description: |
+          Provided credentials are wrong, not provided or invalid or user has not required roles for executing this action.
+        headers:
+          X-Request-ID:
+            $ref: "#/components/headers/X-Request-ID"
+          SESSION-COOKIE:
+            $ref: "#/components/parameters/SESSION-COOKIE"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                errorResponse:
                   $ref: "#/components/schemas/errorResponse"
 
-          404_NotFound:
-            description: The required resources was not found
-            headers:
-              X-Request-ID:
-                $ref: "#/components/headers/X-Request-ID"
-              SESSION-COOKIE:
-                $ref: "#/components/headers/Set-SessionCookie"
-            content:
-              application/json:
-                schema:
-                  type: array
-                  items:
-                    $ref: "#/components/schemas/errorResponse"
+    404_NotFound:
+        description: The required resources was not found
+        headers:
+          X-Request-ID:
+            $ref: "#/components/headers/X-Request-ID"
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                $ref: "#/components/schemas/errorResponse"
 
-    schemas:
-      #users
+  schemas:
+    # Login
+    loginRequest:
+      title: Login Request
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    #new-user
     newUser:
       title: New User
       type: object
@@ -413,80 +432,67 @@ paths:
         passwordConfirm:
           type: string
 
-      userInfo:
-        title: User Infos
-        type: object
-        required:
-          - email
-        properties:
-          name:
-            type: string
-          email:
-            type: string
-
-      UserInfoList:
-        title: list of Users
-        type: array
-        required:
-          - users
-        properties:
-          users:
-            type: array
-            items:
-              $ref: "#/components/schemas/userInfo"
-
-      errorResponse:
-        title: ErrorResponse
-        type: object
-        properties:
-          sessionState:
-            $ref: "#/components/schemas/sessionState"
-          psuMessages:
-            type: array
-            items:
-              $ref: "#/components/schemas/userMessage"
-
-      userMessage:
-        title: PsuMessage
-        type: object
-        required:
-          - category
-          - code
-        properties:
-          category:
-            type: string
-            enum:
-              - ERROR
-              - WARNING
-              - INFO
-          code:
-            type: string
-          path:
-            type: string
-          text:
-            type: string
-
-      401_Unauthorized:
-        description: |
-          the resquested resources cannot be rendered because the provided
-          credentials are wrong and will be rejected.
-        headers:
-          X-Request-ID:
-            $ref: "#/components/headers/X-Request-ID"
-          Set-Cookie:
-            $ref: "#/components/headers/Reset-Cookies"
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/errorResponse"
-
-      Reset-Cookies:
-        name: Reset-Session-Cookie
-        description: |
-          Delete all relevant cookies
-        schema:
+    userInfo:
+      title: User Infos
+      type: object
+      required:
+        - email
+        - name
+      properties:
+        name:
           type: string
-          example: |
-            "RedirectSession=null; Path=/; Max-Age=0, Session=null; Path=/; Max-Age=0"
+        email:
+          type: string
+
+    UserInfoList:
+      title: list of Users
+      type: object
+      required:
+        - users
+      properties:
+        users:
+          type: array
+          items:
+             $ref: "#/components/schemas/userInfo"
+
+    errorResponse:
+      title: ErrorResponse
+      type: object
+      properties:
+        sessionState:
+          $ref: "#/components/schemas/sessionState"
+        psuMessages:
+          type: array
+          items:
+            $ref: "#/components/schemas/userMessage"
+
+    userMessage:
+      title: PsuMessage
+      type: object
+      required:
+        - category
+        - code
+      properties:
+        category:
+          type: string
+          enum:
+            - ERROR
+            - WARNING
+            - INFO
+        code:
+          type: string
+        path:
+          type: string
+        text:
+          type: string
+
+#    Reset-Cookies:
+#      name: Reset-Cookie
+#      description: |
+#        Delete all relevant cookies
+#      schema:
+#        type: string
+#        example: |
+#          "RedirectSession=null; Path=/; Max-Age=0, Session=null; Path=/; Max-Age=0"
 
 

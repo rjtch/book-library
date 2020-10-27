@@ -24,17 +24,15 @@ COPY . .
 WORKDIR /book-library/cmd/sidebar/metrics
 RUN go build -ldflags "-X main.build=${VCS_REF}"
 
-
 # Run the Go Binary in Alpine.
-FROM alpine:3.7
+FROM alpine:3.12
 ARG BUILD_DATE
 ARG VCS_REF
 ARG PACKAGE_NAME
 ARG PACKAGE_PREFIX
-COPY --from=build_metrics /book-library/cmd/sidebar/metrics /app-library/metrics
-WORKDIR /app-library
-ENTRYPOINT ["docker-entrypoint.sh"]
-CMD /app-library/metrics
+COPY --from=build_metrics /book-library/cmd/sidebar/metrics/metrics /book-library/metrics
+WORKDIR /book-library
+CMD ["./metrics"]
 
 LABEL org.opencontainers.image.created="${BUILD_DATE}" \
       org.opencontainers.image.title="metrics" \

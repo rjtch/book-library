@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics
+spec:
+  selector:
+    matchLabels:
+      app: metrics
+  replicas: 1
+  template:
+    metadata:
+      name: metrics
+      labels:
+        app: metrics
+    spec:
+      containers:
+        - name: metrics
+          image: hergytchuinkou/book-metrics-kit
+          env:
+            - name: metrics
+              value: "http://0.0.0.0:4000/debug/vars"
+          ports:
+            - name: metrics-api
+              containerPort: 3001
+            - name: debug
+              containerPort: 4001
+          resources: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: metrics
+  labels:
+    name: metrics
+spec:
+  ports:
+    - name: metrics
+      port: 3001
+      targetPort: metrics
+  selector:
+    name: metrics

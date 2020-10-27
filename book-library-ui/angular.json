@@ -123,5 +123,8 @@
       }
     }
   },
-  "defaultProject": "book-library-ui"
+  "defaultProject": "book-library-ui",
+  "cli": {
+    "analytics": "f1513727-e4ef-409d-b30c-a07b428f8abb"
+  }
 }
