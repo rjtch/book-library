@@ -17,6 +17,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
+      - name: Generate keys
+        run: make keys
+      - name: Run build
+        run: make books-api
       - name: Docker login
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Build
@@ -31,6 +35,9 @@ jobs:
   publish-metrics:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v1
+      - name: Run build
+        run: make metrics
       - name: Docker login
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Build
@@ -41,12 +48,8 @@ jobs:
       - name: Push
         run: |
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/book-metrics-kit:latest
-
-
-  openshift-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: OpenShift Action
+          
+      - name: OpenShift Action publish images
         uses: redhat-developer/openshift-actions@v1.1
         with:
           version: 'latest'
@@ -54,13 +57,8 @@ jobs:
           parameters: '{"username": "${{ secrets.USERNAME }}", "password": "${{ secrets.PASSWORD }}", "acceptUntrustedCerts": "true"}'
           cmd: |
             oc project book-library
-            oc new-build golang~https://github.com/rjtch/book-library.git --strategy=source
-            oc import docker-compose -f docker-compose.yml
-
             oc import-image  --confirm hergytchuinkou/book-api-kit:latest
             oc import-image  --confirm hergytchuinkou/book-metrics-kit:latest
             oc import-image  --confirm openzipkin/zipkin:2.11
             oc import-image  --confirm postgres:11.1-alpine
-                        
-#            oc new-app -i golang:latest https://github.com/rjtch/book-library --source-secret=API_TOKEN
 
