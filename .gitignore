@@ -2,14 +2,15 @@
 .DS_Store
 dep.tree
 
+openapitools.json
+package-lock.json
+
 .idea
 .gitignore
 .vscode
 /.vscode
 
 /.idea
-
-k8s/openshift
-./k8s/openshift
 docker
+k8s
 

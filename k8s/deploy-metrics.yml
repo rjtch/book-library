@@ -17,7 +17,7 @@ spec:
         - name: metrics
           image: hergytchuinkou/book-metrics-kit
           env:
-            - name: metrics
+            - name: books-api
               value: "http://0.0.0.0:4000/debug/vars"
           ports:
             - name: metrics-api
