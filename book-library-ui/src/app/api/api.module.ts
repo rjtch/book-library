@@ -3,7 +3,6 @@ import { Configuration } from './configuration';
 import { HttpClient } from '@angular/common/http';
 
 
-import { UserService } from './api/user.service';
 import { UsersService } from './api/users.service';
 
 @NgModule({
