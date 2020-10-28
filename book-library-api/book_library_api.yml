@@ -204,6 +204,155 @@ paths:
         "401":
           $ref: "#/components/responses/401_Unauthorized"
 
+  #--------BOOKS---------
+
+
+  /v1/books/create:
+    post:
+      tags:
+        - books
+      operationId: NewBook
+      summary: create new books
+      security:
+        - sessionCookie: [ ]
+      description: |
+        Simple create interface used to create a new book in the databse
+      parameters:
+        #header
+        - $ref: "#/components/headers/X-Request-ID"
+      requestBody:
+        description: Create user requestBody
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/newBook"
+        required: true
+      x-codegen-request-body-name: NewBook
+      responses:
+        '202':
+          $ref: "#/components/responses/202_NewBook"
+          description: sucessful action
+        '401':
+          $ref: "#/components/responses/401_Unauthorized"
+          description: entity not authorized
+        '400':
+          $ref: "#/components/responses/400_InvalidID"
+          description: Invalid ID value
+
+  /v1/books/update:
+    put:
+      tags:
+        - books
+      summary: Update an existing book
+      description: |
+        Simple update interface used to update an existing user in the database
+      operationId: Update book
+      security:
+        - sessionCookie: [ ]
+      parameters:
+        #header
+        - $ref: "#/components/headers/X-Request-ID"
+      requestBody:
+        description: update book requestBody
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/updateBook"
+        required: true
+      x-codegen-request-body-name: UpdateBook
+      responses:
+        '200':
+          $ref: "#/components/responses/200_UpdateBook"
+          description: sucessful action
+        '401':
+          $ref: "#/components/responses/401_Unauthorized"
+          description: user not authorized
+        '400':
+          $ref: "#/components/responses/400_InvalidID"
+          description: Invalid ID value
+
+  /v1/books/{book-id}:
+    get:
+      tags:
+        - books
+      summary: Finds user by user-id
+      description: |
+        Simple getter interface used to get an existing user by its ID
+      operationId: Retreive Book
+      security:
+        - sessionCookie: [ ]
+      parameters:
+        #header
+        - $ref: "#/components/headers/X-Request-ID"
+        - $ref: "#/components/parameters/book-id"
+      responses:
+        '200':
+          description: successful operation
+          $ref: '#/components/responses/200_BookInfo'
+        '401':
+          $ref: "#/components/responses/401_Unauthorized"
+          description: user not authorized
+        '404':
+          $ref: "#/components/responses/404_NotFound"
+          description: Not found
+
+  /v1/books/all:
+    get:
+      tags:
+        - books
+      summary: List all books
+      description: |
+        Simple getter interface used to get all books
+      operationId: List all Books
+      security:
+        - sessionCookie: [ ]
+      parameters:
+        #header
+        - $ref: "#/components/headers/X-Request-ID"
+      responses:
+        '200':
+          description: list of all books
+          $ref: '#/components/responses/200_BookInfoList'
+        '400':
+          $ref: "#/components/responses/400_InvalidID"
+          description: Invalid ID
+        '401':
+          $ref: "#/components/responses/401_Unauthorized"
+          description: user not authorized
+
+  /v1/books/{book-id}/delete:
+    delete:
+      tags:
+        - books
+      summary: Delete book by id
+      description: |
+        Simple delete interface used to delete book by ID
+      operationId: Delete books
+      parameters:
+        #header
+        - $ref: "#/components/headers/X-Request-ID"
+        - $ref: "#/components/parameters/book-id"
+      security:
+        - sessionCookie: [ ]
+        #path
+        - $ref: "#/components/parameters/book-id"
+      responses:
+        '200':
+          $ref: "#/components/responses/successfulDeleted"
+          description: successful operation
+        '400':
+          $ref: "#/components/responses/400_InvalidID"
+          description: Invalid ID supplied
+        '404':
+          $ref: "#/components/responses/404_NotFound"
+          description: Not found
+        '401':
+          $ref: "#/components/responses/401_Unauthorized"
+          description: user not authorized
+
+
+
+#-----------------
 components:
   securitySchemes:
     sessionCookie:
@@ -239,41 +388,41 @@ components:
         example: Session=ejxs.wersdzxxc23r.asdf; Path=/
 
   parameters:
-      SESSION-COOKIE:
-        name:
-        required: true
-        in: header
-        schema:
-          type: string
-          example: =upUySJYvsUjRuALYqd0Lr82HGz4RZNb_Mxu9WVOQHJGXa71z
+    SESSION-COOKIE:
+      name:
+      required: true
+      in: header
+      schema:
+        type: string
+        example: =upUySJYvsUjRuALYqd0Lr82HGz4RZNb_Mxu9WVOQHJGXa71z
 
-      user-id:
-        name: user_id
-        in: path
-        required: true
-        schema:
-          type: string
+    user-id:
+      name: user_id
+      in: path
+      required: true
+      schema:
+        type: string
 
-      book-id:
-        name: book_id
-        required: true
-        in: path
-        schema:
-          type: string
+    book-id:
+      name: book_id
+      required: true
+      in: path
+      schema:
+        type: string
 
-      loan-id:
-        name: loan_id
-        in: path
-        required: true
-        schema:
-          type: string
+    loan-id:
+      name: loan_id
+      in: path
+      required: true
+      schema:
+        type: string
 
-      categories-id:
-        name: categories_id
-        in: path
-        required: true
-        schema:
-          type: string
+    categories-id:
+      name: categories_id
+      in: path
+      required: true
+      schema:
+        type: string
 
   responses:
     202_NewUser:
@@ -301,12 +450,12 @@ components:
         SESSION-COOKIE:
           $ref: "#/components/parameters/SESSION-COOKIE"
       content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                updateUser:
-                  $ref: "#/components/schemas/updateUser"
+        application/json:
+          schema:
+            type: object
+            properties:
+              updateUser:
+                $ref: "#/components/schemas/updateUser"
 
     200_UserInfoList:
       description: |
@@ -317,11 +466,11 @@ components:
         SESSION-COOKIE:
           $ref: "#/components/parameters/SESSION-COOKIE"
       content:
-          application/json:
-            schema:
-              type: array
-              items:
-                  $ref: "#/components/schemas/userList"
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/userList"
 
     200_UserInfo:
       description: |
@@ -354,32 +503,98 @@ components:
               $ref: "#/components/schemas/psuMessage"
 
     401_Unauthorized:
-        description: |
-          Provided credentials are wrong, not provided or invalid or user has not required roles for executing this action.
-        headers:
-          X-Request-ID:
-            $ref: "#/components/headers/X-Request-ID"
-          SESSION-COOKIE:
-            $ref: "#/components/parameters/SESSION-COOKIE"
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                errorResponse:
-                  $ref: "#/components/schemas/errorResponse"
+      description: |
+        Provided credentials are wrong, not provided or invalid or user has not required roles for executing this action.
+      headers:
+        X-Request-ID:
+          $ref: "#/components/headers/X-Request-ID"
+        SESSION-COOKIE:
+          $ref: "#/components/parameters/SESSION-COOKIE"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errorResponse:
+                $ref: "#/components/schemas/errorResponse"
 
     404_NotFound:
-        description: The required resources was not found
-        headers:
-          X-Request-ID:
-            $ref: "#/components/headers/X-Request-ID"
-        content:
-          application/json:
-            schema:
-              type: object
-              items:
-                $ref: "#/components/schemas/errorResponse"
+      description: The required resources was not found
+      headers:
+        X-Request-ID:
+          $ref: "#/components/headers/X-Request-ID"
+      content:
+        application/json:
+          schema:
+            type: object
+            items:
+              $ref: "#/components/schemas/errorResponse"
+
+    #----------BOOKS-----------
+
+    202_NewBook:
+      description: |
+        The new created book. Only admin user can create new book and seed it in the database.
+      headers:
+        X-Request-ID:
+          $ref: "#/components/parameters/X-Request-ID"
+        SESSION-COOKIE:
+          $ref: "#/components/parameters/SESSION-COOKIE"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              newBook:
+                $ref: "#/components/schemas/newBook"
+
+    200_UpdateBook:
+      description: |
+        The updated book. Only an admin can update a book.
+      headers:
+        X-Request-ID:
+          $ref: "#/components/parameters/X-Request-ID"
+        SESSION-COOKIE:
+          $ref: "#/components/parameters/SESSION-COOKIE"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              updateBook:
+                $ref: "#/components/schemas/updateBook"
+
+    200_BookInfoList:
+      description: |
+        This object returns the list of all available books.
+      headers:
+        X-Request-ID:
+          $ref: "#/components/parameters/X-Request-ID"
+        SESSION-COOKIE:
+          $ref: "#/components/parameters/SESSION-COOKIE"
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/bookList"
+
+    200_BookInfo:
+      description: |
+        This object returns an available book list.
+      headers:
+        X-Request-ID:
+          $ref: "#/components/parameters/X-Request-ID"
+        SESSION-COOKIE:
+          $ref: "#/components/parameters/SESSION-COOKIE"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              bookInfo:
+                $ref: "#/components/schemas/bookInfo"
+  #--------------------------
 
   schemas:
     # Login
@@ -452,21 +667,96 @@ components:
         users:
           type: array
           items:
-             $ref: "#/components/schemas/userInfo"
+            $ref: "#/components/schemas/userInfo"
+
+    #-------------BOOKS---------------------
+
+    newBook:
+      title: New Book
+      type: object
+      required:
+        - title
+        - isbn
+        - category
+        - describtion
+        - authors
+      properties:
+        title:
+          type: string
+        isbn:
+          type: string
+        category:
+          type: string
+        description:
+          type: string
+        authors:
+          type: array
+           items:
+             type: string
+
+    updateBook:
+      title: Book Update
+      type: object
+      required:
+        - authors
+        - description
+        - quantity
+      properties:
+        authors:
+          type: array
+          items:
+            type: string
+        description:
+          type: string
+        quantity:
+          type: integer
+
+    bookInfo:
+      title: Book Infos
+      type: object
+      required:
+        - title
+        - description
+        - authors
+        - quantity
+        - category
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        authors:
+          type: array
+          items:
+            type: string
+        quantity:
+          type: integer
+        category:
+          type: string
+
+    bookInfoList:
+      title: list of books
+      type: object
+      required:
+        - books
+      properties:
+        books:
+          type: array
+          items:
+            $ref: "#/components/schemas/bookInfo"
+
 
     errorResponse:
       title: ErrorResponse
       type: object
       properties:
-        sessionState:
-          $ref: "#/components/schemas/sessionState"
-        psuMessages:
+        userMessage:
           type: array
           items:
             $ref: "#/components/schemas/userMessage"
 
     userMessage:
-      title: PsuMessage
+      title: userMessage
       type: object
       required:
         - category

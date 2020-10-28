@@ -9,10 +9,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { UserMessage } from './userMessage';
+import { NewBook } from './newBook';
 
 
-export interface ErrorResponse { 
-    userMessage?: Array<UserMessage>;
+export interface InlineResponse2021 { 
+    newBook?: NewBook;
 }
 
