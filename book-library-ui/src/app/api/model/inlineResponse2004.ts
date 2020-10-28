@@ -9,13 +9,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { LoanInfo } from './loanInfo';
 
 
-export interface NewBook { 
-    title: string;
-    isbn: string;
-    category: string;
-    description?: string;
-    authors: Array<string>;
+export interface InlineResponse2004 { 
+    bookInfo?: LoanInfo;
 }
 

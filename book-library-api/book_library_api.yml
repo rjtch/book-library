@@ -49,7 +49,7 @@ paths:
           $ref: "#/components/responses/400_InvalidID"
           description: Invalid ID value
 
-  /v1/users/update:
+  /v1/users/{user-id}/update:
     put:
       tags:
         - users
@@ -62,6 +62,8 @@ paths:
       parameters:
         #header
         - $ref: "#/components/headers/X-Request-ID"
+        #path
+        - $ref: "#/components/parameters/user-id"
       requestBody:
         description: update user requestBody
         content:
@@ -94,6 +96,7 @@ paths:
       parameters:
         #header
         - $ref: "#/components/headers/X-Request-ID"
+        #path
         - $ref: "#/components/parameters/user-id"
       responses:
         '200':
@@ -141,11 +144,10 @@ paths:
       parameters:
         #header
         - $ref: "#/components/headers/X-Request-ID"
+        #path
         - $ref: "#/components/parameters/user-id"
       security:
         - sessionCookie: [ ]
-        #path
-        - $ref: "#/components/parameters/user-id"
       responses:
         '200':
           $ref: "#/components/responses/successfulDeleted"
@@ -195,6 +197,7 @@ paths:
       parameters:
         #header
         - $ref: "#/components/headers/X-Request-ID"
+        #path
         - $ref: "#/components/parameters/user-id"
       security:
         - sessionCookie: [ ]
@@ -205,7 +208,6 @@ paths:
           $ref: "#/components/responses/401_Unauthorized"
 
   #--------BOOKS---------
-
 
   /v1/books/create:
     post:
@@ -239,7 +241,7 @@ paths:
           $ref: "#/components/responses/400_InvalidID"
           description: Invalid ID value
 
-  /v1/books/update:
+  /v1/books/{book-id}/update:
     put:
       tags:
         - books
@@ -252,6 +254,8 @@ paths:
       parameters:
         #header
         - $ref: "#/components/headers/X-Request-ID"
+        #path
+        - $ref: "#/components/parameters/book-id"
       requestBody:
         description: update book requestBody
         content:
@@ -284,6 +288,7 @@ paths:
       parameters:
         #header
         - $ref: "#/components/headers/X-Request-ID"
+        #path
         - $ref: "#/components/parameters/book-id"
       responses:
         '200':
@@ -331,11 +336,10 @@ paths:
       parameters:
         #header
         - $ref: "#/components/headers/X-Request-ID"
+        #path
         - $ref: "#/components/parameters/book-id"
       security:
         - sessionCookie: [ ]
-        #path
-        - $ref: "#/components/parameters/book-id"
       responses:
         '200':
           $ref: "#/components/responses/successfulDeleted"
@@ -350,9 +354,163 @@ paths:
           $ref: "#/components/responses/401_Unauthorized"
           description: user not authorized
 
+  #---------LOAN--------
+
+  /v1/loans/{user-id}/init:
+    post:
+      tags:
+        - loans
+      operationId: NewLoan
+      summary: initiate new loan
+      security:
+        - sessionCookie: [ ]
+      description: |
+        Simple create interface used to create a new book in the databse
+      parameters:
+        #header
+        - $ref: "#/components/headers/X-Request-ID"
+        #path
+        - $ref: "#/components/parameters/user-id"
+      requestBody:
+        description: Create loan requestBody
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/newLoan"
+        required: true
+      x-codegen-request-body-name: NewLoan
+      responses:
+        '202':
+          $ref: "#/components/responses/202_NewLoan"
+          description: sucessful action
+        '401':
+          $ref: "#/components/responses/401_Unauthorized"
+          description: entity not authorized
+        '400':
+          $ref: "#/components/responses/400_InvalidID"
+          description: Invalid ID value
+
+  /v1/loans/{user-id}/update/{loan-id}:
+    put:
+      tags:
+        - loans
+      summary: Update an existing loan
+      description: |
+        Simple update interface used to update an existing loan in the database
+      operationId: Update Loan
+      security:
+        - sessionCookie: [ ]
+      parameters:
+        #header
+        - $ref: "#/components/headers/X-Request-ID"
+        #path
+        - $ref: "#/components/parameters/user-id"
+        - $ref: "#/components/parameters/loan-id"
+      requestBody:
+        description: update loan requestBody
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/updateLoan"
+        required: true
+      x-codegen-request-body-name: UpdateBook
+      responses:
+        '200':
+          $ref: "#/components/responses/200_UpdateLon"
+          description: sucessful action
+        '401':
+          $ref: "#/components/responses/401_Unauthorized"
+          description: user not authorized
+        '400':
+          $ref: "#/components/responses/400_InvalidID"
+          description: Invalid ID value
+
+  /v1/loans/{user-id}/retrieve/{loan-id}:
+    get:
+      tags:
+        - loans
+      summary: Finds user by user-id
+      description: |
+        Simple getter interface used to get an existing user by its ID
+      operationId: Retreive Loan
+      security:
+        - sessionCookie: [ ]
+      parameters:
+        #header
+        - $ref: "#/components/headers/X-Request-ID"
+        #path
+        - $ref: "#/components/parameters/user-id"
+        - $ref: "#/components/parameters/loan-id"
+      responses:
+        '200':
+          description: successful operation
+          $ref: '#/components/responses/200_LoanInfo'
+        '401':
+          $ref: "#/components/responses/401_Unauthorized"
+          description: user not authorized
+        '404':
+          $ref: "#/components/responses/404_NotFound"
+          description: Not found
+
+  /v1/loans/{user-id}/all:
+    get:
+      tags:
+        - loans
+      summary: List all loans for a specific user
+      description: |
+        Simple getter interface used to get all loans
+      operationId: List all loans
+      security:
+        - sessionCookie: [ ]
+      parameters:
+        #header
+        - $ref: "#/components/headers/X-Request-ID"
+        #path
+        - $ref: "#/components/parameters/user-id"
+      responses:
+        '200':
+          description: list of all loans
+          $ref: '#/components/responses/200_LoanInfoList'
+        '400':
+          $ref: "#/components/responses/400_InvalidID"
+          description: Invalid ID
+        '401':
+          $ref: "#/components/responses/401_Unauthorized"
+          description: user not authorized
+
+  /v1/loans/{user-id}/delete/{loan-id}:
+    delete:
+      tags:
+        - loans
+      summary: Delete loan by id
+      description: |
+        Simple delete interface used to delete loan by ID
+      operationId: Delete loan
+      parameters:
+        #header
+        - $ref: "#/components/headers/X-Request-ID"
+        #path
+        - $ref: "#/components/parameters/user-id"
+        - $ref: "#/components/parameters/loan-id"
+      security:
+        - sessionCookie: [ ]
+      responses:
+        '200':
+          $ref: "#/components/responses/successfulDeleted"
+          description: successful operation
+        '400':
+          $ref: "#/components/responses/400_InvalidID"
+          description: Invalid ID supplied
+        '404':
+          $ref: "#/components/responses/404_NotFound"
+          description: Not found
+        '401':
+          $ref: "#/components/responses/401_Unauthorized"
+          description: user not authorized
+
+#-------------LOAN---------
 
 
-#-----------------
 components:
   securitySchemes:
     sessionCookie:
@@ -594,7 +752,73 @@ components:
             properties:
               bookInfo:
                 $ref: "#/components/schemas/bookInfo"
-  #--------------------------
+
+    #------------LOAN--------------
+
+    202_NewLoan:
+      description: |
+        The new created loan. Only current user can create new loan and seed it in the database.
+      headers:
+        X-Request-ID:
+          $ref: "#/components/parameters/X-Request-ID"
+        SESSION-COOKIE:
+          $ref: "#/components/parameters/SESSION-COOKIE"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              newLoan:
+                $ref: "#/components/schemas/newLoan"
+
+    200_UpdateLoan:
+      description: |
+        The updated book. Only an admin can update a loan.
+      headers:
+        X-Request-ID:
+          $ref: "#/components/parameters/X-Request-ID"
+        SESSION-COOKIE:
+          $ref: "#/components/parameters/SESSION-COOKIE"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              updateLoan:
+                $ref: "#/components/schemas/updateLoan"
+
+    200_LoanInfoList:
+      description: |
+        This object returns the list of all available loans.
+      headers:
+        X-Request-ID:
+          $ref: "#/components/parameters/X-Request-ID"
+        SESSION-COOKIE:
+          $ref: "#/components/parameters/SESSION-COOKIE"
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/loanList"
+
+    200_LoanInfo:
+      description: |
+        This object returns an available book list.
+      headers:
+        X-Request-ID:
+          $ref: "#/components/parameters/X-Request-ID"
+        SESSION-COOKIE:
+          $ref: "#/components/parameters/SESSION-COOKIE"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              bookInfo:
+                $ref: "#/components/schemas/LoanInfo"
+
+  #-------------------------------
 
   schemas:
     # Login
@@ -691,8 +915,8 @@ components:
           type: string
         authors:
           type: array
-           items:
-             type: string
+          items:
+            type: string
 
     updateBook:
       title: Book Update
@@ -745,6 +969,60 @@ components:
           items:
             $ref: "#/components/schemas/bookInfo"
 
+    #-------------LOAN---------------------
+
+    newLoan:
+      title: New Loan
+      type: object
+      required:
+        - bookTitle
+        - bookIsbn
+      properties:
+        bookTitle:
+          type: string
+        bookIsbn:
+          type: string
+
+    updateLoan:
+      title: Loan Update
+      type: object
+      required:
+        - bookTitle
+        - bookIsbn
+        - returneDate
+      properties:
+        bookTitle:
+          type: string
+        bookIsbn:
+          type: string
+        returneDate:
+          type: date
+
+    LoanInfo:
+      title: Book Infos
+      type: object
+      required:
+        - bookTitle
+        - bookIsbn
+        - returneDate
+      properties:
+        bookTitle:
+          type: string
+        bookIsbn:
+          type: string
+        returneDate:
+          type: date
+
+    LoanInfoList:
+      title: list of books
+      type: object
+      required:
+        - books
+      properties:
+        books:
+          type: array
+          items:
+            $ref: "#/components/schemas/loanInfo"
 
     errorResponse:
       title: ErrorResponse

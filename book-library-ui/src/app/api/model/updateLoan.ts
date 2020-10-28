@@ -11,11 +11,9 @@
  */
 
 
-export interface NewBook { 
-    title: string;
-    isbn: string;
-    category: string;
-    description?: string;
-    authors: Array<string>;
+export interface UpdateLoan { 
+    bookTitle: string;
+    bookIsbn: string;
+    returneDate: string;
 }
 

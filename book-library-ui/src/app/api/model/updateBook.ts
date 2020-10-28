@@ -12,7 +12,7 @@
 
 
 export interface UpdateBook { 
-    authors: Array;
+    authors: Array<string>;
     description: string;
     quantity: number;
 }
