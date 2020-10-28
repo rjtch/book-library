@@ -508,7 +508,154 @@ paths:
           $ref: "#/components/responses/401_Unauthorized"
           description: user not authorized
 
-#-------------LOAN---------
+  #-------------CATEGORIES---------
+
+  /v1/categories/create:
+    post:
+      tags:
+        - categories
+      operationId: NewCategory
+      summary: create new categories
+      security:
+        - sessionCookie: [ ]
+      description: |
+        Simple create interface used to create a new book-category in the databse
+      parameters:
+        #header
+        - $ref: "#/components/headers/X-Request-ID"
+      requestBody:
+        description: Create user requestBody
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/newCategory"
+        required: true
+      x-codegen-request-body-name: NewCategory
+      responses:
+        '202':
+          $ref: "#/components/responses/202_NewCategory"
+          description: sucessful action
+        '401':
+          $ref: "#/components/responses/401_Unauthorized"
+          description: user not authorized
+        '400':
+          $ref: "#/components/responses/400_InvalidID"
+          description: Invalid ID value
+
+  /v1/categories/{category-id}/update:
+    put:
+      tags:
+        - categories
+      summary: Update an existing category
+      description: |
+        Simple update interface used to update an existing category in the database
+      operationId: Update categories
+      security:
+        - sessionCookie: [ ]
+      parameters:
+        #header
+        - $ref: "#/components/headers/X-Request-ID"
+        #path
+        - $ref: "#/components/parameters/category-id"
+      requestBody:
+        description: update category requestBody
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/updateCategory"
+        required: true
+      x-codegen-request-body-name: UpdateCategory
+      responses:
+        '200':
+          $ref: "#/components/responses/200_UpdateCategory"
+          description: sucessful action
+        '401':
+          $ref: "#/components/responses/401_Unauthorized"
+          description: user not authorized
+        '400':
+          $ref: "#/components/responses/400_InvalidID"
+          description: Invalid ID value
+
+  /v1/categories/{category-id}:
+    get:
+      tags:
+        - categories
+      summary: Finds user by category-id
+      description: |
+        Simple getter interface used to get an existing category by its ID
+      operationId: Retreive category
+      security:
+        - sessionCookie: [ ]
+      parameters:
+        #header
+        - $ref: "#/components/headers/X-Request-ID"
+        #path
+        - $ref: "#/components/parameters/category-id"
+      responses:
+        '200':
+          description: successful operation
+          $ref: '#/components/responses/200_CategoryInfo'
+        '401':
+          $ref: "#/components/responses/401_Unauthorized"
+          description: user not authorized
+        '404':
+          $ref: "#/components/responses/404_NotFound"
+          description: Not found
+
+  /v1/categories/all:
+    get:
+      tags:
+        - categories
+      summary: List all categories
+      description: |
+        Simple getter interface used to get all categories
+      operationId: List categories
+      security:
+        - sessionCookie: [ ]
+      parameters:
+        #header
+        - $ref: "#/components/headers/X-Request-ID"
+      responses:
+        '200':
+          description: list of all users
+          $ref: '#/components/responses/200_CategoryInfoList'
+        '400':
+          $ref: "#/components/responses/400_InvalidID"
+          description: Invalid ID
+        '401':
+          $ref: "#/components/responses/401_Unauthorized"
+          description: user not authorized
+
+  /v1/categories/{category-id}/delete:
+    delete:
+      tags:
+        - categories
+      summary: Delete catgeory by id
+      description: |
+        Simple delete interface used to delete category by ID
+      operationId: Delete category
+      parameters:
+        #header
+        - $ref: "#/components/headers/X-Request-ID"
+        #path
+        - $ref: "#/components/parameters/category-id"
+      security:
+        - sessionCookie: [ ]
+      responses:
+        '200':
+          $ref: "#/components/responses/successfulDeleted"
+          description: successful operation
+        '400':
+          $ref: "#/components/responses/400_InvalidID"
+          description: Invalid ID supplied
+        '404':
+          $ref: "#/components/responses/404_NotFound"
+          description: Not found
+        '401':
+          $ref: "#/components/responses/401_Unauthorized"
+          description: user not authorized
+
+#--------------------------------
 
 
 components:
@@ -575,8 +722,8 @@ components:
       schema:
         type: string
 
-    categories-id:
-      name: categories_id
+    category-id:
+      name: category_id
       in: path
       required: true
       schema:
@@ -658,7 +805,7 @@ components:
           schema:
             type: array
             items:
-              $ref: "#/components/schemas/psuMessage"
+              $ref: "#/components/schemas/userMessage"
 
     401_Unauthorized:
       description: |
@@ -817,6 +964,72 @@ components:
             properties:
               bookInfo:
                 $ref: "#/components/schemas/LoanInfo"
+
+    #--------------CATEGORY-----------------
+
+    202_NewCategory:
+      description: |
+        The new created category. Only admin user can create new book-category and seed it in the database.
+      headers:
+        X-Request-ID:
+          $ref: "#/components/parameters/X-Request-ID"
+        SESSION-COOKIE:
+          $ref: "#/components/parameters/SESSION-COOKIE"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              newCategory:
+                $ref: "#/components/schemas/newCategory"
+
+    200_UpdateCategory:
+      description: |
+        The updated book-categroy. Only an admin can update a book-category.
+      headers:
+        X-Request-ID:
+          $ref: "#/components/parameters/X-Request-ID"
+        SESSION-COOKIE:
+          $ref: "#/components/parameters/SESSION-COOKIE"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              updateBook:
+                $ref: "#/components/schemas/updateCategory"
+
+    200_CategoryInfoList:
+      description: |
+        This object returns the list of all available book-categories.
+      headers:
+        X-Request-ID:
+          $ref: "#/components/parameters/X-Request-ID"
+        SESSION-COOKIE:
+          $ref: "#/components/parameters/SESSION-COOKIE"
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/categoryInfoList"
+
+    200_categoryInfo:
+      description: |
+        This object returns an available book-category list.
+      headers:
+        X-Request-ID:
+          $ref: "#/components/parameters/X-Request-ID"
+        SESSION-COOKIE:
+          $ref: "#/components/parameters/SESSION-COOKIE"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              bookInfo:
+                $ref: "#/components/schemas/categoryInfo"
+
 
   #-------------------------------
 
@@ -1023,6 +1236,63 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/loanInfo"
+
+    #------------CATEGORY--------------
+    newCategory:
+      title: New Category
+      type: object
+      required:
+        - categoryName
+        - numberOfBooksIn
+      properties:
+        categoryName:
+          type: string
+        numberOfBooksIn:
+          type: integer
+
+    updateCategory:
+      title: Category Update
+      type: object
+      required:
+        - categoryName
+        - numberOfBooksIn
+        - numberOfBooksOut
+      properties:
+        categoryName:
+          type: string
+        numberOfBooksIn:
+          type: integer
+        numberOfBooksOut:
+          type: integer
+
+    categoryInfo:
+      title: book-category Infos
+      type: object
+      required:
+        - categoryName
+        - numberOfBooksIn
+        - numberOfBooksOut
+      properties:
+        categoryName:
+          type: string
+        numberOfBooksIn:
+          type: integer
+        numberOfBooksOut:
+          type: integer
+
+    categoryInfoList:
+      title: list of book-categories
+      type: object
+      required:
+        - categories
+      properties:
+        books:
+          type: array
+          items:
+            $ref: "#/components/schemas/categoryInfo"
+
+    #----------------------------------
+
 
     errorResponse:
       title: ErrorResponse

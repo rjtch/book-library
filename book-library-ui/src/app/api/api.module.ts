@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 
 
 import { BooksService } from './api/books.service';
+import { CategoriesService } from './api/categories.service';
 import { LoansService } from './api/loans.service';
 import { UsersService } from './api/users.service';
 

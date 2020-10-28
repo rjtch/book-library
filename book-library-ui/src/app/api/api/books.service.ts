@@ -313,14 +313,18 @@ export class BooksService {
     /**
      * Update an existing book
      * Simple update interface used to update an existing user in the database 
+     * @param bookId 
      * @param updateBook update book requestBody
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateBook(updateBook: UpdateBook, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<InlineResponse2002>;
-    public updateBook(updateBook: UpdateBook, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<InlineResponse2002>>;
-    public updateBook(updateBook: UpdateBook, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<InlineResponse2002>>;
-    public updateBook(updateBook: UpdateBook, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+    public updateBook(bookId: string, updateBook: UpdateBook, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<InlineResponse2002>;
+    public updateBook(bookId: string, updateBook: UpdateBook, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<InlineResponse2002>>;
+    public updateBook(bookId: string, updateBook: UpdateBook, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<InlineResponse2002>>;
+    public updateBook(bookId: string, updateBook: UpdateBook, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (bookId === null || bookId === undefined) {
+            throw new Error('Required parameter bookId was null or undefined when calling updateBook.');
+        }
         if (updateBook === null || updateBook === undefined) {
             throw new Error('Required parameter updateBook was null or undefined when calling updateBook.');
         }
@@ -361,7 +365,7 @@ export class BooksService {
             responseType = 'text';
         }
 
-        return this.httpClient.put<InlineResponse2002>(`${this.configuration.basePath}/v1/books/update`,
+        return this.httpClient.put<InlineResponse2002>(`${this.configuration.basePath}/v1/books/${encodeURIComponent(String(bookId))}/update`,
             updateBook,
             {
                 responseType: <any>responseType,

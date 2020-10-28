@@ -17,15 +17,13 @@ import { HttpClient, HttpHeaders, HttpParams,
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
+import { CategoryInfoList } from '../model/models';
 import { ErrorResponse } from '../model/models';
-import { InlineResponse200 } from '../model/models';
-import { InlineResponse2001 } from '../model/models';
-import { InlineResponse202 } from '../model/models';
+import { InlineResponse2005 } from '../model/models';
+import { InlineResponse2023 } from '../model/models';
 import { InlineResponse401 } from '../model/models';
-import { LoginRequest } from '../model/models';
-import { NewUser } from '../model/models';
-import { UpdateUser } from '../model/models';
-import { UserList } from '../model/models';
+import { NewCategory } from '../model/models';
+import { UpdateCategory } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -35,7 +33,7 @@ import { Configuration }                                     from '../configurat
 @Injectable({
   providedIn: 'root'
 })
-export class UsersService {
+export class CategoriesService {
 
     protected basePath = 'http://localhost';
     public defaultHeaders = new HttpHeaders();
@@ -94,18 +92,18 @@ export class UsersService {
     }
 
     /**
-     * Delete user by id
-     * Simple delete interface used to delete user by ID 
-     * @param userId 
+     * Delete catgeory by id
+     * Simple delete interface used to delete category by ID 
+     * @param categoryId 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public _delete(userId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<any>;
-    public _delete(userId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<any>>;
-    public _delete(userId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<any>>;
-    public _delete(userId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (userId === null || userId === undefined) {
-            throw new Error('Required parameter userId was null or undefined when calling _delete.');
+    public deleteCategory(categoryId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<any>;
+    public deleteCategory(categoryId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<any>>;
+    public deleteCategory(categoryId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<any>>;
+    public deleteCategory(categoryId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (categoryId === null || categoryId === undefined) {
+            throw new Error('Required parameter categoryId was null or undefined when calling deleteCategory.');
         }
 
         let headers = this.defaultHeaders;
@@ -135,7 +133,7 @@ export class UsersService {
             responseType = 'text';
         }
 
-        return this.httpClient.delete<any>(`${this.configuration.basePath}/v1/users/${encodeURIComponent(String(userId))}/delete`,
+        return this.httpClient.delete<any>(`${this.configuration.basePath}/v1/categories/${encodeURIComponent(String(categoryId))}/delete`,
             {
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,
@@ -147,15 +145,15 @@ export class UsersService {
     }
 
     /**
-     * List all users
-     * Simple getter interface used to get all users 
+     * List all categories
+     * Simple getter interface used to get all categories 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public list(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Array<UserList>>;
-    public list(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Array<UserList>>>;
-    public list(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Array<UserList>>>;
-    public list(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+    public listCategories(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Array<CategoryInfoList>>;
+    public listCategories(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Array<CategoryInfoList>>>;
+    public listCategories(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Array<CategoryInfoList>>>;
+    public listCategories(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -184,7 +182,7 @@ export class UsersService {
             responseType = 'text';
         }
 
-        return this.httpClient.get<Array<UserList>>(`${this.configuration.basePath}/v1/users/all`,
+        return this.httpClient.get<Array<CategoryInfoList>>(`${this.configuration.basePath}/v1/categories/all`,
             {
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,
@@ -196,127 +194,18 @@ export class UsersService {
     }
 
     /**
-     * Logs user into the system
-     * @param loginRequest Login request
+     * create new categories
+     * Simple create interface used to create a new book-category in the databse 
+     * @param newCategory Create user requestBody
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public logInPost(loginRequest: LoginRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<InlineResponse2001>;
-    public logInPost(loginRequest: LoginRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<InlineResponse2001>>;
-    public logInPost(loginRequest: LoginRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<InlineResponse2001>>;
-    public logInPost(loginRequest: LoginRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (loginRequest === null || loginRequest === undefined) {
-            throw new Error('Required parameter loginRequest was null or undefined when calling logInPost.');
-        }
-
-        let headers = this.defaultHeaders;
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        // to determine the Content-Type header
-        const consumes: string[] = [
-            'application/json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
-        if (httpContentTypeSelected !== undefined) {
-            headers = headers.set('Content-Type', httpContentTypeSelected);
-        }
-
-        let responseType: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType = 'text';
-        }
-
-        return this.httpClient.post<InlineResponse2001>(`${this.configuration.basePath}/v1/users/token`,
-            loginRequest,
-            {
-                responseType: <any>responseType,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * Logout user into the system
-     * Simple logout interface used to delete user by ID 
-     * @param userId 
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public logout(userId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<any>;
-    public logout(userId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<any>>;
-    public logout(userId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<any>>;
-    public logout(userId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (userId === null || userId === undefined) {
-            throw new Error('Required parameter userId was null or undefined when calling logout.');
-        }
-
-        let headers = this.defaultHeaders;
-
-        // authentication (sessionCookie) required
-        if (this.configuration.apiKeys) {
-            const key: string | undefined = this.configuration.apiKeys["sessionCookie"] || this.configuration.apiKeys["null"];
-            if (key) {
-            }
-        }
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        let responseType: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType = 'text';
-        }
-
-        return this.httpClient.post<any>(`${this.configuration.basePath}/v1/users/${encodeURIComponent(String(userId))}/logout`,
-            null,
-            {
-                responseType: <any>responseType,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * create new users
-     * Simple create interface used to create a new user in the databse 
-     * @param newUser Create user requestBody
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public newUser(newUser: NewUser, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<InlineResponse202>;
-    public newUser(newUser: NewUser, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<InlineResponse202>>;
-    public newUser(newUser: NewUser, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<InlineResponse202>>;
-    public newUser(newUser: NewUser, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (newUser === null || newUser === undefined) {
-            throw new Error('Required parameter newUser was null or undefined when calling newUser.');
+    public newCategory(newCategory: NewCategory, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<InlineResponse2023>;
+    public newCategory(newCategory: NewCategory, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<InlineResponse2023>>;
+    public newCategory(newCategory: NewCategory, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<InlineResponse2023>>;
+    public newCategory(newCategory: NewCategory, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (newCategory === null || newCategory === undefined) {
+            throw new Error('Required parameter newCategory was null or undefined when calling newCategory.');
         }
 
         let headers = this.defaultHeaders;
@@ -355,8 +244,8 @@ export class UsersService {
             responseType = 'text';
         }
 
-        return this.httpClient.post<InlineResponse202>(`${this.configuration.basePath}/v1/users/create`,
-            newUser,
+        return this.httpClient.post<InlineResponse2023>(`${this.configuration.basePath}/v1/categories/create`,
+            newCategory,
             {
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,
@@ -368,18 +257,18 @@ export class UsersService {
     }
 
     /**
-     * Finds user by user-id
-     * Simple getter interface used to get an existing user by its ID 
-     * @param userId 
+     * Finds user by category-id
+     * Simple getter interface used to get an existing category by its ID 
+     * @param categoryId 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public retreive(userId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<InlineResponse2001>;
-    public retreive(userId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<InlineResponse2001>>;
-    public retreive(userId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<InlineResponse2001>>;
-    public retreive(userId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (userId === null || userId === undefined) {
-            throw new Error('Required parameter userId was null or undefined when calling retreive.');
+    public retreiveCategory(categoryId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<any>;
+    public retreiveCategory(categoryId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<any>>;
+    public retreiveCategory(categoryId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<any>>;
+    public retreiveCategory(categoryId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (categoryId === null || categoryId === undefined) {
+            throw new Error('Required parameter categoryId was null or undefined when calling retreiveCategory.');
         }
 
         let headers = this.defaultHeaders;
@@ -409,7 +298,7 @@ export class UsersService {
             responseType = 'text';
         }
 
-        return this.httpClient.get<InlineResponse2001>(`${this.configuration.basePath}/v1/users/${encodeURIComponent(String(userId))}`,
+        return this.httpClient.get<any>(`${this.configuration.basePath}/v1/categories/${encodeURIComponent(String(categoryId))}`,
             {
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,
@@ -421,22 +310,22 @@ export class UsersService {
     }
 
     /**
-     * Update an existing user
-     * Simple update interface used to update an existing user in the database 
-     * @param userId 
-     * @param updateUser update user requestBody
+     * Update an existing category
+     * Simple update interface used to update an existing category in the database 
+     * @param categoryId 
+     * @param updateCategory update category requestBody
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public update(userId: string, updateUser: UpdateUser, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<InlineResponse200>;
-    public update(userId: string, updateUser: UpdateUser, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<InlineResponse200>>;
-    public update(userId: string, updateUser: UpdateUser, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<InlineResponse200>>;
-    public update(userId: string, updateUser: UpdateUser, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (userId === null || userId === undefined) {
-            throw new Error('Required parameter userId was null or undefined when calling update.');
+    public updateCategories(categoryId: string, updateCategory: UpdateCategory, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<InlineResponse2005>;
+    public updateCategories(categoryId: string, updateCategory: UpdateCategory, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<InlineResponse2005>>;
+    public updateCategories(categoryId: string, updateCategory: UpdateCategory, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<InlineResponse2005>>;
+    public updateCategories(categoryId: string, updateCategory: UpdateCategory, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (categoryId === null || categoryId === undefined) {
+            throw new Error('Required parameter categoryId was null or undefined when calling updateCategories.');
         }
-        if (updateUser === null || updateUser === undefined) {
-            throw new Error('Required parameter updateUser was null or undefined when calling update.');
+        if (updateCategory === null || updateCategory === undefined) {
+            throw new Error('Required parameter updateCategory was null or undefined when calling updateCategories.');
         }
 
         let headers = this.defaultHeaders;
@@ -475,8 +364,8 @@ export class UsersService {
             responseType = 'text';
         }
 
-        return this.httpClient.put<InlineResponse200>(`${this.configuration.basePath}/v1/users/${encodeURIComponent(String(userId))}/update`,
-            updateUser,
+        return this.httpClient.put<InlineResponse2005>(`${this.configuration.basePath}/v1/categories/${encodeURIComponent(String(categoryId))}/update`,
+            updateCategory,
             {
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,
