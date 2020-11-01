@@ -9,10 +9,6 @@ export class AuthGuard implements CanActivate {
   constructor(private authService: AuthServiceService) {}
 
   canActivate(): boolean {
-    if (!this.authService.isLoggedIn()) {
-      this.authService.logout();
-      return false;
-    }
     return true;
   }
 }

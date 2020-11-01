@@ -1,8 +1,10 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {RoutingPath} from './models/RoutingPath';
-import {Routes} from '@angular/router';
+import {RouterModule, Routes} from '@angular/router';
 import {LoginComponent} from './login/login.component';
+import {AuthGuard} from './guards/authGuard';
+import {GuestGuard} from './guards/guest.guard';
 
 const routes: Routes = [
   {
@@ -13,12 +15,12 @@ const routes: Routes = [
   {
     path: RoutingPath.LOGIN,
     component: LoginComponent,
-//    canActivate: [GuestGuard]
+    canActivate: [GuestGuard]
   },
   {
     path: RoutingPath.BOOK_SEARCH,
-//    canActivate: [AuthGuard],
-      loadChildren: () => import('./home/home.module').then((m) => m.HomeModule)
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./home/home.module').then((m) => m.HomeModule)
   },
   {
     path: '**',
@@ -27,11 +29,8 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  /*  imports: [RouterModule.forRoot(routes, { enableTracing: false, paramsInheritanceStrategy: 'always' })],
-    exports: [RouterModule]*/
-  imports: [
-    CommonModule
-  ],
+  imports: [CommonModule, RouterModule.forRoot(routes, {enableTracing: false, paramsInheritanceStrategy: 'always'})],
   declarations: []
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}

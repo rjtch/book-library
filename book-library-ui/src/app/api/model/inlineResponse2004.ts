@@ -13,6 +13,6 @@ import { LoanInfo } from './loanInfo';
 
 
 export interface InlineResponse2004 { 
-    bookInfo?: LoanInfo;
+    LoanInfo?: LoanInfo;
 }
 

@@ -882,7 +882,7 @@ components:
           schema:
             type: array
             items:
-              $ref: "#/components/schemas/bookList"
+              $ref: "#/components/schemas/bookInfoList"
 
     200_BookInfo:
       description: |
@@ -962,7 +962,7 @@ components:
           schema:
             type: object
             properties:
-              bookInfo:
+              LoanInfo:
                 $ref: "#/components/schemas/LoanInfo"
 
     #--------------CATEGORY-----------------
@@ -1027,7 +1027,7 @@ components:
           schema:
             type: object
             properties:
-              bookInfo:
+              categoryInfo:
                 $ref: "#/components/schemas/categoryInfo"
 
 

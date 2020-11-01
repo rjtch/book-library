@@ -8,6 +8,17 @@ import {CommonModule} from '@angular/common';
 import {AppRoutingModule} from './app-routing.module';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
+
+/*export function apiConfigFactory(): Configuration {
+  const params: ConfigurationParameters = {
+    basePath: environment.BOOK_LIBRARY_API,
+    withCredentials: true
+  };
+
+  return new Configuration(params);
+}*/
+
+
 @NgModule({
   declarations: [
     AppComponent,
