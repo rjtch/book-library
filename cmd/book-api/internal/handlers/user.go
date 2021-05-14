@@ -18,7 +18,8 @@ const (
 	AllowCredentialsKey        = "Access-Control-Allow-Credentials"
 	AllowHeadersKey            = "Access-Control-Allow-Headers"
 	// default names for cookies and headers
-	defaultJWTCookieName = "SESSION-COOKIE"
+	defaultJWTCookieName = "session-cookie"
+	defaultXsrfToken     = "x-xsrf-token"
 	OriginKey            = "Origin"
 )
 
@@ -262,12 +263,11 @@ func (u *User) TokenAuthenticator(ctx context.Context, w http.ResponseWriter, r 
 	// Authorization header, if the request uses HTTP Basic Authentication.
 	email, pass, ok := r.BasicAuth()
 	if !ok {
-		err := errors.New("must provide valide email and password for authentication")
+		err := errors.New("must provide valid email and password for authentication")
 		return web.NewRequestError(err, http.StatusUnauthorized)
 	}
 
 	claims, err := users.Authenticate(ctx, u.Db, v.Now, email, pass)
-
 	if err != nil {
 		switch err {
 		case users.ErrAuthenticationFailure:
@@ -281,8 +281,9 @@ func (u *User) TokenAuthenticator(ctx context.Context, w http.ResponseWriter, r 
 		Token string `json:"token"`
 	}
 
-	tk.Token, err = u.authenticator.GenerateToken(claims)
+//	csrf.CookieName(defaultXsrfToken)
 
+	tk.Token, err = u.authenticator.GenerateToken(claims)
 	if err != nil {
 		return errors.Wrap(err, "generating token")
 	}
@@ -301,9 +302,12 @@ func (u *User) TokenAuthenticator(ctx context.Context, w http.ResponseWriter, r 
 
 	// Set the content type and headers once we know marshaling has succeeded.
 	w.Header().Set("Content-Type", "application/json")
+	//set the hidden x-xsrf-token header
+	w.Header().Add(defaultXsrfToken, claims.Csrf)
+
 	enableCors(&w)
 
-	return web.Respond(ctx, w, "YOUR ACCESS WAS GRANTED", http.StatusOK)
+	return web.Respond(ctx, w, "YOUR ACCESS HAS BEEN GRANTED", http.StatusOK)
 }
 
 //RefreshToken refreshes a given claims by issuing a new token
@@ -337,7 +341,6 @@ func (u *User) RefreshToken(ctx context.Context, w http.ResponseWriter, r *http.
 	cookie.Expires = time.Unix(claims.ExpiresAt, 0)
 
 	//add cookies back int the header
-	//TODO check also how to manage for xsrf-token
 	http.SetCookie(w, cookie)
 	return web.Respond(ctx, w, "Refreshed token", http.StatusOK)
 }
@@ -346,7 +349,6 @@ func (u *User) Logout(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	ctx, span := trace.StartSpan(ctx, "handlers.users.Logout")
 	defer span.End()
 
-	//TODO put user_id in the url after logged in
 	_, ok := ctx.Value(web.KeyValues).(*web.Values)
 	if !ok {
 		return web.NewShutdownError("web value missing from context")

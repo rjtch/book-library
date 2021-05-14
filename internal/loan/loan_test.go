@@ -2,6 +2,9 @@ package loans_test
 
 import (
 	"fmt"
+	"testing"
+	"time"
+
 	category "github.com/book-library/internal/book-category"
 	"github.com/book-library/internal/books"
 	loans "github.com/book-library/internal/loan"
@@ -9,8 +12,6 @@ import (
 	"github.com/book-library/internal/tests"
 	"github.com/google/go-cmp/cmp"
 	"github.com/pkg/errors"
-	"testing"
-	"time"
 )
 
 func TestLoan(t *testing.T) {
@@ -27,16 +28,17 @@ func TestLoan(t *testing.T) {
 
 			// claims is information about the person making the request.
 			claims := auth.NewClaims(
-				"718ffbea-f4a1-4667-8ae3-b349da52675e", // This is just some random UUID.
+				auth.RoleAdmin,
 				[]string{auth.RoleAdmin, auth.RoleUser},
 				now, time.Hour,
+				"718ffbea-f4a1-4667-8ae3-b349da52675e", // This is just some random UUID.
 			)
 
 			newcat := category.NewBookCategory{
 				CategoryName:     "computer-science",
 				NumberOfBooksIn:  3,
 				NumberOfBooksOut: 0,
-				DateCreated: now,
+				DateCreated:      now,
 			}
 
 			//test category creation
@@ -76,7 +78,6 @@ func TestLoan(t *testing.T) {
 				BookQuantity: 1,
 			}
 
-
 			bks, errB := books.List(ctx, db)
 			if errB != nil {
 				t.Fatalf("\t%s\tShould be able to retreive loan : %s.", tests.Failed, err)
@@ -84,14 +85,14 @@ func TestLoan(t *testing.T) {
 			}
 
 			//test loan creation
-			 ln, err := loans.InitNewLoan(ctx, claims, nl, now, nl.BookID, db)
-			 if err != nil {
+			ln, err := loans.InitNewLoan(ctx, claims, nl, now, nl.BookID, db)
+			if err != nil {
 				t.Fatalf("\t%s\tShould be able to create new loan : %s.", tests.Failed, err)
 			}
 			t.Logf("\t%s\tShould be able to create new loan.", tests.Success)
 
 			//test loan retrieve
-			savedl, err := loans.Retrieve(ctx, claims, ln.ID, db)
+			savedl, err := loans.Retrieve(ctx, claims, ln.ID, db, ln.ID)
 			if err != nil {
 				t.Fatalf("\t%s\tShould be able to retreive loan : %s.", tests.Failed, err)
 			}
@@ -105,7 +106,7 @@ func TestLoan(t *testing.T) {
 
 			ul := loans.UpdateLoan{
 				BookISBN:     tests.StringPointer("bcn22"),
-				ReturnDate:  tests.DatePointer(now.Add(30).UTC()),
+				ReturnDate:   tests.DatePointer(now.Add(30).UTC()),
 				BookQuantity: tests.IntPointer(savedl.BookQuantity),
 			}
 
@@ -116,7 +117,7 @@ func TestLoan(t *testing.T) {
 			t.Logf("\t%s\tShould get back the updated loan.", tests.Success)
 
 			//test retrieve updated loan
-			uln, err := loans.Retrieve(ctx, claims, savedl.ID, db)
+			uln, err := loans.Retrieve(ctx, claims, savedl.ID, db, *ul.BookISBN)
 			if err != nil {
 				t.Fatalf("\t%s\tShould be able to retreive loan : %s.", tests.Failed, err)
 			}
@@ -131,14 +132,14 @@ func TestLoan(t *testing.T) {
 			}
 
 			//test delete loan
-			if err := loans.EndUpALoan(ctx, claims, now ,uln.ID, db); err != nil {
+			if err := loans.EndUpALoan(ctx, claims, now, uln.ID, db); err != nil {
 				t.Fatalf("\t%s\tShould be able to delete loan : %s.", tests.Failed, err)
 			}
 			t.Logf("\t%s\tShould be able to delete loan.", tests.Success)
 
 			//test check if loan is retrievable
-			savedl, err = loans.Retrieve(ctx, claims, uln.ID, db)
-			if errors.Cause(err) != loans.ErrNotFound  {
+			savedl, err = loans.Retrieve(ctx, claims, uln.ID, db, uln.ID)
+			if errors.Cause(err) != loans.ErrNotFound {
 				t.Fatalf("\t%s\tShould be able NOT to retreive loan : %s.", tests.Failed, err)
 			}
 			t.Logf("\t%s\tShould NOT be able to retreive loan.", tests.Success)

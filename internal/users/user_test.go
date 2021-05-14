@@ -1,13 +1,14 @@
 package users_test
 
 import (
+	"testing"
+	"time"
+
 	"github.com/book-library/internal/platform/auth"
 	"github.com/book-library/internal/tests"
 	"github.com/book-library/internal/users"
 	"github.com/google/go-cmp/cmp"
 	"github.com/pkg/errors"
-	"testing"
-	"time"
 )
 
 // TestUser validates the full set of CRUD operations on User values.
@@ -24,9 +25,10 @@ func TestUser(t *testing.T) {
 
 			// claims is information about the person making the request.
 			claims := auth.NewClaims(
-				"718ffbea-f4a1-4667-8ae3-b349da52675e", // This is just some random UUID.
+				auth.RoleAdmin,
 				[]string{auth.RoleAdmin, auth.RoleUser},
 				now, time.Hour,
+				"718ffbea-f4a1-4667-8ae3-b349da52675e", // This is just some random UUID.
 			)
 
 			nu := users.NewUser{

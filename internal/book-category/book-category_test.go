@@ -24,11 +24,11 @@ func TestCategory(t *testing.T) {
 
 			// claims is information about the person making the request.
 			claims := auth.NewClaims(
-				"718ffbea-f4a1-4667-8ae3-b349da52675e", // This is just some random UUID.
-				[]string{auth.RoleAdmin},
+				auth.RoleAdmin,
+				[]string{auth.RoleAdmin, auth.RoleUser},
 				now, time.Hour,
+				"718ffbea-f4a1-4667-8ae3-b349da52675e", // This is just some random UUID.
 			)
-
 			newcat := category.NewBookCategory{
 				CategoryName:     "computer-science",
 				NumberOfBooksIn:  1,

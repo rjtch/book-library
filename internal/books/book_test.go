@@ -1,13 +1,14 @@
 package books_test
 
 import (
+	"testing"
+	"time"
+
 	"github.com/book-library/internal/books"
 	"github.com/book-library/internal/platform/auth"
 	"github.com/book-library/internal/tests"
 	"github.com/google/go-cmp/cmp"
 	"github.com/pkg/errors"
-	"testing"
-	"time"
 )
 
 // TestBook validates the full set the CRUD operations on Book values
@@ -24,9 +25,10 @@ func TestBook(t *testing.T) {
 
 			// claims is information about the person making the request.
 			claims := auth.NewClaims(
-				"718ffbea-f4a1-4667-8ae3-b349da52675e", // This is just some random UUID.
+				auth.RoleAdmin,
 				[]string{auth.RoleAdmin, auth.RoleUser},
 				now, time.Hour,
+				"718ffbea-f4a1-4667-8ae3-b349da52675e", // This is just some random UUID.
 			)
 
 			nb := books.NewBook{
@@ -60,8 +62,8 @@ func TestBook(t *testing.T) {
 
 			udbk := books.UpdateBook{
 				Description: tests.StringPointer("Learn go the simplest way in 1 month"),
-				Authors: tests.StringPointer("Bill Kennedy"),
-				Category: tests.StringPointer("computer-science"),
+				Authors:     tests.StringPointer("Bill Kennedy"),
+				Category:    tests.StringPointer("computer-science"),
 				Quantity:    tests.IntPointer(3),
 				DateUpdated: tests.DatePointer(now),
 			}
@@ -94,7 +96,7 @@ func TestBook(t *testing.T) {
 
 			//test check if book is retrievable
 			savedBk, err = books.Retrieve(ctx, bk.ID, db)
-			if errors.Cause(err) != books.ErrNotFound  {
+			if errors.Cause(err) != books.ErrNotFound {
 				t.Fatalf("\t%s\tShould be able NOT to retreive book : %s.", tests.Failed, err)
 			}
 			t.Logf("\t%s\tShould NOT be able to delete book.", tests.Success)

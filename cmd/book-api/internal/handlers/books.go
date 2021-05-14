@@ -20,15 +20,15 @@ type Book struct {
 
 //List returns all the existing Book from the system to the world
 func (b *Book) List(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
-	ctx, span := trace.StartSpan(ctx, "handlers.books.List")
+	ctx, span := trace.StartSpan(ctx, "handlers.list.List")
 	defer span.End()
 
-	books, err := books.List(ctx, b.db)
+	list, err := books.List(ctx, b.db)
 	if err != nil {
 		return err
 	}
 
-	return web.Respond(ctx, w, books, http.StatusOK)
+	return web.Respond(ctx, w, list, http.StatusOK)
 }
 
 //Retrieve returns the value of a specified Book from the system to the world
@@ -47,6 +47,27 @@ func (b *Book) Retrieve(ctx context.Context, w http.ResponseWriter, r *http.Requ
 			return web.NewRequestError(err, http.StatusNotFound)
 		default:
 			return errors.Wrapf(err, "ID: %s", params["id"])
+		}
+	}
+	return web.Respond(ctx, w, book, http.StatusOK)
+}
+
+//Retrieve returns the value of a specified Book from the system to the world
+func (b *Book) RetrieveByTitle(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
+	ctx, span := trace.StartSpan(ctx, "handlers.books.Retrieve")
+	defer span.End()
+
+	book, err := books.RetrieveByTitle(ctx, params["title"], b.db)
+	if err != nil {
+		switch err {
+		case books.ErrForbidden:
+			return web.NewRequestError(err, http.StatusForbidden)
+		case books.ErrInvalidID:
+			return web.NewRequestError(err, http.StatusBadRequest)
+		case books.ErrNotFound:
+			return web.NewRequestError(err, http.StatusNotFound)
+		default:
+			return errors.Wrapf(err, "title: %s", params["title"])
 		}
 	}
 	return web.Respond(ctx, w, book, http.StatusOK)
