@@ -23,7 +23,7 @@ type NewUser struct {
 	Email           string   `json:"email" validate:"required"`
 	Roles           []string `json:"roles" validate:"required"`
 	Password        string   `json:"password" validate:"required"`
-//	PasswordConfirm string   `json:"password_confirm" validate:"eqfield=Password"`
+	PasswordConfirm string   `json:"password_confirm" validate:"eqfield=Password"`
 }
 
 // UpdateUser defines what information may be provided to modify an existing

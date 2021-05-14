@@ -41,13 +41,10 @@ paths:
       responses:
         '202':
           $ref: "#/components/responses/202_NewUser"
-          description: sucessful action
         '401':
           $ref: "#/components/responses/401_Unauthorized"
-          description: user not authorized
         '400':
           $ref: "#/components/responses/400_InvalidID"
-          description: Invalid ID value
 
   /v1/users/{user-id}/update:
     put:
@@ -75,13 +72,10 @@ paths:
       responses:
         '200':
           $ref: "#/components/responses/200_UpdateUser"
-          description: sucessful action
         '401':
           $ref: "#/components/responses/401_Unauthorized"
-          description: user not authorized
         '400':
           $ref: "#/components/responses/400_InvalidID"
-          description: Invalid ID value
 
   /v1/users/{user-id}:
     get:
@@ -100,14 +94,11 @@ paths:
         - $ref: "#/components/parameters/user-id"
       responses:
         '200':
-          description: successful operation
           $ref: '#/components/responses/200_UserInfo'
         '401':
           $ref: "#/components/responses/401_Unauthorized"
-          description: user not authorized
         '404':
           $ref: "#/components/responses/404_NotFound"
-          description: Not found
 
   /v1/users/all:
     get:
@@ -124,14 +115,11 @@ paths:
         - $ref: "#/components/headers/X-Request-ID"
       responses:
         '200':
-          description: list of all users
           $ref: '#/components/responses/200_UserInfoList'
         '400':
           $ref: "#/components/responses/400_InvalidID"
-          description: Invalid ID
         '401':
           $ref: "#/components/responses/401_Unauthorized"
-          description: user not authorized
 
   /v1/users/{user-id}/delete:
     delete:
@@ -151,16 +139,12 @@ paths:
       responses:
         '200':
           $ref: "#/components/responses/successfulDeleted"
-          description: successful operation
         '400':
           $ref: "#/components/responses/400_InvalidID"
-          description: Invalid ID supplied
         '404':
           $ref: "#/components/responses/404_NotFound"
-          description: Not found
         '401':
           $ref: "#/components/responses/401_Unauthorized"
-          description: user not authorized
 
   /v1/users/token:
     post:
@@ -233,13 +217,10 @@ paths:
       responses:
         '202':
           $ref: "#/components/responses/202_NewBook"
-          description: sucessful action
         '401':
           $ref: "#/components/responses/401_Unauthorized"
-          description: entity not authorized
         '400':
           $ref: "#/components/responses/400_InvalidID"
-          description: Invalid ID value
 
   /v1/books/{book-id}/update:
     put:
@@ -267,13 +248,10 @@ paths:
       responses:
         '200':
           $ref: "#/components/responses/200_UpdateBook"
-          description: sucessful action
         '401':
           $ref: "#/components/responses/401_Unauthorized"
-          description: user not authorized
         '400':
           $ref: "#/components/responses/400_InvalidID"
-          description: Invalid ID value
 
   /v1/books/{book-id}:
     get:
@@ -292,14 +270,13 @@ paths:
         - $ref: "#/components/parameters/book-id"
       responses:
         '200':
-          description: successful operation
           $ref: '#/components/responses/200_BookInfo'
         '401':
           $ref: "#/components/responses/401_Unauthorized"
-          description: user not authorized
+
         '404':
           $ref: "#/components/responses/404_NotFound"
-          description: Not found
+
 
   /v1/books/all:
     get:
@@ -316,14 +293,12 @@ paths:
         - $ref: "#/components/headers/X-Request-ID"
       responses:
         '200':
-          description: list of all books
           $ref: '#/components/responses/200_BookInfoList'
         '400':
           $ref: "#/components/responses/400_InvalidID"
-          description: Invalid ID
         '401':
           $ref: "#/components/responses/401_Unauthorized"
-          description: user not authorized
+
 
   /v1/books/{book-id}/delete:
     delete:
@@ -343,16 +318,12 @@ paths:
       responses:
         '200':
           $ref: "#/components/responses/successfulDeleted"
-          description: successful operation
         '400':
           $ref: "#/components/responses/400_InvalidID"
-          description: Invalid ID supplied
         '404':
           $ref: "#/components/responses/404_NotFound"
-          description: Not found
         '401':
           $ref: "#/components/responses/401_Unauthorized"
-          description: user not authorized
 
   #---------LOAN--------
 
@@ -382,13 +353,10 @@ paths:
       responses:
         '202':
           $ref: "#/components/responses/202_NewLoan"
-          description: sucessful action
         '401':
           $ref: "#/components/responses/401_Unauthorized"
-          description: entity not authorized
         '400':
           $ref: "#/components/responses/400_InvalidID"
-          description: Invalid ID value
 
   /v1/loans/{user-id}/update/{loan-id}:
     put:
@@ -417,13 +385,10 @@ paths:
       responses:
         '200':
           $ref: "#/components/responses/200_UpdateLon"
-          description: sucessful action
         '401':
           $ref: "#/components/responses/401_Unauthorized"
-          description: user not authorized
         '400':
           $ref: "#/components/responses/400_InvalidID"
-          description: Invalid ID value
 
   /v1/loans/{user-id}/retrieve/{loan-id}:
     get:
@@ -443,14 +408,11 @@ paths:
         - $ref: "#/components/parameters/loan-id"
       responses:
         '200':
-          description: successful operation
           $ref: '#/components/responses/200_LoanInfo'
         '401':
           $ref: "#/components/responses/401_Unauthorized"
-          description: user not authorized
         '404':
           $ref: "#/components/responses/404_NotFound"
-          description: Not found
 
   /v1/loans/{user-id}/all:
     get:
@@ -469,14 +431,11 @@ paths:
         - $ref: "#/components/parameters/user-id"
       responses:
         '200':
-          description: list of all loans
           $ref: '#/components/responses/200_LoanInfoList'
         '400':
           $ref: "#/components/responses/400_InvalidID"
-          description: Invalid ID
         '401':
           $ref: "#/components/responses/401_Unauthorized"
-          description: user not authorized
 
   /v1/loans/{user-id}/delete/{loan-id}:
     delete:
@@ -497,16 +456,12 @@ paths:
       responses:
         '200':
           $ref: "#/components/responses/successfulDeleted"
-          description: successful operation
         '400':
           $ref: "#/components/responses/400_InvalidID"
-          description: Invalid ID supplied
         '404':
           $ref: "#/components/responses/404_NotFound"
-          description: Not found
         '401':
           $ref: "#/components/responses/401_Unauthorized"
-          description: user not authorized
 
   #-------------CATEGORIES---------
 
@@ -534,13 +489,10 @@ paths:
       responses:
         '202':
           $ref: "#/components/responses/202_NewCategory"
-          description: sucessful action
         '401':
           $ref: "#/components/responses/401_Unauthorized"
-          description: user not authorized
         '400':
           $ref: "#/components/responses/400_InvalidID"
-          description: Invalid ID value
 
   /v1/categories/{category-id}/update:
     put:
@@ -568,13 +520,10 @@ paths:
       responses:
         '200':
           $ref: "#/components/responses/200_UpdateCategory"
-          description: sucessful action
         '401':
           $ref: "#/components/responses/401_Unauthorized"
-          description: user not authorized
         '400':
           $ref: "#/components/responses/400_InvalidID"
-          description: Invalid ID value
 
   /v1/categories/{category-id}:
     get:
@@ -594,13 +543,10 @@ paths:
       responses:
         '200':
           description: successful operation
-          $ref: '#/components/responses/200_CategoryInfo'
         '401':
           $ref: "#/components/responses/401_Unauthorized"
-          description: user not authorized
         '404':
           $ref: "#/components/responses/404_NotFound"
-          description: Not found
 
   /v1/categories/all:
     get:
@@ -617,14 +563,11 @@ paths:
         - $ref: "#/components/headers/X-Request-ID"
       responses:
         '200':
-          description: list of all users
           $ref: '#/components/responses/200_CategoryInfoList'
         '400':
           $ref: "#/components/responses/400_InvalidID"
-          description: Invalid ID
         '401':
           $ref: "#/components/responses/401_Unauthorized"
-          description: user not authorized
 
   /v1/categories/{category-id}/delete:
     delete:
@@ -644,16 +587,12 @@ paths:
       responses:
         '200':
           $ref: "#/components/responses/successfulDeleted"
-          description: successful operation
         '400':
           $ref: "#/components/responses/400_InvalidID"
-          description: Invalid ID supplied
         '404':
           $ref: "#/components/responses/404_NotFound"
-          description: Not found
         '401':
           $ref: "#/components/responses/401_Unauthorized"
-          description: user not authorized
 
 #--------------------------------
 
@@ -663,14 +602,13 @@ components:
     sessionCookie:
       type: apiKey
       in: cookie
-      name:
+      name: sessionCookie
       description: >
         keeps the connection between the UI and the server and it sets in cookies in the header-response in the browser and
         is used to verified the identity of the sender each time he calls the server.
 
   headers:
     X-Request-ID:
-      name: X-Request-ID
       required: true
       description: |
         In Golang a Unique ID is used in the context-structure to make sure
@@ -680,7 +618,6 @@ components:
         type: string
         format: uuid
     Set-SessionCookie:
-      name: Set-Cookie
       description: |
         SessionCookie used to maintain the login session between the frontend and the backend and  is validated using a so called
         X-XSRF-TOKEN sent with the request header.
@@ -694,7 +631,7 @@ components:
 
   parameters:
     SESSION-COOKIE:
-      name:
+      name: sessionCookie
       required: true
       in: header
       schema:
@@ -775,7 +712,7 @@ components:
           schema:
             type: array
             items:
-              $ref: "#/components/schemas/userList"
+              $ref: "#/components/schemas/userInfoList"
 
     200_UserInfo:
       description: |
@@ -947,7 +884,7 @@ components:
           schema:
             type: array
             items:
-              $ref: "#/components/schemas/loanList"
+              $ref: "#/components/schemas/LoanInfoList"
 
     200_LoanInfo:
       description: |
@@ -1209,7 +1146,8 @@ components:
         bookIsbn:
           type: string
         returneDate:
-          type: date
+          type: string
+          format: date
 
     LoanInfo:
       title: Book Infos
@@ -1224,7 +1162,8 @@ components:
         bookIsbn:
           type: string
         returneDate:
-          type: date
+          type: string
+          format: date
 
     LoanInfoList:
       title: list of books

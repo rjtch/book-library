@@ -52,3 +52,12 @@ services:
     image: postgres:11.1-alpine
     ports:
       - 5432:5432
+
+#  book-lib-ui:
+#    container_name: book-lib-ui
+#    networks:
+#      - shared-network
+#    image:
+#    depends_on:
+#      - books-api
+#    restart: on-failure

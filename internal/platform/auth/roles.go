@@ -2,10 +2,9 @@ package auth
 
 import (
 	"fmt"
-	"time"
-
 	"github.com/dgrijalva/jwt-go"
 	"github.com/pkg/errors"
+	"time"
 )
 
 // These are the expected values for Claims.Roles.
@@ -29,14 +28,16 @@ const Key ctxKey = 1
 type Claims struct {
 	Roles []string `json:"roles"`
 	jwt.StandardClaims
+	Csrf string `json:"csrf"`
 }
 
 // NewClaims constructs a Claims value for the identified users. The Claims
 // expire within a specified duration of the provided time. Additional fields
 // of the Claims can be set after calling NewClaims is desired.
-func NewClaims(subject string, roles []string, now time.Time, expires time.Duration) Claims {
+func NewClaims(subject string, roles []string, now time.Time, expires time.Duration, csrf string) Claims {
 	c := Claims{
 		Roles: roles,
+		Csrf: csrf,
 		StandardClaims: jwt.StandardClaims{
 			Subject:   subject,
 			IssuedAt:  now.Unix(),

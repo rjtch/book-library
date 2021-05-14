@@ -1,0 +1,27 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">{{title}}</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div class="search">
+      <i class="fa fa-search form-control-feedback"></i>
+      <input
+        [formControl]="searchTerm"
+        autocomplete="off"
+        name="searchValue"
+        type="text"
+        class="form-control"
+        placeholder="Search"
+      />
+    </div>
+
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">Disabled</a>
+      </li>
+    </ul>
+
+  </div>
+</nav>

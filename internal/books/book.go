@@ -72,6 +72,24 @@ func Retrieve(ctx context.Context, id string, db *sqlx.DB) (*Book, error) {
 	return &b, nil
 }
 
+//Retrieve gets the specific book from the database
+func RetrieveByTitle(ctx context.Context, title string, db *sqlx.DB) (*Book, error) {
+	ctx, span := trace.StartSpan(ctx, "internal.book.RetrieveByTitle")
+	defer span.End()
+
+	var b Book
+	const q = `SELECT * FROM books WHERE title = $1`
+	if err := db.GetContext(ctx, &b, q, title); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, ErrNotFound
+		}
+
+		return nil, errors.Wrapf(err, "selecting category %q", title)
+	}
+
+	return &b, nil
+}
+
 // Create inserts a new book into the database.
 func Create(ctx context.Context, now time.Time, n NewBook, user auth.Claims, db *sqlx.DB) (*Book, error) {
 	ctx, span := trace.StartSpan(ctx, "internal.book.Create")

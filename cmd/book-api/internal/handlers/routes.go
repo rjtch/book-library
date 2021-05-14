@@ -48,6 +48,7 @@ func API(build string, shutdown chan os.Signal, log *log.Logger, db *sqlx.DB, au
 		db: db,
 	}
 	app.Handle("GET", "/v1/books/all", bk.List, mid.Authentication(authenticator))
+	app.Handle("GET", "/v1/books/title", bk.RetrieveByTitle, mid.Authentication(authenticator))
 	app.Handle("POST", "/v1/books/create", bk.Create, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
 	app.Handle("GET", "/v1/books/:id", bk.Retrieve, mid.Authentication(authenticator))
 	app.Handle("PUT", "/v1/books/:id/update", bk.Update, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
@@ -75,4 +76,3 @@ func API(build string, shutdown chan os.Signal, log *log.Logger, db *sqlx.DB, au
 
 	return app
 }
-

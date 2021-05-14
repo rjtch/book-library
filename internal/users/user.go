@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"github.com/book-library/internal/utils"
 	"time"
 
 	"github.com/book-library/internal/platform/auth"
@@ -27,13 +28,15 @@ var (
 	// anything goes wrong.
 	ErrAuthenticationFailure = errors.New("Authentication failed")
 
+	ErrGenerationFailure = errors.New("Authentication failed when generating csrf token")
+
 	// ErrForbidden occurs when a users tries to do something that is forbidden to them according to our access control policies.
 	ErrForbidden = errors.New("Attempted action is not allowed")
 )
 
 const (
-	defaultJWTCookieName  = "SESSION-COOKIE"
-	defaultXSRFCookieName = "XSRF-TOKEN"
+	defaultJWTCookieName = "Session-Cookie"
+	defaultXSRFCookieName       = "x-xsrf-token"
 )
 
 // List retrieves a list of existing users from the database.
@@ -237,9 +240,13 @@ func Authenticate(ctx context.Context, db *sqlx.DB, now time.Time, email, passwo
 		return auth.Claims{}, ErrAuthenticationFailure
 	}
 
+	csrf, err := utils.GenerateRandomString(32)
+	if err != nil {
+		return auth.Claims{}, ErrGenerationFailure
+	}
 	// If we are this far the request is valid. Create some claims for the users
 	// and generate their token.
-	claims := auth.NewClaims(u.ID, u.Roles, now, time.Hour)
+	claims := auth.NewClaims(u.ID, u.Roles, now, time.Hour, csrf)
 
 	//save the claim as session-token or drop if claim is nil
 	const t = `INSERT INTO sessions (user_id, token, data, expiry) VALUES ($1, $2, $3, $4)`
@@ -248,7 +255,7 @@ func Authenticate(ctx context.Context, db *sqlx.DB, now time.Time, email, passwo
 	timer := time.Now().Add(10)
 	//encode converted string in base64
 	encoded := base64.StdEncoding.EncodeToString([]byte(str))
-	_, err := db.ExecContext(
+	_, err = db.ExecContext(
 		ctx, t, u.ID, defaultJWTCookieName, []byte(encoded), timer)
 	if err != nil {
 		return auth.Claims{}, errors.Wrap(err, "Session expired or not existed")
