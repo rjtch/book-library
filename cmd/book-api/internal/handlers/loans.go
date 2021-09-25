@@ -29,7 +29,7 @@ func (l *Loan) List(ctx context.Context, w http.ResponseWriter, r *http.Request,
 	id := params["user_id"]
 
 	//check if token does already exist
-	ok, err := users.IsLoggedOut(ctx, l.db, id)
+	ok, err := users.IsLoggedOut(ctx, l.db, id, r.Header.Get("bearer"))
 	if !ok {
 		return web.NewRequestError(err, http.StatusUnauthorized)
 	}
@@ -67,7 +67,7 @@ func (l *Loan) Retrieve(ctx context.Context, w http.ResponseWriter, r *http.Requ
 	id := params["user_id"]
 
 	//check if token does already exist
-	ok, err := users.IsLoggedOut(ctx, l.db, id)
+	ok, err := users.IsLoggedOut(ctx, l.db, id, r.Header.Get("bearer"))
 	if !ok {
 		return web.NewRequestError(err, http.StatusUnauthorized)
 	}
@@ -102,7 +102,7 @@ func (l *Loan) Create(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	id := params["user_id"]
 
 	//check if token does already exist
-	ok, err := users.IsLoggedOut(ctx, l.db, id)
+	ok, err := users.IsLoggedOut(ctx, l.db, id, r.Header.Get("bearer"))
 	if !ok {
 		return web.NewRequestError(err, http.StatusUnauthorized)
 	}
@@ -156,7 +156,7 @@ func (l *Loan) Update(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	id := params["user_id"]
 
 	//check if token does already exist
-	ok, err := users.IsLoggedOut(ctx, l.db, id)
+	ok, err := users.IsLoggedOut(ctx, l.db, id, r.Header.Get("bearer"))
 	if !ok {
 		return web.NewRequestError(err, http.StatusUnauthorized)
 	}
@@ -207,7 +207,7 @@ func (l *Loan) Delete(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	id := params["user_id"]
 
 	//check if token does already exist
-	ok, err := users.IsLoggedOut(ctx, l.db, id)
+	ok, err := users.IsLoggedOut(ctx, l.db, id, r.Header.Get("bearer"))
 	if !ok {
 		return web.NewRequestError(err, http.StatusUnauthorized)
 	}

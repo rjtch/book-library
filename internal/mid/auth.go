@@ -4,10 +4,10 @@ import (
 	"context"
 	"github.com/book-library/internal/platform/auth"
 	"github.com/book-library/internal/platform/web"
-	"github.com/book-library/internal/users"
 	errors "github.com/pkg/errors"
 	"go.opencensus.io/trace"
 	"net/http"
+	"strings"
 )
 
 const (
@@ -33,31 +33,19 @@ func Authentication(authenticator *auth.Authenticator) web.Middleware {
 			ctx, span := trace.StartSpan(ctx, "internal.mid.Authentication")
 			defer span.End()
 
-			//get sessionCookie
-			sessionCookie, err := r.Cookie(defaultJWTCookieName)
+			// Expecting: bearer <token>
+			authStr := r.Header.Get("authorization")
+
+			// Parse the authorization header.
+			parts := strings.Split(authStr, " ")
+			if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
+				return errors.New("expected authorization header format: bearer <token>")
+			}
+
+			// Validate the token is signed by us.
+			claims, err := authenticator.ParseClaims(parts[1])
 			if err != nil {
-				return ErrForbidden
-			}
-
-			//check if validity of the claim
-			claims, err := authenticator.ParseClaims(sessionCookie.Value)
-			if err != nil {
-				return ErrForbidden
-			}
-
-			//check if csrf-Token is present
-			if claims.Csrf == " "{
-				return ErrForbidden
-			}
-
-			//compare csrf in sessionCookie with hidden header
-			if claims.Csrf != r.Header.Get(defaultXSRFCookieName) {
-				return ErrForbidden
-			}
-
-			// check if session-sessionCookie is expired or if user has already logged out
-			if users.IsExpired(claims) {
-				err = errors.New("expired session-sessionCookie")
+				return errors.New("Token does not exist")
 			}
 
 			//Add claims to context so that they can be checked later on

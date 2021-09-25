@@ -42,7 +42,7 @@ func (u *User) List(ctx context.Context, w http.ResponseWriter, r *http.Request,
 	}
 
 	//check if token does already exist
-	ok, err := users.IsLoggedOut(ctx, u.Db, claims.Subject)
+	ok, err := users.IsLoggedOut(ctx, u.Db, claims.Subject, r.Header.Get("bearer"))
 	if !ok {
 		return web.NewRequestError(err, http.StatusUnauthorized)
 	}
@@ -68,7 +68,7 @@ func (u *User) Retrieve(ctx context.Context, w http.ResponseWriter, r *http.Requ
 	}
 
 	//check if token does already exist
-	ok, err := users.IsLoggedOut(ctx, u.Db, claims.Subject)
+	ok, err := users.IsLoggedOut(ctx, u.Db, claims.Subject, r.Header.Get("bearer"))
 	if !ok {
 		return web.NewRequestError(err, http.StatusUnauthorized)
 	}
@@ -98,7 +98,7 @@ func (u *User) RetrieveMe(ctx context.Context, w http.ResponseWriter, r *http.Re
 	id := params["user_id"]
 
 	//check if token does already exist
-	ok, err := users.IsLoggedOut(ctx, u.Db, id)
+	ok, err := users.IsLoggedOut(ctx, u.Db, id, r.Header.Get("bearer"))
 	if !ok {
 		return web.NewRequestError(err, http.StatusUnauthorized)
 	}
@@ -137,7 +137,7 @@ func (u *User) Create(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	}
 
 	//check if token does already exist
-	ok, err := users.IsLoggedOut(ctx, u.Db, claims.Subject)
+	ok, err := users.IsLoggedOut(ctx, u.Db, claims.Subject, r.Header.Get("bearer"))
 	if !ok {
 		return web.NewRequestError(err, http.StatusUnauthorized)
 	}
@@ -172,7 +172,7 @@ func (u *User) Update(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	id := params["id"]
 
 	//check if token does already exist
-	ok, err := users.IsLoggedOut(ctx, u.Db, id)
+	ok, err := users.IsLoggedOut(ctx, u.Db, id, r.Header.Get("bearer"))
 	if !ok {
 		return web.NewRequestError(err, http.StatusUnauthorized)
 	}
@@ -217,7 +217,7 @@ func (u *User) Delete(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	id := params["user_id"]
 
 	//check if token does already exist
-	ok, err := users.IsLoggedOut(ctx, u.Db, id)
+	ok, err := users.IsLoggedOut(ctx, u.Db, id, r.Header.Get("bearer"))
 	if !ok {
 		return web.NewRequestError(err, http.StatusUnauthorized)
 	}
@@ -307,7 +307,7 @@ func (u *User) TokenAuthenticator(ctx context.Context, w http.ResponseWriter, r 
 
 	enableCors(&w)
 
-	return web.Respond(ctx, w, "YOUR ACCESS HAS BEEN GRANTED", http.StatusOK)
+	return web.Respond(ctx, w, tk.Token, http.StatusOK)
 }
 
 //RefreshToken refreshes a given claims by issuing a new token

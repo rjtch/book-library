@@ -1,4 +1,5 @@
 SHELL := /bin/bash
+images = $(docker images)
 
 all:  books-api metrics
 
@@ -49,15 +50,5 @@ clean:
 	docker system prune -f
 	docker volume prune -f
 
-
-# deps-reset:
-# 	git checkout -- go.mod
-# 	go mod tidy
-# 	go mod vendor
-#
-# deps-upgrade:
-# 	# go get $(go list -f '{{if not (or .Main .Indirect)}}{{.Path}}{{end}}' -m all)
-# 	go get -t -d -v ./...
-#
-# deps-cleancache:
-# 	go clean -modcache
+rmi:
+	docker rmi -f $(images)

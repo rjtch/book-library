@@ -215,7 +215,7 @@ func Delete(ctx context.Context, db *sqlx.DB, id string) error {
 	return nil
 }
 
-// Authenticate finds a users by their email and verifies their password. On
+// Authenticate finds a users by email and verifies their password. On
 // success it returns a Claims value representing this users. The claims can be
 // used to generate a token for future authentication.
 func Authenticate(ctx context.Context, db *sqlx.DB, now time.Time, email, password string) (auth.Claims, error) {
@@ -244,6 +244,7 @@ func Authenticate(ctx context.Context, db *sqlx.DB, now time.Time, email, passwo
 	if err != nil {
 		return auth.Claims{}, ErrGenerationFailure
 	}
+
 	// If we are this far the request is valid. Create some claims for the users
 	// and generate their token.
 	claims := auth.NewClaims(u.ID, u.Roles, now, time.Hour, csrf)
@@ -341,7 +342,7 @@ func IsExpired(claims auth.Claims) bool {
 	return !claims.VerifyExpiresAt(time.Now().Unix(), true)
 }
 
-func IsLoggedOut(ctx context.Context, db *sqlx.DB, user_id string) (bool, error){
+func IsLoggedOut(ctx context.Context, db *sqlx.DB, user_id string, token string) (bool, error){
 	ctx, span := trace.StartSpan(ctx, "internal.users.IsLoggedOut")
 	defer span.End()
 
@@ -353,12 +354,17 @@ func IsLoggedOut(ctx context.Context, db *sqlx.DB, user_id string) (bool, error)
 		if err == sql.ErrNoRows {
 			return false, ErrNotFound
 		}
-
 		return false, errors.Wrap(err, "selecting single token")
 	}
 
-	if &tk == nil {
-		return true, nil
+	//convert token in base64
+	encodedToken := base64.StdEncoding.EncodeToString([]byte(token))
+
+	//verify if token value
+	if &tk != nil {
+		if len(tk.Data) == len([]byte(encodedToken)) {
+			return false, nil
+		}
 	}
 
 	return true, nil
