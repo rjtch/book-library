@@ -39,7 +39,7 @@ func API(build string, shutdown chan os.Signal, log *log.Logger, db *sqlx.DB, au
 	app.Handle("GET", "/v1/users/:user-id/me", u.RetrieveMe, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
 
 	// This routes are not authenticated
-	app.Handle("GET", "/v1/users/token", u.TokenAuthenticator)
+	app.Handle("POST", "/v1/users/token", u.TokenAuthenticator)
 	app.Handle("GET", "/v1/users/refresh-token", u.RefreshToken)
 	app.Handle("POST", "/v1/users/:user_id/logout", u.Logout)
 

@@ -49,16 +49,16 @@ jobs:
         run: |
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/book-metrics-kit:latest
           
-      - name: OpenShift Action publish images
-        uses: redhat-developer/openshift-actions@v1.1
-        with:
-          version: 'latest'
-          openshift_server_url: ${{secrets.OPENSHIFT_SERVER_URL}}
-          parameters: '{"username": "${{ secrets.USERNAME }}", "password": "${{ secrets.PASSWORD }}", "acceptUntrustedCerts": "true"}'
-          cmd: |
-            oc project book-library
-            oc import-image  --confirm hergytchuinkou/book-api-kit:latest
-            oc import-image  --confirm hergytchuinkou/book-metrics-kit:latest
-            oc import-image  --confirm openzipkin/zipkin:2.11
-            oc import-image  --confirm postgres:11.1-alpine
+#      - name: OpenShift Action publish images
+#        uses: redhat-developer/openshift-actions@v1.1
+#        with:
+#          version: 'latest'
+#          openshift_server_url: ${{secrets.OPENSHIFT_SERVER_URL}}
+#          parameters: '{"username": "${{ secrets.USERNAME }}", "password": "${{ secrets.PASSWORD }}", "acceptUntrustedCerts": "true"}'
+#          cmd: |
+#            oc project book-library
+#            oc import-image  --confirm hergytchuinkou/book-api-kit:latest
+#            oc import-image  --confirm hergytchuinkou/book-metrics-kit:latest
+#            oc import-image  --confirm openzipkin/zipkin:2.11
+#            oc import-image  --confirm postgres:11.1-alpine
 
