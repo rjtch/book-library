@@ -73,21 +73,11 @@ func API(build string, shutdown chan os.Signal, log *log.Logger, db *sqlx.DB, au
 	app.Handle("DELETE", "/v1/loans/:id", l.Delete, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
 	app.Handle("GET", "/v1/loans/:id", l.Retrieve, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
 
-<<<<<<< HEAD
-=======
-	// statikFS, err := fs.New()
-	// if err != nil {
-	// 	panic(err)
-	// }
->>>>>>> 6191059382904e1a47291e22bc825b49845081e0
-
 	// staticServer := http.FileServer(statikFS)
 	// sh := http.StripPrefix("/swaggerui/", staticServer)
 	// app.Handle("GET", "/swaggerui/", web.Handler(sh))
 	return app
 }
-<<<<<<< HEAD
-=======
 
 // CreateRepoReq contains request data for create repo API
 type CreateRepoReq struct {
@@ -96,4 +86,3 @@ type CreateRepoReq struct {
 	// Public defines whether created repository should be public or not
 	Public bool `json:"public"`
 }
->>>>>>> 6191059382904e1a47291e22bc825b49845081e0

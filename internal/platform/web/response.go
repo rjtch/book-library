@@ -4,8 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-<<<<<<< HEAD
-=======
 	"reflect"
 	"time"
 
@@ -23,7 +21,6 @@ const (
 	RequestMethodKey  = "Access-Control-Request-Method"
 	RequestHeadersKey = "Access-Control-Request-Headers"
 	ExposeHeadersKey  = "Access-Control-Expose-Headers"
->>>>>>> 2c1a57574b9ef63c15e8af14853cefe35aea9c80
 )
 
 //Respond converts Go value to JSON and sends it to the client
@@ -50,9 +47,6 @@ func Respond(ctx context.Context, w http.ResponseWriter, data interface{}, statu
 	if err != nil {
 		return err
 	}
-
-<<<<<<< HEAD
-=======
 	// Convert the response value to String
 	token := reflect.ValueOf(data)
 
@@ -74,7 +68,6 @@ func Respond(ctx context.Context, w http.ResponseWriter, data interface{}, statu
 		HttpOnly: true,
 	})
 
->>>>>>> 2c1a57574b9ef63c15e8af14853cefe35aea9c80
 	//Send the result back to the client
 	if _, err := w.Write(jsonData); err != nil {
 		return nil
@@ -108,9 +101,6 @@ func ResponseError(ctx context.Context, w http.ResponseWriter, err error) error 
 		return err
 	}
 	return nil
-<<<<<<< HEAD
-}
-=======
 }
 
 //enableCors enables cross origin control
@@ -120,4 +110,3 @@ func enableCors(w *http.ResponseWriter) {
 	(*w).Header().Set(AllowHeadersKey, "*")
 	(*w).Header().Set(OriginKey, "*")
 }
->>>>>>> 2c1a57574b9ef63c15e8af14853cefe35aea9c80

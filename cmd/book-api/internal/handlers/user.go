@@ -11,8 +11,6 @@ import (
 	"github.com/jmoiron/sqlx"
 	errors "github.com/pkg/errors"
 	"go.opencensus.io/trace"
-<<<<<<< HEAD
-	"net/http"
 	"time"
 )
 
@@ -23,8 +21,6 @@ const (
 	// default names for cookies and headers
 	defaultJWTCookieName  = "SESSION-COOKIE"
 	OriginKey         = "Origin"
-=======
->>>>>>> 6191059382904e1a47291e22bc825b49845081e0
 )
 
 //User represents the Users API method handler set.
@@ -243,7 +239,6 @@ func (u *User) TokenAuthenticator(ctx context.Context, w http.ResponseWriter, r 
 		return errors.Wrap(err, "generating token")
 	}
 
-<<<<<<< HEAD
 	// Finally, we set the client cookie for "token" as the JWT we just generated
 	// we also set an expiry time which is the same as the token itself
 	http.SetCookie(w, &http.Cookie{
@@ -329,7 +324,4 @@ func enableCors(w *http.ResponseWriter) {
 	(*w).Header().Set(AllowCredentialsKey, "*")
 	(*w).Header().Set(AllowHeadersKey, "*")
 	(*w).Header().Set(OriginKey, "*")
-=======
-	return web.Respond(ctx, w, tk, http.StatusOK)
->>>>>>> 6191059382904e1a47291e22bc825b49845081e0
 }
