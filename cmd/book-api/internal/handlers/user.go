@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/book-library/internal/platform/auth"
@@ -39,6 +38,11 @@ func (u *User) List(ctx context.Context, w http.ResponseWriter, r *http.Request,
 		if !claims.HasRole(auth.RoleAdmin) {
 			return errors.New("claims missing from context")
 		}
+	}
+
+	//check if token does already exist
+	if !users.IsExpired(claims) {
+		return errors.New("claims is invalid")
 	}
 
 	usr, err := users.List(ctx, claims, u.db)
@@ -214,11 +218,6 @@ func (u *User) TokenAuthenticator(ctx context.Context, w http.ResponseWriter, r 
 	}
 
 	claims, err := users.Authenticate(ctx, u.db, v.Now, email, pass)
-
-	fmt.Println("EMAIL ", email)
-	fmt.Println("PASSWORD ", pass)
-	fmt.Println("ERRRROORRR ", err)
-	fmt.Println("CLAIMS ", claims)
 
 	if err != nil {
 		switch err {

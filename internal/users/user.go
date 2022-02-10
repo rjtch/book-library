@@ -226,7 +226,6 @@ func Authenticate(ctx context.Context, db *sqlx.DB, now time.Time, email, passwo
 		if err == sql.ErrNoRows {
 			return auth.Claims{}, ErrAuthenticationFailure
 		}
-
 		return auth.Claims{}, errors.Wrap(err, "selecting single users")
 	}
 
@@ -238,15 +237,14 @@ func Authenticate(ctx context.Context, db *sqlx.DB, now time.Time, email, passwo
 
 	// If we are this far the request is valid. Create some claims for the users
 	// and generate their token.
-	claims := auth.NewClaims(u.ID, u.Roles, now, time.Hour)
-
+	claims := auth.NewClaims(u.ID, u.Roles, now, time.Now())
 	//save the claim as session-token or drop if claim is nil
 	const t = `INSERT INTO sessions (user_id, token, data, expiry) VALUES ($1, $2, $3, $4)`
 	str := fmt.Sprint(claims)
 	_, err := db.ExecContext(
-		ctx, t, u.ID, defaultJWTCookieName, []byte(str), time.Hour)
+		ctx, t, u.ID, defaultJWTCookieName, []byte(str), time.Now().Add(10))
 	if err != nil {
-		return auth.Claims{}, errors.Wrap(err, "Session expired or not existed")
+		return auth.Claims{}, errors.Wrap(err, "Something when wrong with your session")
 	}
 
 	return claims, nil
@@ -273,7 +271,7 @@ func RefreshesToken(ctx context.Context, db *sqlx.DB, user_id string) (auth.Clai
 	if err != nil {
 		return auth.Claims{}, errors.Wrap(err, "unable to convert byte data back")
 	}
-	if isExpired(claim) {
+	if IsExpired(claim) {
 		tk.Expiry = time.Now().Add(3600)
 	}
 
@@ -324,6 +322,10 @@ func Logout(ctx context.Context, db *sqlx.DB, user_id string) error {
 }
 
 //isExpired verifies iif the given claim has expired or not.
-func isExpired(claims auth.Claims) bool {
-	return !claims.VerifyExpiresAt(time.Now().Unix(), true)
+func IsExpired(claims auth.Claims) bool {
+	err := claims.Valid()
+	if err == nil {
+		return true;
+	}
+	return false
 }

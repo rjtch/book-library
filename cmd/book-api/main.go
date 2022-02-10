@@ -64,8 +64,8 @@ func run() error {
 		}
 		Auth struct {
 			KeyID          string `conf:"default:1"`
-			PrivateKeyFile string `conf:"default:/app-library/private.pem"`
-// 			PrivateKeyFile string `conf:"default:private.pem"`
+//			PrivateKeyFile string `conf:"default:/app-library/private.pem"`
+ 			PrivateKeyFile string `conf:"default:private.pem"`
 			Algorithm string `conf:"default:RS256"`
 		}
 		Zipkin struct {

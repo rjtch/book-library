@@ -37,8 +37,8 @@ CREATE TABLE books (
 	authors      TEXT,
 	description  TEXT,
 	quantity	 INT,
-	date_created TIMESTAMP,
-	date_updated TIMESTAMP,
+	date_created TIMESTAMP NOT NULL,
+	date_updated TIMESTAMP NOT NULL,
 
 	PRIMARY KEY (book_id)
 );`,
@@ -53,8 +53,8 @@ CREATE TABLE users (
 	roles         TEXT[],
 	password_hash TEXT,
 	
-	date_created TIMESTAMP,
-	date_updated TIMESTAMP,
+	date_created TIMESTAMP NOT NULL,
+	date_updated TIMESTAMP NOT NULL,
 
 	PRIMARY KEY (user_id)
 );`,
@@ -68,8 +68,8 @@ CREATE TABLE categories (
 	books_in      INT,
 	books_out     INT,
 
-	date_created TIMESTAMP,
-	date_updated TIMESTAMP,
+	date_created TIMESTAMP NOT NULL,
+	date_updated TIMESTAMP NOT NULL,
 
 	PRIMARY KEY (category_id)
 );`,
@@ -83,8 +83,8 @@ CREATE TABLE loans (
 	isbn        TEXT,
     quantity    INT,
 	book_id		UUID,
-	loan_date TIMESTAMP,
-	date_return TIMESTAMP,
+	loan_date TIMESTAMP NOT NULL,
+	date_return TIMESTAMP NOT NULL,
 	user_id     UUID,
 
 	PRIMARY KEY (loan_id),
@@ -99,7 +99,7 @@ CREATE TABLE sessions (
     user_id UUID ,
 	token TEXT,
 	data BYTEA NOT NULL,
-	expiry TIMESTAMPTZ NOT NULL,
+	expiry TIMESTAMP NOT NULL,
 
 	FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );`,

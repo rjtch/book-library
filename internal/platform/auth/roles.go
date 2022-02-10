@@ -34,13 +34,13 @@ type Claims struct {
 // NewClaims constructs a Claims value for the identified users. The Claims
 // expire within a specified duration of the provided time. Additional fields
 // of the Claims can be set after calling NewClaims is desired.
-func NewClaims(subject string, roles []string, now time.Time, expires time.Duration) Claims {
+func NewClaims(subject string, roles []string, now time.Time, expires time.Time) Claims {
 	c := Claims{
 		Roles: roles,
 		StandardClaims: jwt.StandardClaims{
 			Subject:   subject,
-			IssuedAt:  now.Unix(),
-			ExpiresAt: now.Add(expires).Unix(),
+			IssuedAt:  now.UTC().Unix(),
+			ExpiresAt: now.UTC().Add(time.Hour).Unix(),
 		},
 	}
 
