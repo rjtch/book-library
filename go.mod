@@ -1,6 +1,6 @@
 module github.com/book-library
 
-go 1.17
+go 1.22
 
 require (
 	contrib.go.opencensus.io/exporter/zipkin v0.1.1

@@ -33,10 +33,10 @@ func run() error {
 
 	var cfg struct {
 		DB struct {
-			User       string `conf:"default:postgres"`
-			Password   string `conf:"default:postgres,noprint"`
-			Host       string `conf:"default:0.0.0.0"`
-			Name       string `conf:"default:postgres"`
+			User       string `conf:"default:book"`
+			Password   string `conf:"default:postgres-password,noprint"`
+			Host       string `conf:"default:localhost"`
+			Name       string `conf:"default:book"`
 			DisableTLS bool   `conf:"default:false"`
 		}
 		Args conf.Args
