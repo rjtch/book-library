@@ -6,38 +6,30 @@ on:
       - develop
 
 jobs:
-  build-book-api:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Setup Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
-          go-version: '1.21.0'
-      - name: Key  generate
+          go-version: 'stable'
+      - name: Key generate
         run: make keys
-      - name: Run build
-        run:  make books-api
-
-  build-metrics:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Go
-        uses: actions/setup-go@v3
-        with:
-          go-version: '1.21.0'
-      - name: Run build
+      - name: build metrics-api
         run:  make metrics
+      - name: build books-api
+        run:  make book
 
   test:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.21.0'
+          go-version: 'stable'
       - name: Test all
         run:  make test
 
