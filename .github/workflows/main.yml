@@ -18,7 +18,7 @@ jobs:
       - name: build metrics-api
         run:  make metrics
       - name: build books-api
-        run:  make books-ap
+        run:  make books-api
 
   test:
     needs: build
