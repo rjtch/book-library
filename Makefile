@@ -37,9 +37,6 @@ metrics:
 start: ##start everything with docker-compose
 	 docker-compose up
 
-up: ## Start everything with docker-compose without building
-	docker-compose up
-
 down:
 	docker-compose down
 

@@ -62,10 +62,10 @@ func run() error {
 			DisableTLS bool   `conf:"default:false"`
 		}
 		Auth struct {
-			KeyID          string `conf:"default: 1"`
-//			PrivateKeyFile string `conf:"default:/app-library/private.pem"`
- 			PrivateKeyFile string `conf:"default:private.pem"`
-			Algorithm string `conf:"default:RS256"`
+			KeyID string `conf:"default: 1"`
+			//			PrivateKeyFile string `conf:"default:/app-library/private.pem"`
+			PrivateKeyFile string `conf:"default:private.pem"`
+			Algorithm      string `conf:"default:RS256"`
 		}
 		Zipkin struct {
 			LocalEndpoint string  `conf:"default:0.0.0.0:3000"`
@@ -233,7 +233,7 @@ func run() error {
 
 		// Log the status of this shutdown.
 		switch {
-		case sig == syscall.SIGSTOP:
+		case sig == syscall.SIGQUIT:
 			return errors.New("integrity issue caused shutdown")
 		case err != nil:
 			return errors.Wrap(err, "could not stop server gracefully")
