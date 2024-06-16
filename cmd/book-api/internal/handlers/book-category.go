@@ -13,12 +13,12 @@ import (
 	"go.opencensus.io/trace"
 )
 
-//BookCategory represents the BookCategory API method handler set.
+// BookCategory represents the BookCategory API method handler set.
 type BookCategory struct {
 	db *sqlx.DB
 }
 
-//List returns all the existing Bookcategories from the system to the world
+// List returns all the existing Bookcategories from the system to the world
 func (c *BookCategory) List(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.book-category.List")
 	defer span.End()
@@ -31,7 +31,7 @@ func (c *BookCategory) List(ctx context.Context, w http.ResponseWriter, r *http.
 	return web.Respond(ctx, w, categories, http.StatusOK)
 }
 
-//Create creates a new bookCategory into the system
+// Create creates a new bookCategory into the system
 func (c *BookCategory) Create(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.book-category.Create")
 	defer span.End()
@@ -66,7 +66,7 @@ func (c *BookCategory) Create(ctx context.Context, w http.ResponseWriter, r *htt
 
 }
 
-//Update updates a specified bookCategory in the database
+// Update updates a specified bookCategory in the database
 func (c *BookCategory) Update(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.book-category.Update")
 	defer span.End()
@@ -83,7 +83,7 @@ func (c *BookCategory) Update(ctx context.Context, w http.ResponseWriter, r *htt
 
 	var udp category.UpdateBookCategory
 	if err := web.Decode(r, &udp); err != nil {
-		return errors.Wrap(err, "")
+		return errors.Wrap(err, "could not read the request")
 	}
 
 	err := category.Update(ctx, params["id"], udp, v.Now, claims, c.db)
@@ -102,7 +102,7 @@ func (c *BookCategory) Update(ctx context.Context, w http.ResponseWriter, r *htt
 	return web.Respond(ctx, w, nil, http.StatusOK)
 }
 
-//Delete deletes a unique bookCategory from the database
+// Delete deletes a unique bookCategory from the database
 func (c *BookCategory) Delete(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.book-category.Delete")
 	defer span.End()
@@ -133,7 +133,7 @@ func (c *BookCategory) Delete(ctx context.Context, w http.ResponseWriter, r *htt
 	return web.Respond(ctx, w, nil, http.StatusOK)
 }
 
-//Retreive returns the value of a specified users from the system to the world
+// Retreive returns the value of a specified users from the system to the world
 func (c *BookCategory) Retreive(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.users.Retrieve")
 	defer span.End()

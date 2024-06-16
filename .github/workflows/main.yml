@@ -29,5 +29,5 @@ jobs:
         with:
           go-version: 'stable'
       - name: Test all
-        run:  make test
+        run:  make test-only
 

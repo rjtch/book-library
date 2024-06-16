@@ -11,7 +11,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-// TestBook validates the full set the CRUD operations on Book values
 func TestUnitBook(t *testing.T) {
 	db, teardown := tests.NewUnit(t)
 	defer teardown()

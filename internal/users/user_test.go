@@ -141,6 +141,7 @@ func TestAuthenticate(t *testing.T) {
 			want.Roles = u.Roles
 			want.ExpiresAt = now.Add(time.Hour).Unix()
 			want.IssuedAt = now.Unix()
+			want.Csrf = "19aa50d73857a340f0c9c87d3a9c63290d0097c6da47d1aaa001163dd45e2a76"
 
 			if diff := cmp.Diff(want, claims); diff != "" {
 				t.Fatalf("\t%s\tShould get back the expected claims. Diff:\n%s", tests.Failed, diff)

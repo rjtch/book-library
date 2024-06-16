@@ -15,12 +15,12 @@ import (
 	"go.opencensus.io/trace"
 )
 
-//Loan represents the Loan API method handler set.
+// Loan represents the Loan API method handler set.
 type Loan struct {
 	db *sqlx.DB
 }
 
-//List returns all the existing Loan from the system to the world
+// List returns all the existing Loan from the system to the world
 func (l *Loan) List(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.loans.List")
 	defer span.End()
@@ -34,7 +34,7 @@ func (l *Loan) List(ctx context.Context, w http.ResponseWriter, r *http.Request,
 		return web.NewRequestError(err, http.StatusUnauthorized)
 	}
 
-	allLoans := []loans.Loan{};
+	allLoans := []loans.Loan{}
 
 	claims, ok := ctx.Value(auth.Key).(auth.Claims)
 	if !ok {
@@ -53,12 +53,12 @@ func (l *Loan) List(ctx context.Context, w http.ResponseWriter, r *http.Request,
 			}
 		}
 	} else {
-		return errors.Wrap(nil, "your are not allow to execute this action")
+		return errors.Wrap(err, "your are not allow to execute this action")
 	}
 	return web.Respond(ctx, w, allLoans, http.StatusOK)
 }
 
-//Retrieve returns the value of a specified Loan from the system to the world
+// Retrieve returns the value of a specified Loan from the system to the world
 func (l *Loan) Retrieve(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.loans.Retrieve")
 	defer span.End()
@@ -93,7 +93,7 @@ func (l *Loan) Retrieve(ctx context.Context, w http.ResponseWriter, r *http.Requ
 	return web.Respond(ctx, w, loan, http.StatusOK)
 }
 
-//Create creates a new Loan into the system
+// Create creates a new Loan into the system
 func (l *Loan) Create(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.loans.Create")
 	defer span.End()
@@ -147,7 +147,7 @@ func (l *Loan) Create(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	return web.Respond(ctx, w, loan, http.StatusCreated)
 }
 
-//Update updates a specified Loan in the database
+// Update updates a specified Loan in the database
 func (l *Loan) Update(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.loans.Update")
 	defer span.End()
@@ -173,7 +173,7 @@ func (l *Loan) Update(ctx context.Context, w http.ResponseWriter, r *http.Reques
 
 	var udl loans.UpdateLoan
 	if err := web.Decode(r, &udl); err != nil {
-		return errors.Wrap(err, "")
+		return errors.Wrap(err, "could not read request")
 	}
 
 	loan, err := loans.Retrieve(ctx, claims, params["id"], l.db, claims.Subject)
@@ -198,7 +198,7 @@ func (l *Loan) Update(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	return web.Respond(ctx, w, loan, http.StatusOK)
 }
 
-//Delete deletes a unique Loan from the database
+// Delete deletes a unique Loan from the database
 func (l *Loan) Delete(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.loans.Delete")
 	defer span.End()

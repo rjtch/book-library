@@ -13,12 +13,12 @@ import (
 	"go.opencensus.io/trace"
 )
 
-//Book represents the Books API method handler set.
+// Book represents the Books API method handler set.
 type Book struct {
 	db *sqlx.DB
 }
 
-//List returns all the existing Book from the system to the world
+// List returns all the existing Book from the system to the world
 func (b *Book) List(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.list.List")
 	defer span.End()
@@ -31,7 +31,7 @@ func (b *Book) List(ctx context.Context, w http.ResponseWriter, r *http.Request,
 	return web.Respond(ctx, w, list, http.StatusOK)
 }
 
-//Retrieve returns the value of a specified Book from the system to the world
+// Retrieve returns the value of a specified Book from the system to the world
 func (b *Book) Retrieve(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.books.Retrieve")
 	defer span.End()
@@ -52,7 +52,7 @@ func (b *Book) Retrieve(ctx context.Context, w http.ResponseWriter, r *http.Requ
 	return web.Respond(ctx, w, book, http.StatusOK)
 }
 
-//Retrieve returns the value of a specified Book from the system to the world
+// Retrieve returns the value of a specified Book from the system to the world
 func (b *Book) RetrieveByTitle(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.books.Retrieve")
 	defer span.End()
@@ -73,7 +73,7 @@ func (b *Book) RetrieveByTitle(ctx context.Context, w http.ResponseWriter, r *ht
 	return web.Respond(ctx, w, book, http.StatusOK)
 }
 
-//Create creates a new Book into the system
+// Create creates a new Book into the system
 func (b *Book) Create(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.books.Create")
 	defer span.End()
@@ -97,7 +97,7 @@ func (b *Book) Create(ctx context.Context, w http.ResponseWriter, r *http.Reques
 
 	var nb books.NewBook
 	if err := web.Decode(r, &nb); err != nil {
-		return errors.Wrap(err, "")
+		return errors.Wrap(err, "could not read the request")
 	}
 
 	book, err := books.Create(ctx, v.Now, nb, claims, b.db)
@@ -108,7 +108,7 @@ func (b *Book) Create(ctx context.Context, w http.ResponseWriter, r *http.Reques
 
 }
 
-//Update updates a specified Book in the database
+// Update updates a specified Book in the database
 func (b *Book) Update(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.books.Update")
 	defer span.End()
@@ -130,7 +130,7 @@ func (b *Book) Update(ctx context.Context, w http.ResponseWriter, r *http.Reques
 
 	var udp books.UpdateBook
 	if err := web.Decode(r, &udp); err != nil {
-		return errors.Wrap(err, "")
+		return errors.Wrap(err, "could not read the request")
 	}
 
 	err := books.Update(ctx, params["id"], udp, v.Now, claims, b.db)
@@ -149,7 +149,7 @@ func (b *Book) Update(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	return web.Respond(ctx, w, nil, http.StatusOK)
 }
 
-//Delete deletes a unique Book from the database
+// Delete deletes a unique Book from the database
 func (b *Book) Delete(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.books.Delete")
 	defer span.End()

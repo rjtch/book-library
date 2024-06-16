@@ -3,33 +3,34 @@ package handlers
 import (
 	"context"
 	"fmt"
+	"net/http"
+	"time"
+
 	"github.com/book-library/internal/platform/auth"
 	"github.com/book-library/internal/platform/web"
 	"github.com/book-library/internal/users"
 	"github.com/jmoiron/sqlx"
 	errors "github.com/pkg/errors"
 	"go.opencensus.io/trace"
-	"net/http"
-	"time"
 )
 
 const (
 	AllowOriginKey      string = "Access-Control-Allow-Origin"
-	AllowCredentialsKey        = "Access-Control-Allow-Credentials"
-	AllowHeadersKey            = "Access-Control-Allow-Headers"
+	AllowCredentialsKey string = "Access-Control-Allow-Credentials"
+	AllowHeadersKey     string = "Access-Control-Allow-Headers"
 	// default names for cookies and headers
-	defaultJWTCookieName = "session-cookie"
-	defaultXsrfToken     = "x-xsrf-token"
-	OriginKey            = "Origin"
+	defaultJWTCookieName string = "session-cookie"
+	defaultXsrfToken     string = "x-xsrf-token"
+	OriginKey            string = "Origin"
 )
 
-//User represents the Users API method handler set.
+// User represents the Users API method handler set.
 type User struct {
 	Db            *sqlx.DB
 	authenticator *auth.Authenticator
 }
 
-//List returns all the existing users from the system to the world
+// List returns all the existing users from the system to the world
 func (u *User) List(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.users.List")
 	defer span.End()
@@ -55,7 +56,7 @@ func (u *User) List(ctx context.Context, w http.ResponseWriter, r *http.Request,
 	return web.Respond(ctx, w, usr, http.StatusOK)
 }
 
-//Retrieve returns the value of a specified users from the system to the world
+// Retrieve returns the value of a specified users from the system to the world
 func (u *User) Retrieve(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.users.Retrieve")
 	defer span.End()
@@ -89,7 +90,7 @@ func (u *User) Retrieve(ctx context.Context, w http.ResponseWriter, r *http.Requ
 	return web.Respond(ctx, w, user, http.StatusOK)
 }
 
-//Retrieve returns the value of a specified users from the system to the world
+// Retrieve returns the value of a specified users from the system to the world
 func (u *User) RetrieveMe(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.users.Retrieve")
 	defer span.End()
@@ -118,13 +119,13 @@ func (u *User) RetrieveMe(ctx context.Context, w http.ResponseWriter, r *http.Re
 		case users.ErrNotFound:
 			return web.NewRequestError(err, http.StatusNotFound)
 		default:
-			return errors.Wrapf(err, "ID: %s", nil)
+			return errors.Wrapf(err, "ID: %s", user.ID)
 		}
 	}
 	return web.Respond(ctx, w, user, http.StatusOK)
 }
 
-//Create creates a new users into the system
+// Create creates a new users into the system
 func (u *User) Create(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.users.Create")
 	defer span.End()
@@ -163,7 +164,7 @@ func (u *User) Create(ctx context.Context, w http.ResponseWriter, r *http.Reques
 
 }
 
-//Update updates a specified users in the database
+// Update updates a specified users in the database
 func (u *User) Update(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.users.Update")
 	defer span.End()
@@ -208,7 +209,7 @@ func (u *User) Update(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	return web.Respond(ctx, w, nil, http.StatusOK)
 }
 
-//Delete deletes a unique users from the database
+// Delete deletes a unique users from the database
 func (u *User) Delete(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.users.Delete")
 	defer span.End()
@@ -248,8 +249,8 @@ func (u *User) Delete(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	return web.Respond(ctx, w, nil, http.StatusOK)
 }
 
-//TokenAuthenticator handles request to authenticate the users and expects a request using Basic Auth with the User's email
-//and password. It responds with a jwt
+// TokenAuthenticator handles request to authenticate the users and expects a request using Basic Auth with the User's email
+// and password. It responds with a jwt
 func (u *User) TokenAuthenticator(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.users.TokenAuthenticator")
 	defer span.End()
@@ -281,7 +282,7 @@ func (u *User) TokenAuthenticator(ctx context.Context, w http.ResponseWriter, r 
 		Token string `json:"token"`
 	}
 
-//	csrf.CookieName(defaultXsrfToken)
+	//	csrf.CookieName(defaultXsrfToken)
 
 	tk.Token, err = u.authenticator.GenerateToken(claims)
 	if err != nil {
@@ -310,7 +311,7 @@ func (u *User) TokenAuthenticator(ctx context.Context, w http.ResponseWriter, r 
 	return web.Respond(ctx, w, tk.Token, http.StatusOK)
 }
 
-//RefreshToken refreshes a given claims by issuing a new token
+// RefreshToken refreshes a given claims by issuing a new token
 func (u *User) RefreshToken(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.users.RefreshToken")
 	defer span.End()
@@ -388,7 +389,7 @@ func (u *User) Logout(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	return web.Respond(ctx, w, "logout was successful", http.StatusOK)
 }
 
-//enableCors enables cross origin control
+// enableCors enables cross origin control
 func enableCors(w *http.ResponseWriter) {
 	(*w).Header().Set(AllowOriginKey, "*")
 	(*w).Header().Set(AllowCredentialsKey, "*")
