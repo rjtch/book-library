@@ -6,8 +6,9 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/book-library/internal/utils"
 	"time"
+
+	"github.com/book-library/internal/utils"
 
 	"github.com/book-library/internal/platform/auth"
 	"github.com/google/uuid"
@@ -35,8 +36,8 @@ var (
 )
 
 const (
-	defaultJWTCookieName = "Session-Cookie"
-	defaultXSRFCookieName       = "x-xsrf-token"
+	defaultJWTCookieName  = "Session-Cookie"
+	defaultXSRFCookieName = "x-xsrf-token"
 )
 
 // List retrieves a list of existing users from the database.
@@ -87,7 +88,7 @@ func Retrieve(ctx context.Context, claims auth.Claims, db *sqlx.DB, id string) (
 }
 
 // Retrieve gets the actual user from the database.
-func RetrieveMe(ctx context.Context, claims auth.Claims, db *sqlx.DB)(*User, error) {
+func RetrieveMe(ctx context.Context, claims auth.Claims, db *sqlx.DB) (*User, error) {
 	ctx, span := trace.StartSpan(ctx, "internal.users.RetrieveMe")
 	defer span.End()
 
@@ -103,7 +104,7 @@ func RetrieveMe(ctx context.Context, claims auth.Claims, db *sqlx.DB)(*User, err
 		if err == sql.ErrNoRows {
 			return nil, ErrNotFound
 		}
-		return nil, errors.Wrapf(err, "selecting users %q")
+		return nil, errors.Wrapf(err, "selecting users")
 	}
 
 	return &u, nil
@@ -307,8 +308,8 @@ func RefreshesToken(ctx context.Context, db *sqlx.DB, user_id string) (auth.Clai
 	return claim, nil
 }
 
-//Logout deletes user's session-token from the database which invalidates all existing cookies
-//in browsers
+// Logout deletes user's session-token from the database which invalidates all existing cookies
+// in browsers
 func Logout(ctx context.Context, db *sqlx.DB, user_id string) error {
 	ctx, span := trace.StartSpan(ctx, "internal.users.Logout")
 	defer span.End()
@@ -337,12 +338,12 @@ func Logout(ctx context.Context, db *sqlx.DB, user_id string) error {
 	return nil
 }
 
-//IsExpired verifies iif the given claim has expired or not.
+// IsExpired verifies iif the given claim has expired or not.
 func IsExpired(claims auth.Claims) bool {
 	return !claims.VerifyExpiresAt(time.Now().Unix(), true)
 }
 
-func IsLoggedOut(ctx context.Context, db *sqlx.DB, user_id string, token string) (bool, error){
+func IsLoggedOut(ctx context.Context, db *sqlx.DB, user_id string, token string) (bool, error) {
 	ctx, span := trace.StartSpan(ctx, "internal.users.IsLoggedOut")
 	defer span.End()
 

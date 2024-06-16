@@ -125,16 +125,26 @@ func Retrieve(ctx context.Context, user auth.Claims, book_id string, db *sqlx.DB
 	var loan Loan
 	const q = `SELECT * FROM loans  WHERE book_id = $1 AND user_id = $2`
 
-	if err := db.GetContext(ctx, &loan, q, book_id); err != nil {
+	if err := db.GetContext(ctx, &loan, q, book_id, user_id); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, ErrNotFound
 		}
 
-		if user_id != user.Id {
-			return nil, ErrForbidden
-		}
+		return nil, errors.Wrapf(err, "selecting loan %q, %q", book_id, user_id)
+	} else {
+		// in case user_id is not set
+		const p = `SELECT * FROM loans  WHERE book_id = $1`
 
-		return nil, errors.Wrapf(err, "selecting loan %q", book_id)
+		if err := db.GetContext(ctx, &loan, p, book_id); err != nil {
+			if err == sql.ErrNoRows {
+				return nil, ErrNotFound
+			}
+			return nil, errors.Wrapf(err, "selecting loan %q, %q", book_id, user_id)
+		}
+	}
+
+	if loan.BookID != book_id && loan.UserID != user_id {
+		return nil, ErrForbidden
 	}
 
 	return &loan, nil

@@ -38,10 +38,14 @@ start: ##start everything with docker-compose
 	 docker-compose up
 
 down:
-	docker-compose down
+	docker stop book-api 
+	docker rm book-api -v
 
-test:
-	go test -mod=vendor ./... -count=1
+test-r:
+	CGO_ENABLED=1 go test -race -count=1 ./...
+
+test-only:
+	CGO_ENABLED=0 go test -count=1 ./...
 
 clean:
 	docker system prune -f
