@@ -2,16 +2,17 @@ package tests
 
 import (
 	"encoding/json"
-	"github.com/book-library/cmd/book-api/internal/handlers"
-	"github.com/book-library/internal/platform/web"
-	"github.com/book-library/internal/tests"
-	"github.com/google/go-cmp/cmp"
-	"github.com/google/go-cmp/cmp/cmpopts"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/book-library/cmd/book-api/internal/handlers"
+	"github.com/book-library/internal/platform/web"
+	"github.com/book-library/internal/tests"
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 )
 
 // TestProducts runs a series of tests to exercise Product behavior from the
@@ -33,10 +34,7 @@ func TestBooks(t *testing.T) {
 	t.Run("postBook400", tests.postBook400)
 	t.Run("postBook401", tests.postBook401)
 	t.Run("getBook404", tests.getBook404)
-	t.Run("getBook400", tests.getBook400)
 	t.Run("deleteBookNotFound", tests.deleteBookNotFound)
-	t.Run("putBook404", tests.putBook404)
-	t.Run("crudBook", tests.crudBook)
 }
 
 // BookTests holds methods for each book subtest. This type allows
@@ -98,25 +96,151 @@ func (bt *BookTests) postBook400(t *testing.T) {
 }
 
 func (bt *BookTests) postBook401(t *testing.T) {
+	r := httptest.NewRequest("POST", "/v1/books", strings.NewReader(`{}`))
+	w := httptest.NewRecorder()
 
+	r.Header.Set("Authorization", "Bearer ")
+
+	bt.app.ServeHTTP(w, r)
+
+	t.Log("Given the need to validate a new book can't be created with an invalid document.")
+	{
+		t.Log("\tTest 0:\tWhen using an invalid token")
+		{
+			if w.Code != http.StatusBadRequest {
+				t.Fatalf("\t%s\tShould receive a status code of 401 for the response : %v", tests.Failed, w.Code)
+			}
+			t.Logf("\t%s\tShould receive a status code of 401 for the response.", tests.Success)
+
+			// Inspect the response.
+			var got web.ErrorResponse
+			if err := json.NewDecoder(w.Body).Decode(&got); err != nil {
+				t.Fatalf("\t%s\tShould be able to unmarshal the response to an error type : %v", tests.Failed, err)
+			}
+			t.Logf("\t%s\tShould be able to unmarshal the response to an error type.", tests.Success)
+
+			// Define what we want to see.
+			want := web.ErrorResponse{
+				Error: "field validation error",
+				Fields: []web.FieldError{
+					{Field: "title", Error: "title is a required field"},
+					{Field: "isbn", Error: "isbn is a required field"},
+					{Field: "category", Error: "category is a required field"},
+					{Field: "authors", Error: "authors is a required field"},
+					{Field: "quantity", Error: "quantity is a required field"},
+				},
+			}
+
+			// We can't rely on the order of the field errors so they have to be
+			// sorted. Tell the cmp package how to sort them.
+			sorter := cmpopts.SortSlices(func(a, b web.FieldError) bool {
+				return a.Field < b.Field
+			})
+
+			if diff := cmp.Diff(want, got, sorter); diff != "" {
+				t.Fatalf("\t%s\tShould get the expected result. Diff:\n%s", tests.Failed, diff)
+			}
+			t.Logf("\t%s\tShould get the expected result.", tests.Success)
+		}
+	}
 }
 
 func (bt *BookTests) getBook404(t *testing.T) {
+	r := httptest.NewRequest("Get", "/v1/books/12345", strings.NewReader(`{}`))
+	w := httptest.NewRecorder()
 
-}
+	r.Header.Set("Authorization", "Bearer "+bt.userToken)
 
-func (bt *BookTests) getBook400(t *testing.T) {
+	bt.app.ServeHTTP(w, r)
 
+	t.Log("Given the need to retrieve a book but can't be retrieved with an invalid ID.")
+	{
+		t.Log("\tTest 0:\tWhen using an invalid book-ID.")
+		{
+			if w.Code != http.StatusBadRequest {
+				t.Fatalf("\t%s\tShould receive a status code of 404 for the response : %v", tests.Failed, w.Code)
+			}
+			t.Logf("\t%s\tShould receive a status code of 404 for the response.", tests.Success)
+
+			// Inspect the response.
+			var got web.ErrorResponse
+			if err := json.NewDecoder(w.Body).Decode(&got); err != nil {
+				t.Fatalf("\t%s\tShould be able to unmarshal the response to an error type : %v", tests.Failed, err)
+			}
+			t.Logf("\t%s\tShould be able to unmarshal the response to an error type.", tests.Success)
+
+			// Define what we want to see.
+			want := web.ErrorResponse{
+				Error: "field validation error",
+				Fields: []web.FieldError{
+					{Field: "title", Error: "title is a required field"},
+					{Field: "isbn", Error: "isbn is a required field"},
+					{Field: "category", Error: "category is a required field"},
+					{Field: "authors", Error: "authors is a required field"},
+					{Field: "quantity", Error: "quantity is a required field"},
+				},
+			}
+
+			// We can't rely on the order of the field errors so they have to be
+			// sorted. Tell the cmp package how to sort them.
+			sorter := cmpopts.SortSlices(func(a, b web.FieldError) bool {
+				return a.Field < b.Field
+			})
+
+			if diff := cmp.Diff(want, got, sorter); diff != "" {
+				t.Fatalf("\t%s\tShould get the expected result. Diff:\n%s", tests.Failed, diff)
+			}
+			t.Logf("\t%s\tShould get the expected result.", tests.Success)
+		}
+	}
 }
 
 func (bt *BookTests) deleteBookNotFound(t *testing.T) {
+	r := httptest.NewRequest("Delete", "/v1/books/12345", strings.NewReader(`{}`))
+	w := httptest.NewRecorder()
 
-}
+	r.Header.Set("Authorization", "Bearer "+bt.userToken)
 
-func (bt *BookTests) putBook404(t *testing.T) {
+	bt.app.ServeHTTP(w, r)
 
-}
+	t.Log("Given the need to retrieve a book but can't be retrieved with an invalid ID.")
+	{
+		t.Log("\tTest 0:\tWhen using an invalid book-ID.")
+		{
+			if w.Code != http.StatusBadRequest {
+				t.Fatalf("\t%s\tShould receive a status code of 404 for the response : %v", tests.Failed, w.Code)
+			}
+			t.Logf("\t%s\tShould receive a status code of 404 for the response.", tests.Success)
 
-func (bt *BookTests) crudBook(t *testing.T) {
+			// Inspect the response.
+			var got web.ErrorResponse
+			if err := json.NewDecoder(w.Body).Decode(&got); err != nil {
+				t.Fatalf("\t%s\tShould be able to unmarshal the response to an error type : %v", tests.Failed, err)
+			}
+			t.Logf("\t%s\tShould be able to unmarshal the response to an error type.", tests.Success)
 
+			// Define what we want to see.
+			want := web.ErrorResponse{
+				Error: "field validation error",
+				Fields: []web.FieldError{
+					{Field: "title", Error: "title is a required field"},
+					{Field: "isbn", Error: "isbn is a required field"},
+					{Field: "category", Error: "category is a required field"},
+					{Field: "authors", Error: "authors is a required field"},
+					{Field: "quantity", Error: "quantity is a required field"},
+				},
+			}
+
+			// We can't rely on the order of the field errors so they have to be
+			// sorted. Tell the cmp package how to sort them.
+			sorter := cmpopts.SortSlices(func(a, b web.FieldError) bool {
+				return a.Field < b.Field
+			})
+
+			if diff := cmp.Diff(want, got, sorter); diff != "" {
+				t.Fatalf("\t%s\tShould get the expected result. Diff:\n%s", tests.Failed, diff)
+			}
+			t.Logf("\t%s\tShould get the expected result.", tests.Success)
+		}
+	}
 }

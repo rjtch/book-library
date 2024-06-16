@@ -12,7 +12,7 @@ import (
 )
 
 // TestUser validates the full set of CRUD operations on User values.
-func TestUser(t *testing.T) {
+func TestUnitUser(t *testing.T) {
 	db, teardown := tests.NewUnit(t)
 	defer teardown()
 

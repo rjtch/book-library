@@ -11,7 +11,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func TestCategory(t *testing.T) {
+func TestUnitCategory(t *testing.T) {
 	db, teardown := tests.NewUnit(t)
 	defer teardown()
 

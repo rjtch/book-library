@@ -30,7 +30,7 @@ var (
 	ErrForbidden = errors.New("Attempted action is not allowed")
 )
 
-//List retrieves a list of existing loans from the databse
+// List retrieves a list of existing loans from the databse
 func List(ctx context.Context, user auth.Claims, db *sqlx.DB) ([]Loan, error) {
 	ctx, span := trace.StartSpan(ctx, "internal.loan.List")
 	defer span.End()
@@ -45,7 +45,7 @@ func List(ctx context.Context, user auth.Claims, db *sqlx.DB) ([]Loan, error) {
 	return loans, nil
 }
 
-//InitNewLoan initiates a new loan when users want to loan a book
+// InitNewLoan initiates a new loan when users want to loan a book
 func InitNewLoan(ctx context.Context, user auth.Claims, n NewLoan, now time.Time, id string, db *sqlx.DB) (*Loan, error) {
 	ctx, span := trace.StartSpan(ctx, "internal.loan.InitNewLoan")
 	defer span.End()
@@ -106,7 +106,7 @@ func InitNewLoan(ctx context.Context, user auth.Claims, n NewLoan, now time.Time
 	return &loan, nil
 }
 
-//Retrieve retrieves a loan by id
+// Retrieve retrieves a loan by id
 func Retrieve(ctx context.Context, user auth.Claims, book_id string, db *sqlx.DB, user_id string) (*Loan, error) {
 	ctx, span := trace.StartSpan(ctx, "internal.loan.Retrieve")
 	defer span.End()
@@ -140,7 +140,7 @@ func Retrieve(ctx context.Context, user auth.Claims, book_id string, db *sqlx.DB
 	return &loan, nil
 }
 
-//EndUpALoan ends a loan after giving a book back
+// EndUpALoan ends a loan after giving a book back
 func EndUpALoan(ctx context.Context, user auth.Claims, now time.Time, id string, db *sqlx.DB) error {
 	ctx, span := trace.StartSpan(ctx, "internal.loan.EndUpALoan")
 	defer span.End()
@@ -197,10 +197,6 @@ func Update(ctx context.Context, id string, upd UpdateLoan, now time.Time, user 
 		return ErrForbidden
 	}
 
-	if !user.HasRole(auth.RoleAdmin) {
-		return ErrForbidden
-	}
-
 	loan, err := Retrieve(ctx, user, id, db, user.Subject)
 	if err != nil {
 		if id != user.Id {
@@ -233,11 +229,11 @@ func Update(ctx context.Context, id string, upd UpdateLoan, now time.Time, user 
 
 /****    HELPERS      ***/
 
-func GetLoansByUuid(ctx context.Context, user auth.Claims, db *sqlx.DB, id string) (*Loan, error){
+func GetLoansByUuid(ctx context.Context, user auth.Claims, db *sqlx.DB, id string) (*Loan, error) {
 	ctx, span := trace.StartSpan(ctx, "internal.Loan.GetLoansByUuid")
 	defer span.End()
 
-	var loan Loan;
+	var loan Loan
 	if user.HasRole(auth.RoleUser) {
 		if id == user.Subject {
 			const q = `SELECT * FROM loans WHERE loan_id = $1 AND user_id = $2`

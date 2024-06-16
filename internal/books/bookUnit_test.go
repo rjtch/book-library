@@ -12,7 +12,7 @@ import (
 )
 
 // TestBook validates the full set the CRUD operations on Book values
-func TestBook(t *testing.T) {
+func TestUnitBook(t *testing.T) {
 	db, teardown := tests.NewUnit(t)
 	defer teardown()
 
