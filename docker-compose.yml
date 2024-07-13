@@ -7,69 +7,87 @@ networks:
 services:
 
   # This sidecar allows for the viewing of traces.
-  zipkin:
-    container_name: zipkin
-    networks:
-      - shared-network
-    image: openzipkin/zipkin:2.11
-    ports:
-      - 9411:9411
+  # zipkin:
+  #   container_name: zipkin
+  #   networks:
+  #     - shared-network
+  #   image: openzipkin/zipkin:2.11
+  #   ports:
+  #     - 9411:9411
 
-  # This sidecar publishes metrics to the console by default.
-  metrics:
-    container_name: metrics
-    networks:
-      - shared-network
-    image: book-metrics-kit
-    ports:
-      - 3001:3001 # EXPVAR API
-      - 4001:4001 # DEBUG API
-    depends_on:
-      - books-api
+  # # This sidecar publishes metrics to the console by default.
+  # metrics:
+  #   container_name: metrics
+  #   networks:
+  #     - shared-network
+  #   image: book-metrics-kit
+  #   ports:
+  #     - 3001:3001 # EXPVAR API
+  #     - 4001:4001 # DEBUG API
+  #   depends_on:
+  #     - books-api
 
-  # #This is the core CRUD based service.
-  books-api:
-     container_name: books-api
-     networks:
-       - shared-network
-     image: book-api-kit
-     ports:
-       - 3000:3000 # CRUD API
-       - 4000:4000 # DEBUG API
-     environment:
-       - BOOKS_DB_HOST=book_db
-       - BOOKS_DB_DISABLE_TLS=1 # This is only disabled for our development enviroment.
-       # - GODEBUG=gctrace=1
-     depends_on:
-       - zipkin
-       - db
+  # # #This is the core CRUD based service.
+  # books-api:
+  #    container_name: books-api
+  #    networks:
+  #      - shared-network
+  #    image: book-api-kit
+  #    ports:
+  #      - 3000:3000 # CRUD API
+  #      - 4000:4000 # DEBUG API
+  #    environment:
+  #      - BOOKS_DB_HOST=book_db
+  #      - BOOKS_DB_DISABLE_TLS=1 # This is only disabled for our development enviroment.
+  #      # - GODEBUG=gctrace=1
+  #    depends_on:
+  #      - zipkin
+  #      - db
 
-  adminer:
-    image: docker.io/library/adminer
+  keycloack:
+    image: quay.io/keycloak/keycloak:25.0.1
     restart: always
+    command: ["start-dev"]
     environment:
-      - ADMINER_DESIGN=pepa-linha-dark
-      - ADMINER_DEFAULT_SERVER=db
-      - ADMINER_DEFAULT_DB_DRIVER=pgsql
-      - ADMINER_DEFAULT_DB_NAME=book
-    ports:
-      - 5499:8080
-
-  # This starts a local PostgreSQL DB.
-  db:
-    image: docker.io/library/postgres:16
-    restart: always
-    # platform: linux/amd64
-    shm_size: 128mb
-    environment:
-      POSTGRES_USER: book
-      POSTGRES_PASSWORD: postgres-password
-      POSTGRES_DB: book
+      - KC_LOG_LEVEL=info
+      - KC_HOSTNAME=localhost
+      - KC_HOSTNAME_PORT=8080
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
     healthcheck:
-      test: pg_isready -U book -d book
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    # network_mode: host
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
+      interval: 15s
+      timeout: 2s
+      retries: 15
     ports:
-      - "5432:5432"
+      - 8080:8080
+
+  # adminer:
+  #   image: docker.io/library/adminer
+  #   restart: always
+  #   environment:
+  #     - ADMINER_DESIGN=pepa-linha-dark
+  #     - ADMINER_DEFAULT_SERVER=db
+  #     - ADMINER_DEFAULT_DB_DRIVER=pgsql
+  #     - ADMINER_DEFAULT_DB_NAME=book
+  #   ports:
+  #     - 5499:8080
+
+  # # This starts a local PostgreSQL DB.
+  # db:
+  #   image: docker.io/library/postgres:16
+  #   restart: always
+  #   # platform: linux/amd64
+  #   shm_size: 128mb
+  #   environment:
+  #     POSTGRES_USER: book
+  #     POSTGRES_PASSWORD: postgres-password
+  #     POSTGRES_DB: book
+  #   healthcheck:
+  #     test: pg_isready -U book -d book
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+  #   # network_mode: host
+  #   ports:
+  #     - "5432:5432"
