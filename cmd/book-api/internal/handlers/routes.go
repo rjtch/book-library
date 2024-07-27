@@ -12,7 +12,7 @@ import (
 )
 
 // API constructs an http.Handler with all application routes defined.
-func API(build string, shutdown chan os.Signal, log *log.Logger, db *sqlx.DB, authenticator *auth.Authenticator) http.Handler {
+func API(build string, shutdown chan os.Signal, log *log.Logger, db *sqlx.DB, authenticator *auth.OAuthenticator) http.Handler {
 
 	// Construct the web.App which holds all routes as well as common Middleware.
 	app := web.NewApp(shutdown, mid.Logger(log), mid.Errors(log), mid.Metrics(), mid.Panics(log))
@@ -36,7 +36,6 @@ func API(build string, shutdown chan os.Signal, log *log.Logger, db *sqlx.DB, au
 	app.Handle("GET", "/v1/users/:id", u.Retrieve, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
 	app.Handle("PUT", "/v1/users/:id/update", u.Update, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
 	app.Handle("DELETE", "/v1/users/:id/delete", u.Delete, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
-	app.Handle("GET", "/v1/users/:user-id/me", u.RetrieveMe, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
 
 	// This routes are not authenticated
 	app.Handle("POST", "/v1/users/token", u.TokenAuthenticator)

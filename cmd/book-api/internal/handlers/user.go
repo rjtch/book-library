@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -27,7 +26,7 @@ const (
 // User represents the Users API method handler set.
 type User struct {
 	Db            *sqlx.DB
-	authenticator *auth.Authenticator
+	authenticator *auth.OAuthenticator
 }
 
 // List returns all the existing users from the system to the world
@@ -42,13 +41,7 @@ func (u *User) List(ctx context.Context, w http.ResponseWriter, r *http.Request,
 		}
 	}
 
-	//check if token does already exist
-	ok, err := users.IsLoggedOut(ctx, u.Db, claims.Subject, r.Header.Get("bearer"))
-	if !ok {
-		return web.NewRequestError(err, http.StatusUnauthorized)
-	}
-
-	usr, err := users.List(ctx, claims, u.Db)
+	usr, err := users.List(ctx, u.Db)
 	if err != nil {
 		return err
 	}
@@ -61,20 +54,7 @@ func (u *User) Retrieve(ctx context.Context, w http.ResponseWriter, r *http.Requ
 	ctx, span := trace.StartSpan(ctx, "handlers.users.Retrieve")
 	defer span.End()
 
-	claims, ok := ctx.Value(auth.Key).(auth.Claims)
-	if !ok {
-		if !claims.HasRole(auth.RoleUser) {
-			return errors.New("claims missing from context")
-		}
-	}
-
-	//check if token does already exist
-	ok, err := users.IsLoggedOut(ctx, u.Db, claims.Subject, r.Header.Get("bearer"))
-	if !ok {
-		return web.NewRequestError(err, http.StatusUnauthorized)
-	}
-
-	user, err := users.Retrieve(ctx, claims, u.Db, params["id"])
+	user, err := users.Retrieve(ctx, u.Db, params["id"])
 	if err != nil {
 		switch err {
 		case users.ErrForbidden:
@@ -90,41 +70,6 @@ func (u *User) Retrieve(ctx context.Context, w http.ResponseWriter, r *http.Requ
 	return web.Respond(ctx, w, user, http.StatusOK)
 }
 
-// Retrieve returns the value of a specified users from the system to the world
-func (u *User) RetrieveMe(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
-	ctx, span := trace.StartSpan(ctx, "handlers.users.Retrieve")
-	defer span.End()
-
-	//get user_id from the url
-	id := params["user_id"]
-
-	//check if token does already exist
-	ok, err := users.IsLoggedOut(ctx, u.Db, id, r.Header.Get("bearer"))
-	if !ok {
-		return web.NewRequestError(err, http.StatusUnauthorized)
-	}
-
-	claims, ok := ctx.Value(auth.Key).(auth.Claims)
-	if !ok {
-		return errors.New("claims missing from context")
-	}
-
-	user, err := users.RetrieveMe(ctx, claims, u.Db)
-	if err != nil {
-		switch err {
-		case users.ErrForbidden:
-			return web.NewRequestError(err, http.StatusForbidden)
-		case users.ErrInvalidID:
-			return web.NewRequestError(err, http.StatusBadRequest)
-		case users.ErrNotFound:
-			return web.NewRequestError(err, http.StatusNotFound)
-		default:
-			return errors.Wrapf(err, "ID: %s", user.ID)
-		}
-	}
-	return web.Respond(ctx, w, user, http.StatusOK)
-}
-
 // Create creates a new users into the system
 func (u *User) Create(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.users.Create")
@@ -135,12 +80,6 @@ func (u *User) Create(ctx context.Context, w http.ResponseWriter, r *http.Reques
 		if !claims.HasRole(auth.RoleAdmin) {
 			return errors.New("claims missing from context")
 		}
-	}
-
-	//check if token does already exist
-	ok, err := users.IsLoggedOut(ctx, u.Db, claims.Subject, r.Header.Get("bearer"))
-	if !ok {
-		return web.NewRequestError(err, http.StatusUnauthorized)
 	}
 
 	//we retreive hier as claim the Value(state of each request) because we are in this case creating a new users
@@ -169,23 +108,9 @@ func (u *User) Update(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	ctx, span := trace.StartSpan(ctx, "handlers.users.Update")
 	defer span.End()
 
-	//get user_id from the url
-	id := params["id"]
-
-	//check if token does already exist
-	ok, err := users.IsLoggedOut(ctx, u.Db, id, r.Header.Get("bearer"))
-	if !ok {
-		return web.NewRequestError(err, http.StatusUnauthorized)
-	}
-
 	v, ok := ctx.Value(web.KeyValues).(*web.Values)
 	if !ok {
 		return errors.New("web value missing from context")
-	}
-
-	claims, ok := ctx.Value(auth.Key).(auth.Claims)
-	if !ok {
-		return errors.New("claims missing from context")
 	}
 
 	var udp users.UpdateUser
@@ -193,7 +118,7 @@ func (u *User) Update(ctx context.Context, w http.ResponseWriter, r *http.Reques
 		return errors.Wrap(err, "")
 	}
 
-	err = users.Update(ctx, claims, u.Db, params["id"], udp, v.Now)
+	err := users.Update(ctx, u.Db, params["id"], udp, v.Now)
 	if err != nil {
 		switch err {
 		case users.ErrForbidden:
@@ -214,25 +139,7 @@ func (u *User) Delete(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	ctx, span := trace.StartSpan(ctx, "handlers.users.Delete")
 	defer span.End()
 
-	//get user_id from the url
-	id := params["user_id"]
-
-	//check if token does already exist
-	ok, err := users.IsLoggedOut(ctx, u.Db, id, r.Header.Get("bearer"))
-	if !ok {
-		return web.NewRequestError(err, http.StatusUnauthorized)
-	}
-
-	claims, ok := ctx.Value(auth.Key).(auth.Claims)
-	if !ok {
-		return errors.New("claims missing from context")
-	}
-
-	if claims.HasRole(auth.RoleAdmin) {
-		return errors.New("you don't have role to execute this action")
-	}
-
-	err = users.Delete(ctx, u.Db, params["id"])
+	err := users.Delete(ctx, u.Db, params["id"])
 	if err != nil {
 		switch err {
 		case users.ErrForbidden:
@@ -284,10 +191,10 @@ func (u *User) TokenAuthenticator(ctx context.Context, w http.ResponseWriter, r 
 
 	//	csrf.CookieName(defaultXsrfToken)
 
-	tk.Token, err = u.authenticator.GenerateToken(claims)
-	if err != nil {
-		return errors.Wrap(err, "generating token")
-	}
+	// tk.Token, err = u.authenticator.ClientSecret
+	// if err != nil {
+	// 	return errors.Wrap(err, "generating token")
+	// }
 
 	// Finally, we set the client cookie for "token" as the JWT we just generated
 	// we also set an expiry time which is the same as the token itself
@@ -327,20 +234,6 @@ func (u *User) RefreshToken(ctx context.Context, w http.ResponseWriter, r *http.
 		return web.NewRequestError(err, http.StatusUnauthorized)
 	}
 
-	claims, err := users.RefreshesToken(ctx, u.Db, cookie.Raw)
-	if err != nil {
-		return web.NewRequestError(err, http.StatusConflict)
-	}
-
-	token, err := u.authenticator.GenerateToken(claims)
-
-	if err != nil {
-		return errors.Wrap(err, "generating token")
-	}
-
-	cookie.Value = token
-	cookie.Expires = time.Unix(claims.ExpiresAt, 0)
-
 	//add cookies back int the header
 	http.SetCookie(w, cookie)
 	return web.Respond(ctx, w, "Refreshed token", http.StatusOK)
@@ -372,16 +265,6 @@ func (u *User) Logout(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	//invalidate cookies after session is deleted from the db
 	cookie.MaxAge = 0
 	cookie.Expires = time.Now()
-
-	parts := cookie.Value
-	claims, err := u.authenticator.ParseClaims(parts)
-	if err != nil {
-		return web.NewRequestError(err, http.StatusUnauthorized)
-	}
-
-	//invalidate the claims as well
-	claims.StandardClaims.ExpiresAt = int64(cookie.MaxAge)
-	cookie.Value = fmt.Sprint(claims)
 
 	//send the invalidated cookie back to the client
 	http.SetCookie(w, cookie)

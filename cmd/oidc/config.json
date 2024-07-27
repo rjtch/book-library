@@ -1,0 +1,37 @@
+
+{
+    "cfg": {
+        "oauth": {
+            "clientSecret": "eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICIwZGU2YWRkZC1mZjZiLTRjZDAtODFjYi1iMDFiY2ViZDkzODEifQ.eyJleHAiOjE3Mjg5ODg1MDEsImlhdCI6MTcyMjA3NjUwMSwianRpIjoiZDcwYmYyNzItNzhiYS00ZDQ2LWFlYTctYWU5OTg4MTQ2ODZhIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9ib29rLXJlYWxtIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9ib29rLXJlYWxtIiwidHlwIjoiSW5pdGlhbEFjY2Vzc1Rva2VuIn0.s5c-u1tFCZejsIWBwwitwjFsSWaQQx5TyxA3ilUp7ju_kjAQddheGNsnOHyxIRWT5uqeYl0bxGkQR2cGvhKtXQ",
+            "clientID": "d70bf272-78ba-4d46-aea7-ae998814686a",
+            "endpoint": "http://localhost:8080/*",
+            "redirectUrl": "http://localhost:8080/callback",
+            "scopes": ["oidc","profile", "email"]
+        },
+        "web": {
+            "apiHost": "0.0.0.0:3000",
+            "debugHost": "0.0.0.0:4000",
+            "readTimeout": "5s",
+            "writeTimeout": "5s",
+            "shutdownTimeout": "5s"
+        },
+        "db": {
+            "user": "postgres",
+            "password": "postgres",
+            "host": "0.0.0.0",
+            "name": "postgres",
+            "disabledTls": "false"
+        },
+        "auth": {
+            "keyid": "1",
+            "privateKeyFile": "private.pem",
+            "algorithm": "RS256"
+        },
+        "zipkin": {
+            "localEndpoint": "0.0.0.0:3000",
+            "reporterUri": "http://zipkin:9411/api/v2/spans",
+            "serviceName": "books-api",
+            "probability": "0.05"
+        }
+    }
+}
