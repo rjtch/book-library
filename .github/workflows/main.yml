@@ -13,8 +13,6 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: 'stable'
-      - name: Key generate
-        run: make keys
       - name: build metrics-api
         run:  make metrics
       - name: build books-api
