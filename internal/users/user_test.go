@@ -22,15 +22,6 @@ func TestUnitUser(t *testing.T) {
 		{
 			ctx := tests.Context()
 			now := time.Date(2018, time.October, 1, 0, 0, 0, 0, time.UTC)
-
-			// claims is information about the person making the request.
-			claims := auth.NewClaims(
-				auth.RoleAdmin,
-				[]string{auth.RoleAdmin, auth.RoleUser},
-				now, time.Hour,
-				"718ffbea-f4a1-4667-8ae3-b349da52675e", // This is just some random UUID.
-			)
-
 			nu := users.NewUser{
 				Name:            "Bill Kennedy",
 				Email:           "bill@ardanlabs.com",
@@ -46,7 +37,7 @@ func TestUnitUser(t *testing.T) {
 			}
 			t.Logf("\t%s\tShould be able to create user.", tests.Success)
 
-			savedU, err := users.Retrieve(ctx, claims, db, u.ID)
+			savedU, err := users.Retrieve(ctx, db, u.ID)
 			if err != nil {
 				t.Fatalf("\t%s\tShould be able to retrieve user by ID: %s.", tests.Failed, err)
 			}
@@ -62,12 +53,12 @@ func TestUnitUser(t *testing.T) {
 				Email: tests.StringPointer("jacob@ardanlabs.com"),
 			}
 
-			if err := users.Update(ctx, claims, db, u.ID, upd, now); err != nil {
+			if err := users.Update(ctx, db, u.ID, upd, now); err != nil {
 				t.Fatalf("\t%s\tShould be able to update user : %s.", tests.Failed, err)
 			}
 			t.Logf("\t%s\tShould be able to update user.", tests.Success)
 
-			savedU, err = users.Retrieve(ctx, claims, db, u.ID)
+			savedU, err = users.Retrieve(ctx, db, u.ID)
 			if err != nil {
 				t.Fatalf("\t%s\tShould be able to retrieve user : %s.", tests.Failed, err)
 			}
@@ -94,7 +85,7 @@ func TestUnitUser(t *testing.T) {
 			}
 			t.Logf("\t%s\tShould be able to delete user.", tests.Success)
 
-			savedU, err = users.Retrieve(ctx, claims, db, u.ID)
+			savedU, err = users.Retrieve(ctx, db, u.ID)
 			if errors.Cause(err) != users.ErrNotFound {
 				t.Fatalf("\t%s\tShould NOT be able to retrieve user : %s.", tests.Failed, err)
 			}

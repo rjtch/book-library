@@ -8,10 +8,8 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"contrib.go.opencensus.io/exporter/zipkin"
-	"github.com/ardanlabs/conf"
 	"github.com/book-library/cmd/book-api/internal/handlers"
 	"github.com/book-library/internal/platform/auth"
 	"github.com/book-library/internal/platform/database"
@@ -53,47 +51,43 @@ func run() error {
 	if err != nil {
 		return errors.Wrap(err, "generating config usage failed")
 	}
+	scopes := make([]string, 6)
+	scopes = append(scopes, viper.GetString("oauth.scopes"))
 	// =========================================================================
 	// Configuration
-
-	var cfg struct {
-		Web struct {
-			APIHost         string        `json:"apiHost,omitempty"`
-			DebugHost       string        `json:"debugHost,omitempty"`
-			ReadTimeout     time.Duration `json:"readTimeout,omitempty"`
-			WriteTimeout    time.Duration `json:"writeTimeout,omitempty"`
-			ShutdownTimeout time.Duration `json:"shutdownTimeout,omitempty"`
-		}
-		DB struct {
-			User       string `json:"user,omitempty"`
-			Password   string `json:"password,omitempty"`
-			Host       string `json:"host,omitempty"`
-			Name       string `json:"name,omitempty"`
-			DisableTLS bool   `json:"disableTLS,omitempty"`
-		}
-		Auth struct {
-			KeyID string `json:"keyid,omitempty"`
-			//			PrivateKeyFile string `conf:"default:/app-library/private.pem"`
-			PrivateKeyFile string `json:"privateKeyFile,omitempty"`
-			Algorithm      string `json:"algorithm,omitempty"`
-		}
-		OAuth struct {
-			ClientID     string   `json:"clientID,omitempty"`
-			ClientSecret string   `json:"clientSecret,omitempty"`
-			Endpoint     string   `json:"endpoint,omitempty"`
-			RedirectUrl  string   `json:"redirectUrl,omitempty"`
-			Scopes       []string `json:"scopes,omitempty"`
-			Issuer       string   `json:"issuer,omitempty"`
-		}
-		Zipkin struct {
-			LocalEndpoint string  `json:"localEndpoint,omitempty"`
-			ReporterURI   string  `json:"reporterURI,omitempty"`
-			ServiceName   string  `json:"serviceName,omitempty"`
-			Probability   float64 `json:"probability,omitempty"`
-		}
+	oauth := auth.OAuthenticator{
+		ClientID:     viper.GetString("oauth.clientID"),
+		ClientSecret: viper.GetString("oauth.clientSecret"),
+		Endpoint:     viper.GetString("oauth.endpoint"),
+		RedirectUrl:  viper.GetString("oauth.redirectUrl"),
+		Issuer:       viper.GetString("oauth.issuer"),
+		Scopes:       scopes,
 	}
 
-	provider := oidc.InsecureIssuerURLContext(ctx, cfg.OAuth.Issuer)
+	db := auth.DB{
+		User:       viper.GetString("db.user"),
+		Password:   viper.GetString("db.password"),
+		Host:       viper.GetString("db.host"),
+		Name:       viper.GetString("db.name"),
+		DisableTLS: viper.GetBool("db.disabledTls"),
+	}
+
+	web := auth.Web{
+		APIHost:         viper.GetString("web.apiHost"),
+		DebugHost:       viper.GetString("web.debugHost"),
+		ReadTimeout:     viper.GetDuration("web.readTimeout"),
+		WriteTimeout:    viper.GetDuration("web.writeTimeout"),
+		ShutdownTimeout: viper.GetDuration("web.shutdownTimeout"),
+	}
+
+	zipkinServer := auth.Zipkin{
+		LocalEndpoint: viper.GetString("zipkin.localEndpoint"),
+		ReporterURI:   viper.GetString("zipkin.reporterUri"),
+		ServiceName:   viper.GetString("zipkin.serviceName"),
+		Probability:   viper.GetFloat64("zipkin.probability"),
+	}
+
+	provider := oidc.InsecureIssuerURLContext(ctx, viper.GetString("oauth.issuer"))
 	log.Printf("main : provider context version %q", provider)
 	// =========================================================================
 	// App Starting
@@ -102,18 +96,12 @@ func run() error {
 	expvar.NewString("build").Set(build)
 	defer log.Println("main : Completed")
 
-	out, err := conf.String(&cfg)
-	if err != nil {
-		return errors.Wrap(err, "generating config for output")
-	}
-	log.Printf("main : Config :\n%v\n", out)
-
 	// =========================================================================
 	// Initialize authentication support
 
 	log.Println("main : Started : Initializing authentication support")
 
-	authenticator, err := auth.OAuthenticate(cfg.OAuth.ClientID, cfg.OAuth.ClientSecret, cfg.OAuth.Endpoint, cfg.OAuth.RedirectUrl, cfg.OAuth.Scopes)
+	authenticator, err := auth.OAuthenticate(oauth.ClientID, oauth.ClientSecret, oauth.Endpoint, oauth.RedirectUrl, oauth.Issuer, oauth.Scopes)
 	if err != nil {
 		return errors.Wrap(err, "constructing authenticator")
 	}
@@ -123,20 +111,20 @@ func run() error {
 
 	log.Println("main : Started : Initializing database support")
 
-	db, err := database.Open(database.Config{
-		User:       cfg.DB.User,
-		Password:   cfg.DB.Password,
-		Host:       cfg.DB.Host,
-		Name:       cfg.DB.Name,
-		DisableTLS: cfg.DB.DisableTLS,
+	dbank, err := database.Open(database.Config{
+		User:       db.User,
+		Password:   db.Password,
+		Host:       db.Host,
+		Name:       db.Name,
+		DisableTLS: db.DisableTLS,
 	})
 	if err != nil {
 		return errors.Wrap(err, "connecting to db")
 	}
 
 	defer func() {
-		log.Printf("main : Database Stopping : %s", cfg.DB.Host)
-		db.Close()
+		log.Printf("main : Database Stopping : %s", db.Host)
+		dbank.Close()
 	}()
 
 	// =========================================================================
@@ -144,21 +132,21 @@ func run() error {
 
 	log.Println("main : Started : Initializing zipkin tracing support")
 
-	localEndpoint, err := openzipkin.NewEndpoint(cfg.Zipkin.ServiceName, cfg.Zipkin.LocalEndpoint)
+	localEndpoint, err := openzipkin.NewEndpoint(zipkinServer.ServiceName, zipkinServer.LocalEndpoint)
 	if err != nil {
 		return err
 	}
 
-	reporter := zipkinHTTP.NewReporter(cfg.Zipkin.ReporterURI)
+	reporter := zipkinHTTP.NewReporter(zipkinServer.ReporterURI)
 	ze := zipkin.NewExporter(reporter, localEndpoint)
 
 	trace.RegisterExporter(ze)
 	trace.ApplyConfig(trace.Config{
-		DefaultSampler: trace.ProbabilitySampler(cfg.Zipkin.Probability),
+		DefaultSampler: trace.ProbabilitySampler(zipkinServer.Probability),
 	})
 
 	defer func() {
-		log.Printf("main : Tracing Stopping : %s", cfg.Zipkin.LocalEndpoint)
+		log.Printf("main : Tracing Stopping : %s", zipkinServer.LocalEndpoint)
 		reporter.Close()
 	}()
 
@@ -173,8 +161,8 @@ func run() error {
 	log.Println("main : Started : Initializing debugging support")
 
 	go func() {
-		log.Printf("main : Debug Listening %s", cfg.Web.DebugHost)
-		log.Printf("main : Debug Listener closed : %v", http.ListenAndServe(cfg.Web.DebugHost, http.DefaultServeMux))
+		log.Printf("main : Debug Listening %s", web.DebugHost)
+		log.Printf("main : Debug Listener closed : %v", http.ListenAndServe(web.DebugHost, http.DefaultServeMux))
 	}()
 
 	// =========================================================================
@@ -188,10 +176,10 @@ func run() error {
 	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
 
 	api := http.Server{
-		Addr:         cfg.Web.APIHost,
-		Handler:      handlers.API(build, shutdown, log, db, authenticator),
-		ReadTimeout:  cfg.Web.ReadTimeout,
-		WriteTimeout: cfg.Web.WriteTimeout,
+		Addr:         web.APIHost,
+		Handler:      handlers.API(build, shutdown, log, dbank, authenticator),
+		ReadTimeout:  web.ReadTimeout,
+		WriteTimeout: web.WriteTimeout,
 	}
 
 	// Make a channel to listen for errors coming from the listener. Use a
@@ -217,13 +205,13 @@ func run() error {
 		log.Printf("main : %v : Start shutdown", sig)
 
 		// Give outstanding requests a deadline for completion.
-		ctx, cancel := context.WithTimeout(context.Background(), cfg.Web.ShutdownTimeout)
+		ctx, cancel := context.WithTimeout(context.Background(), web.ShutdownTimeout)
 		defer cancel()
 
 		// Asking listener to shutdown and load shed.
 		err := api.Shutdown(ctx)
 		if err != nil {
-			log.Printf("main : Graceful shutdown did not complete in %v : %v", cfg.Web.ShutdownTimeout, err)
+			log.Printf("main : Graceful shutdown did not complete in %v : %v", web.ShutdownTimeout, err)
 			err = api.Close()
 		}
 

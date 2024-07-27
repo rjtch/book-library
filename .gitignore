@@ -10,6 +10,7 @@ package-lock.json
 .vscode
 /.vscode
 
+vendor
 /.idea
 docker
 k8s

@@ -62,32 +62,33 @@ services:
     ports:
       - 8080:8080
 
-  # adminer:
-  #   image: docker.io/library/adminer
-  #   restart: always
-  #   environment:
-  #     - ADMINER_DESIGN=pepa-linha-dark
-  #     - ADMINER_DEFAULT_SERVER=db
-  #     - ADMINER_DEFAULT_DB_DRIVER=pgsql
-  #     - ADMINER_DEFAULT_DB_NAME=book
-  #   ports:
-  #     - 5499:8080
+  adminer:
+    image: docker.io/library/adminer
+    restart: always
+    environment:
+      - ADMINER_DESIGN=pepa-linha-dark
+      - ADMINER_DEFAULT_SERVER=db
+      - ADMINER_DEFAULT_DB_DRIVER=pgsql
+      - ADMINER_DEFAULT_DB_NAME=book
+    ports:
+      - 5499:8080
 
   # # This starts a local PostgreSQL DB.
-  # db:
-  #   image: docker.io/library/postgres:16
-  #   restart: always
-  #   # platform: linux/amd64
-  #   shm_size: 128mb
-  #   environment:
-  #     POSTGRES_USER: book
-  #     POSTGRES_PASSWORD: postgres-password
-  #     POSTGRES_DB: book
-  #   healthcheck:
-  #     test: pg_isready -U book -d book
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 5
-  #   # network_mode: host
-  #   ports:
-  #     - "5432:5432"
+  postgres:
+    image: docker.io/library/postgres:16
+    restart: always
+    # platform: linux/amd64
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: book
+      POSTGRES_PASSWORD: postgres-password
+      POSTGRES_DB: book
+      POSTGRES_HOST_AUTH_METHOD: trust
+    healthcheck:
+      test: pg_isready -U book -d book
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    # network_mode: host
+    ports:
+      - "5432:5432"
