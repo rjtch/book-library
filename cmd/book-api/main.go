@@ -2,10 +2,7 @@ package main
 
 import (
 	"context"
-	"crypto/rsa"
 	"expvar"
-	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -18,16 +15,20 @@ import (
 	"github.com/book-library/cmd/book-api/internal/handlers"
 	"github.com/book-library/internal/platform/auth"
 	"github.com/book-library/internal/platform/database"
-	"github.com/dgrijalva/jwt-go"
+	"github.com/coreos/go-oidc/v3/oidc"
 	openzipkin "github.com/openzipkin/zipkin-go"
 	zipkinHTTP "github.com/openzipkin/zipkin-go/reporter/http"
 	"github.com/pkg/errors"
 	_ "github.com/rakyll/statik/fs"
+	"github.com/spf13/viper"
 	"go.opencensus.io/trace"
 )
 
 // build is the git version of this program. It is set using build flags in the makefile.
 var build = "develop"
+var configPath = "./oidc/"
+var configName = "config"
+var configType = "json"
 
 func main() {
 	if err := run(); err != nil {
@@ -37,62 +38,68 @@ func main() {
 }
 
 func run() error {
+	ctx := context.Background()
 
 	// =========================================================================
 	// Logging
 
 	log := log.New(os.Stdout, "BOOKS : ", log.LstdFlags|log.Lmicroseconds|log.Lshortfile)
-
+	// read config files
+	//	viper.SetConfigFile(configFile)
+	viper.AddConfigPath(configPath)
+	viper.SetConfigName(configName)
+	viper.SetConfigType(configType)
+	err := viper.ReadInConfig()
+	if err != nil {
+		return errors.Wrap(err, "generating config usage failed")
+	}
 	// =========================================================================
 	// Configuration
 
 	var cfg struct {
 		Web struct {
-			APIHost         string        `conf:"default:0.0.0.0:3000"`
-			DebugHost       string        `conf:"default:0.0.0.0:4000"`
-			ReadTimeout     time.Duration `conf:"default:5s"`
-			WriteTimeout    time.Duration `conf:"default:5s"`
-			ShutdownTimeout time.Duration `conf:"default:5s"`
+			APIHost         string        `json:"apiHost,omitempty"`
+			DebugHost       string        `json:"debugHost,omitempty"`
+			ReadTimeout     time.Duration `json:"readTimeout,omitempty"`
+			WriteTimeout    time.Duration `json:"writeTimeout,omitempty"`
+			ShutdownTimeout time.Duration `json:"shutdownTimeout,omitempty"`
 		}
 		DB struct {
-			User       string `conf:"default:postgres"`
-			Password   string `conf:"default:postgres,noprint"`
-			Host       string `conf:"default:0.0.0.0"`
-			Name       string `conf:"default:postgres"`
-			DisableTLS bool   `conf:"default:false"`
+			User       string `json:"user,omitempty"`
+			Password   string `json:"password,omitempty"`
+			Host       string `json:"host,omitempty"`
+			Name       string `json:"name,omitempty"`
+			DisableTLS bool   `json:"disableTLS,omitempty"`
 		}
 		Auth struct {
-			KeyID string `conf:"default: 1"`
+			KeyID string `json:"keyid,omitempty"`
 			//			PrivateKeyFile string `conf:"default:/app-library/private.pem"`
-			PrivateKeyFile string `conf:"default:private.pem"`
-			Algorithm      string `conf:"default:RS256"`
+			PrivateKeyFile string `json:"privateKeyFile,omitempty"`
+			Algorithm      string `json:"algorithm,omitempty"`
+		}
+		OAuth struct {
+			ClientID     string   `json:"clientID,omitempty"`
+			ClientSecret string   `json:"clientSecret,omitempty"`
+			Endpoint     string   `json:"endpoint,omitempty"`
+			RedirectUrl  string   `json:"redirectUrl,omitempty"`
+			Scopes       []string `json:"scopes,omitempty"`
+			Issuer       string   `json:"issuer,omitempty"`
 		}
 		Zipkin struct {
-			LocalEndpoint string  `conf:"default:0.0.0.0:3000"`
-			ReporterURI   string  `conf:"default:http://zipkin:9411/api/v2/spans"`
-			ServiceName   string  `conf:"default:books-api"`
-			Probability   float64 `conf:"default:0.05"`
+			LocalEndpoint string  `json:"localEndpoint,omitempty"`
+			ReporterURI   string  `json:"reporterURI,omitempty"`
+			ServiceName   string  `json:"serviceName,omitempty"`
+			Probability   float64 `json:"probability,omitempty"`
 		}
 	}
 
-	if err := conf.Parse(os.Args[1:], "BOOKS", &cfg); err != nil {
-		if err == conf.ErrHelpWanted {
-			usage, err := conf.Usage("BOOKS", &cfg)
-			if err != nil {
-				return errors.Wrap(err, "generating config usage")
-			}
-			fmt.Println(usage)
-			return nil
-		}
-		return errors.Wrap(err, "parsing config")
-	}
-
+	provider := oidc.InsecureIssuerURLContext(ctx, cfg.OAuth.Issuer)
+	log.Printf("main : provider context version %q", provider)
 	// =========================================================================
 	// App Starting
 
 	// Print the build version for our logs. Also expose it under /debug/vars.
 	expvar.NewString("build").Set(build)
-	log.Printf("main : Started : Application initializing : version %q", build)
 	defer log.Println("main : Completed")
 
 	out, err := conf.String(&cfg)
@@ -106,18 +113,7 @@ func run() error {
 
 	log.Println("main : Started : Initializing authentication support")
 
-	privateKeyPEM, err := ioutil.ReadFile(cfg.Auth.PrivateKeyFile)
-	if err != nil {
-		return errors.Wrap(err, "reading auth private key")
-	}
-
-	privateKey, err := jwt.ParseRSAPrivateKeyFromPEM(privateKeyPEM)
-	if err != nil {
-		return errors.Wrap(err, "parsing auth private key")
-	}
-
-	f := auth.NewSimpleKeyLookupFunc(cfg.Auth.KeyID, privateKey.Public().(*rsa.PublicKey))
-	authenticator, err := auth.NewAuthenticator(privateKey, cfg.Auth.KeyID, cfg.Auth.Algorithm, f)
+	authenticator, err := auth.OAuthenticate(cfg.OAuth.ClientID, cfg.OAuth.ClientSecret, cfg.OAuth.Endpoint, cfg.OAuth.RedirectUrl, cfg.OAuth.Scopes)
 	if err != nil {
 		return errors.Wrap(err, "constructing authenticator")
 	}
