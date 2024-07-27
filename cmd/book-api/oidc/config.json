@@ -1,6 +1,6 @@
 
 {
-    "cfg": {
+
         "oauth": {
             "clientSecret": "eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICIwZGU2YWRkZC1mZjZiLTRjZDAtODFjYi1iMDFiY2ViZDkzODEifQ.eyJleHAiOjE3Mjg5ODg1MDEsImlhdCI6MTcyMjA3NjUwMSwianRpIjoiZDcwYmYyNzItNzhiYS00ZDQ2LWFlYTctYWU5OTg4MTQ2ODZhIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9ib29rLXJlYWxtIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9ib29rLXJlYWxtIiwidHlwIjoiSW5pdGlhbEFjY2Vzc1Rva2VuIn0.s5c-u1tFCZejsIWBwwitwjFsSWaQQx5TyxA3ilUp7ju_kjAQddheGNsnOHyxIRWT5uqeYl0bxGkQR2cGvhKtXQ",
             "clientID": "d70bf272-78ba-4d46-aea7-ae998814686a",
@@ -34,5 +34,5 @@
             "serviceName": "books-api",
             "probability": "0.05"
         }
-    }
+    
 }

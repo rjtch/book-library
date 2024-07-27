@@ -2,12 +2,13 @@ package mid
 
 import (
 	"context"
+	"net/http"
+	"strings"
+
 	"github.com/book-library/internal/platform/auth"
 	"github.com/book-library/internal/platform/web"
 	errors "github.com/pkg/errors"
 	"go.opencensus.io/trace"
-	"net/http"
-	"strings"
 )
 
 const (
@@ -16,14 +17,14 @@ const (
 	defaultXSRFCookieName = "x-xsrf-token"
 )
 
-//ErrForbidden is returned when a users doesn't have the required roles for doing an action
+// ErrForbidden is returned when a users doesn't have the required roles for doing an action
 var ErrForbidden = web.NewRequestError(
 	errors.New("you don't have the authorization for that action"),
 	http.StatusForbidden,
 )
 
-//Authentication validates a jwt and the csrf cookie from the Authorization header
-func Authentication(authenticator *auth.Authenticator) web.Middleware {
+// Authentication validates a jwt and the csrf cookie from the Authorization header
+func Authentication(authenticator *auth.OAuthenticator) web.Middleware {
 
 	//actual middleware to be execute
 	f := func(after web.Handler) web.Handler {
@@ -42,14 +43,8 @@ func Authentication(authenticator *auth.Authenticator) web.Middleware {
 				return errors.New("expected authorization header format: bearer <token>")
 			}
 
-			// Validate the token is signed by us.
-			claims, err := authenticator.ParseClaims(parts[1])
-			if err != nil {
-				return errors.New("Token does not exist")
-			}
-
 			//Add claims to context so that they can be checked later on
-			ctx = context.WithValue(ctx, auth.Key, claims)
+			ctx = context.WithValue(ctx, auth.Key, authenticator.ClientSecret)
 
 			return after(ctx, w, r, params)
 		}
@@ -58,7 +53,7 @@ func Authentication(authenticator *auth.Authenticator) web.Middleware {
 	return f
 }
 
-//HasRole checks and validate that an authenticated users has at least one of the required roles specified in the role's list
+// HasRole checks and validate that an authenticated users has at least one of the required roles specified in the role's list
 func HasRole(roles ...string) web.Middleware {
 	// This is the actual middleware function to be executed.
 	f := func(after web.Handler) web.Handler {
