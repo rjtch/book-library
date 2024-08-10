@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"time"
 
@@ -35,6 +36,7 @@ func (u *User) List(ctx context.Context, w http.ResponseWriter, r *http.Request,
 	defer span.End()
 
 	claims, ok := ctx.Value(auth.Key).(auth.Claims)
+	log.Println("parameters %s", params)
 	if !ok {
 		if !claims.HasRole(auth.RoleAdmin) {
 			return errors.New("claims missing from context")

@@ -36,6 +36,6 @@ CMD ["./metrics"]
 
 LABEL org.opencontainers.image.created="${BUILD_DATE}" \
       org.opencontainers.image.title="metrics" \
-      org.opencontainers.image.authors="Hergy Tchuinkou <tchuinkoufongue@gmail.com>" \
+      org.opencontainers.image.authors="Hergy Fongue" \
       org.opencontainers.image.source="https://github.com/rjtch/book-library/cmd/sidecar/metrics" \
       org.opencontainers.image.revision="${VCS_REF}"

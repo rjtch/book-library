@@ -2,11 +2,11 @@
 {
 
         "oauth": {
-            "clientSecret": "eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICIwZGU2YWRkZC1mZjZiLTRjZDAtODFjYi1iMDFiY2ViZDkzODEifQ.eyJleHAiOjE3Mjg5ODg1MDEsImlhdCI6MTcyMjA3NjUwMSwianRpIjoiZDcwYmYyNzItNzhiYS00ZDQ2LWFlYTctYWU5OTg4MTQ2ODZhIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9ib29rLXJlYWxtIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9ib29rLXJlYWxtIiwidHlwIjoiSW5pdGlhbEFjY2Vzc1Rva2VuIn0.s5c-u1tFCZejsIWBwwitwjFsSWaQQx5TyxA3ilUp7ju_kjAQddheGNsnOHyxIRWT5uqeYl0bxGkQR2cGvhKtXQ",
-            "clientID": "d70bf272-78ba-4d46-aea7-ae998814686a",
-            "endpoint": "http://localhost:8080/realms/book-realm/protocol/openid-connect/token",
-            "issuer": "http://localhost:8080/realms/book-realm",
-            "redirectUrl": "http://localhost:8080/realms/book-realm/auth/callback",
+            "clientSecret": "eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJiNDI5YTFkMy00ZjA1LTRkY2QtYTlkYy1iYTllNTJjMjRhOTcifQ.eyJleHAiOjE3MzE5NTc2NDMsImlhdCI6MTcyMzMxNzY0MywianRpIjoiYmVhZmM2ODEtZDY2Ny00YjMzLWJhYTctNzBhNzdjMjk3YzkzIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9ib29rLXJlYWxtIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9ib29rLXJlYWxtIiwidHlwIjoiSW5pdGlhbEFjY2Vzc1Rva2VuIn0.vLIJZWF0j9HJ7F-Gc1O74fNHamuxx2TPs10uXuOiv0Ur8K7TCkgtXvzSJQygHsHGh91P3kw7yJK2NQ5hTs2P-A",
+            "clientID": "book-auth",
+            "endpoint": "http://0.0.0.0:8080/realms/book-realm/protocol/openid-connect/token",
+            "issuer": "http://0.0.0.0:8080/realms/book-realm",
+            "redirectUrl": "http://0.0.0.0:8080/realms/book-realm/auth/callback",
             "scopes": ["oidc","profile", "email"]
         },
         "web": {
