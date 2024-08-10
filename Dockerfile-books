@@ -1,5 +1,5 @@
 # Build the Go Binary.
-FROM golang:1.13 as build_books-api
+FROM golang:1.22.2 as build_books-api
 ENV CGO_ENABLED 0
 ARG VCS_REF
 ARG PACKAGE_NAME
@@ -36,7 +36,7 @@ ARG BUILD_DATE
 ARG VCS_REF
 ARG PACKAGE_NAME
 ARG PACKAGE_PREFIX
-COPY --from=build_books-api /book-library/private.pem /app-library/private.pem
+COPY --from=build_books-api /book-library/cmd/book-api/oidc /app-library/oidc
 COPY --from=build_books-api /book-library/cmd/${PACKAGE_PREFIX}admin/admin /app-library/book-api
 COPY --from=build_books-api /book-library/cmd/${PACKAGE_PREFIX}${PACKAGE_NAME}/${PACKAGE_NAME} /app-library/book-api
 WORKDIR /app-library
@@ -44,6 +44,6 @@ CMD ["./book-api"]
 
 LABEL org.opencontainers.image.created="${BUILD_DATE}" \
       org.opencontainers.image.title="book-api" \
-      org.opencontainers.image.authors="Hergy Tchuinkou <tchuinkoufongue@gmail.com>" \
+      org.opencontainers.image.authors="Hergy Fongue" \
       org.opencontainers.image.source="https://github.com/rjtch/book-library/cmd/book-api" \
       org.opencontainers.image.revision="${VCS_REF}"

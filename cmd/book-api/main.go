@@ -2,12 +2,16 @@ package main
 
 import (
 	"context"
+	"crypto/rand"
+	"encoding/base64"
 	"expvar"
+	"io"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"contrib.go.opencensus.io/exporter/zipkin"
 	"github.com/book-library/cmd/book-api/internal/handlers"
@@ -20,6 +24,7 @@ import (
 	_ "github.com/rakyll/statik/fs"
 	"github.com/spf13/viper"
 	"go.opencensus.io/trace"
+	"golang.org/x/oauth2"
 )
 
 // build is the git version of this program. It is set using build flags in the makefile.
@@ -35,6 +40,25 @@ func main() {
 	}
 }
 
+func randString(nByte int) (string, error) {
+	b := make([]byte, nByte)
+	if _, err := io.ReadFull(rand.Reader, b); err != nil {
+		return "", err
+	}
+	return base64.RawURLEncoding.EncodeToString(b), nil
+}
+
+func setCallbackCookie(w http.ResponseWriter, r *http.Request, name, value string) {
+	c := &http.Cookie{
+		Name:     name,
+		Value:    value,
+		MaxAge:   int(time.Hour.Seconds()),
+		Secure:   r.TLS != nil,
+		HttpOnly: true,
+	}
+	http.SetCookie(w, c)
+}
+
 func run() error {
 	ctx := context.Background()
 
@@ -43,7 +67,6 @@ func run() error {
 
 	log := log.New(os.Stdout, "BOOKS : ", log.LstdFlags|log.Lmicroseconds|log.Lshortfile)
 	// read config files
-	//	viper.SetConfigFile(configFile)
 	viper.AddConfigPath(configPath)
 	viper.SetConfigName(configName)
 	viper.SetConfigType(configType)
@@ -51,8 +74,6 @@ func run() error {
 	if err != nil {
 		return errors.Wrap(err, "generating config usage failed")
 	}
-	scopes := make([]string, 6)
-	scopes = append(scopes, viper.GetString("oauth.scopes"))
 	// =========================================================================
 	// Configuration
 	oauth := auth.OAuthenticator{
@@ -61,7 +82,7 @@ func run() error {
 		Endpoint:     viper.GetString("oauth.endpoint"),
 		RedirectUrl:  viper.GetString("oauth.redirectUrl"),
 		Issuer:       viper.GetString("oauth.issuer"),
-		Scopes:       scopes,
+		Scopes:       viper.GetStringSlice("oauth.scopes"),
 	}
 
 	db := auth.DB{
@@ -87,8 +108,21 @@ func run() error {
 		Probability:   viper.GetFloat64("zipkin.probability"),
 	}
 
-	provider := oidc.InsecureIssuerURLContext(ctx, viper.GetString("oauth.issuer"))
-	log.Printf("main : provider context version %q", provider)
+	provider, err := oidc.NewProvider(ctx, oauth.Issuer)
+	if err != nil {
+		return errors.Wrap(err, "Provider could not been  found")
+	}
+	oidcConfig := &oidc.Config{
+		ClientID: oauth.ClientID,
+	}
+	verifier := provider.Verifier(oidcConfig)
+	config := oauth2.Config{
+		ClientID:     oauth.ClientID,
+		ClientSecret: oauth.ClientSecret,
+		Endpoint:     provider.Endpoint(),
+		RedirectURL:  oauth.RedirectUrl,
+		Scopes:       oauth.Scopes,
+	}
 	// =========================================================================
 	// App Starting
 
@@ -101,9 +135,11 @@ func run() error {
 
 	log.Println("main : Started : Initializing authentication support")
 
-	authenticator, err := auth.OAuthenticate(oauth.ClientID, oauth.ClientSecret, oauth.Endpoint, oauth.RedirectUrl, oauth.Issuer, oauth.Scopes)
+	authenticator, err := auth.OAuthenticate(config.ClientID, config.ClientSecret, config.Endpoint.TokenURL, config.RedirectURL, oauth.Issuer, config.Scopes)
 	if err != nil {
 		return errors.Wrap(err, "constructing authenticator")
+	} else {
+		log.Println("Verifier %s", verifier)
 	}
 
 	// =========================================================================
