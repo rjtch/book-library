@@ -7,42 +7,42 @@ networks:
 services:
 
   # This sidecar allows for the viewing of traces.
-  zipkin:
-    container_name: zipkin
-    networks:
-      - shared-network
-    image: openzipkin/zipkin:2.11
-    ports:
-      - 9411:9411
+  # zipkin:
+  #   container_name: zipkin
+  #   networks:
+  #     - shared-network
+  #   image: openzipkin/zipkin:2.11
+  #   ports:
+  #     - 9411:9411
 
   # This sidecar publishes metrics to the console by default.
-  metrics:
-    container_name: metrics
-    networks:
-      - shared-network
-    image: book-metrics-kit
-    ports:
-      - 3001:3001 # EXPVAR API
-      - 4001:4001 # DEBUG API
-    depends_on:
-      - books-api
+  # metrics:
+  #   container_name: metrics
+  #   networks:
+  #     - shared-network
+  #   image: book-metrics-kit
+  #   ports:
+  #     - 3001:3001 # EXPVAR API
+  #     - 4001:4001 # DEBUG API
+  #   depends_on:
+  #     - books-api
 
   # #This is the core CRUD based service.
-  books-api:
-     container_name: books-api
-     networks:
-       - shared-network
-     image: book-api-kit
-     ports:
-       - 3000:3000 # CRUD API
-       - 4000:4000 # DEBUG API
-     environment:
-       - BOOKS_DB_HOST=postgres
-       - BOOKS_DB_DISABLE_TLS=1 # This is only disabled for our development enviroment.
-       # - GODEBUG=gctrace=1
-     depends_on:
-       - zipkin
-       - postgres
+  # books-api:
+  #    container_name: books-api
+  #    networks:
+  #      - shared-network
+  #    image: book-api-kit
+  #    ports:
+  #      - 3000:3000 # CRUD API
+  #      - 4000:4000 # DEBUG API
+  #    environment:
+  #      - BOOKS_DB_HOST=postgres
+  #      - BOOKS_DB_DISABLE_TLS=1 # This is only disabled for our development enviroment.
+  #      # - GODEBUG=gctrace=1
+  #    depends_on:
+  #      - zipkin
+  #      - postgres
 
   keycloack:
     image: quay.io/keycloak/keycloak:25.0.1

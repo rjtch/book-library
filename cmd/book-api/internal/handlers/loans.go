@@ -39,7 +39,7 @@ func (l *Loan) List(ctx context.Context, w http.ResponseWriter, r *http.Request,
 
 	if len(loans) != 0 {
 		for _, l := range loans {
-			if l.UserID == claims.StandardClaims.Subject {
+			if l.UserID == claims.StandardClaims.Raw {
 				allLoans = append(allLoans, l)
 			}
 		}
@@ -59,7 +59,7 @@ func (l *Loan) Retrieve(ctx context.Context, w http.ResponseWriter, r *http.Requ
 		return errors.New("claims missing from context")
 	}
 
-	loan, err := loans.Retrieve(ctx, claims, params["id"], l.db, claims.Subject)
+	loan, err := loans.Retrieve(ctx, claims, params["id"], l.db, claims.StandardClaims.Raw)
 	if err != nil {
 		switch err {
 		case books.ErrForbidden:
@@ -140,7 +140,7 @@ func (l *Loan) Update(ctx context.Context, w http.ResponseWriter, r *http.Reques
 		return errors.Wrap(err, "could not read request")
 	}
 
-	loan, err := loans.Retrieve(ctx, claims, params["id"], l.db, claims.Subject)
+	loan, err := loans.Retrieve(ctx, claims, params["id"], l.db, claims.StandardClaims.Raw)
 	if err != nil {
 		return errors.New("you don't have wright to execute this action")
 	}

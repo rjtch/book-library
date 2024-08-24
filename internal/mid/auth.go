@@ -2,11 +2,14 @@ package mid
 
 import (
 	"context"
+	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/book-library/internal/platform/auth"
 	"github.com/book-library/internal/platform/web"
+	"github.com/golang-jwt/jwt/v5"
 	errors "github.com/pkg/errors"
 	"go.opencensus.io/trace"
 )
@@ -15,6 +18,8 @@ const (
 	// default names for cookies and headers
 	defaultJWTCookieName  = "session-cookie"
 	defaultXSRFCookieName = "x-xsrf-token"
+	authorization         = "authorization"
+	bearer                = "bearer"
 )
 
 // ErrForbidden is returned when a users doesn't have the required roles for doing an action
@@ -35,16 +40,13 @@ func Authentication(authenticator *auth.OAuthenticator) web.Middleware {
 			defer span.End()
 
 			// Expecting: bearer <token>
-			authStr := r.Header.Get("authorization")
-
-			// Parse the authorization header.
-			parts := strings.Split(authStr, " ")
-			if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
+			authStr, err := extractClaims(w, r, authenticator.PubKey)
+			if err != nil {
 				return errors.New("expected authorization header format: bearer <token>")
 			}
 
 			//Add claims to context so that they can be checked later on
-			ctx = context.WithValue(ctx, auth.Key, authenticator.ClientSecret)
+			ctx = context.WithValue(ctx, auth.Key, authStr)
 
 			return after(ctx, w, r, params)
 		}
@@ -53,30 +55,45 @@ func Authentication(authenticator *auth.OAuthenticator) web.Middleware {
 	return f
 }
 
-// HasRole checks and validate that an authenticated users has at least one of the required roles specified in the role's list
-func HasRole(roles ...string) web.Middleware {
-	// This is the actual middleware function to be executed.
-	f := func(after web.Handler) web.Handler {
-
-		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
-			ctx, span := trace.StartSpan(ctx, "internal.mid.HasRole")
-			defer span.End()
-
-			claims, ok := ctx.Value(auth.Key).(auth.Claims)
-			if !ok {
-
-				return errors.New("claims missing from context: HasRole called without/before Authenticate")
-			}
-
-			if !claims.HasRole(roles...) {
-				return ErrForbidden
-			}
-
-			return after(ctx, w, r, params)
-		}
-
-		return h
+func extractClaims(_ http.ResponseWriter, request *http.Request, pubkey string) (error, *jwt.Token) {
+	stringToken := request.Header.Get(authorization)
+	// Parse the authorization header.
+	parts := strings.Split(stringToken, " ")
+	if len(parts) != 2 || strings.ToLower(parts[0]) != bearer {
+		return errors.New("expected authorization header format: bearer <token>"), nil
 	}
 
-	return f
+	// Create a file for the public key information in PEM form.
+	publicFile, err := os.Create("public.pem")
+	if err != nil {
+		return errors.New("creating public file: "), nil
+	}
+	defer publicFile.Close()
+
+	pubKey, err := os.ReadFile("public.pem")
+	if err != nil {
+		return errors.New("error public file: "), nil
+	}
+
+	key, err := jwt.ParseRSAPublicKeyFromPEM([]byte(pubKey))
+	if err != nil {
+		return errors.New("failed to parse pubkey"), nil
+	}
+
+	token, err := jwt.Parse(parts[1], func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
+			return nil, errors.New("there's an error with the signing method")
+		}
+		return key, nil
+	})
+
+	if err != nil {
+		return err, nil
+	}
+
+	if _, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		log.Println("token is valid")
+	}
+
+	return nil, token
 }

@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"log"
 	"net/http"
 	"time"
 
@@ -36,7 +35,6 @@ func (u *User) List(ctx context.Context, w http.ResponseWriter, r *http.Request,
 	defer span.End()
 
 	claims, ok := ctx.Value(auth.Key).(auth.Claims)
-	log.Println("parameters %s", params)
 	if !ok {
 		if !claims.HasRole(auth.RoleAdmin) {
 			return errors.New("claims missing from context")
@@ -190,25 +188,6 @@ func (u *User) TokenAuthenticator(ctx context.Context, w http.ResponseWriter, r 
 	var tk struct {
 		Token string `json:"token"`
 	}
-
-	//	csrf.CookieName(defaultXsrfToken)
-
-	// tk.Token, err = u.authenticator.ClientSecret
-	// if err != nil {
-	// 	return errors.Wrap(err, "generating token")
-	// }
-
-	// Finally, we set the client cookie for "token" as the JWT we just generated
-	// we also set an expiry time which is the same as the token itself
-	http.SetCookie(w, &http.Cookie{
-		Name:     defaultJWTCookieName,
-		Value:    tk.Token,
-		MaxAge:   int(claims.ExpiresAt),
-		Path:     "/v1/",
-		Raw:      claims.StandardClaims.Subject,
-		Secure:   false,
-		HttpOnly: true,
-	})
 
 	// Set the content type and headers once we know marshaling has succeeded.
 	w.Header().Set("Content-Type", "application/json")

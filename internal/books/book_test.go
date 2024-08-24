@@ -7,6 +7,7 @@ import (
 	"github.com/book-library/internal/books"
 	"github.com/book-library/internal/platform/auth"
 	"github.com/book-library/internal/tests"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/go-cmp/cmp"
 	"github.com/pkg/errors"
 )
@@ -23,13 +24,7 @@ func TestUnitBook(t *testing.T) {
 			now := time.Date(2018, time.October, 1, 0, 0, 0, 0, time.UTC)
 
 			// claims is information about the person making the request.
-			claims := auth.NewClaims(
-				auth.RoleAdmin,
-				[]string{auth.RoleAdmin, auth.RoleUser},
-				now, time.Hour,
-				"718ffbea-f4a1-4667-8ae3-b349da52675e", // This is just some random UUID.
-			)
-
+			claims := auth.NewClaims(jwt.Token{}, []string{auth.RoleAdmin, auth.RoleUser}, "718ffbea-f4a1-4667-8ae3-b349da52675e")
 			nb := books.NewBook{
 				Title:       "Go programming",
 				ISBN:        "bcn22",

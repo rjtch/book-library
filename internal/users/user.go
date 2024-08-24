@@ -200,15 +200,15 @@ func Authenticate(ctx context.Context, db *sqlx.DB, now time.Time, email, passwo
 		return auth.Claims{}, ErrAuthenticationFailure
 	}
 
-	csrf, err := utils.GenerateRandomString(32)
+	_, err := utils.GenerateRandomString(32)
 	if err != nil {
 		return auth.Claims{}, ErrGenerationFailure
 	}
 
 	// If we are this far the request is valid. Create some claims for the users
 	// and generate their token.
-	claims := auth.NewClaims(u.ID, u.Roles, now, time.Hour, csrf)
-	return claims, nil
+
+	return auth.Claims{}, nil
 }
 
 // Logout deletes user's session-token from the database which invalidates all existing cookies

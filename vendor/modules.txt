@@ -15,7 +15,6 @@ github.com/coreos/go-oidc/v3/oidc
 github.com/davecgh/go-spew/spew
 # github.com/dgrijalva/jwt-go v3.2.0+incompatible
 ## explicit
-github.com/dgrijalva/jwt-go
 # github.com/dimfeld/httptreemux/v5 v5.0.2
 ## explicit; go 1.9
 github.com/dimfeld/httptreemux/v5
@@ -38,6 +37,9 @@ github.com/go-playground/locales/en
 # github.com/go-playground/universal-translator v0.17.0
 ## explicit; go 1.13
 github.com/go-playground/universal-translator
+# github.com/golang-jwt/jwt/v5 v5.2.1
+## explicit; go 1.18
+github.com/golang-jwt/jwt/v5
 # github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da
 ## explicit
 github.com/golang/groupcache/lru

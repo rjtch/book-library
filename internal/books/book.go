@@ -35,7 +35,7 @@ var (
 	ErrForbidden = errors.New("Attempted action is not allowed")
 )
 
-//List retrieves a list of existing books from the database
+// List retrieves a list of existing books from the database
 func List(ctx context.Context, db *sqlx.DB) ([]Book, error) {
 	ctx, span := trace.StartSpan(ctx, "internal.book.List")
 	defer span.End()
@@ -50,7 +50,7 @@ func List(ctx context.Context, db *sqlx.DB) ([]Book, error) {
 	return books, nil
 }
 
-//Retrieve gets the specific book from the database
+// Retrieve gets the specific book from the database
 func Retrieve(ctx context.Context, id string, db *sqlx.DB) (*Book, error) {
 	ctx, span := trace.StartSpan(ctx, "internal.book.Retrieve")
 	defer span.End()
@@ -72,7 +72,7 @@ func Retrieve(ctx context.Context, id string, db *sqlx.DB) (*Book, error) {
 	return &b, nil
 }
 
-//Retrieve gets the specific book from the database
+// Retrieve gets the specific book from the database
 func RetrieveByTitle(ctx context.Context, title string, db *sqlx.DB) (*Book, error) {
 	ctx, span := trace.StartSpan(ctx, "internal.book.RetrieveByTitle")
 	defer span.End()
@@ -118,7 +118,7 @@ func Create(ctx context.Context, now time.Time, n NewBook, user auth.Claims, db 
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`
 	_, err := db.ExecContext(
 		ctx, q,
-		book.ID, book.Title, book.ISBN, book.Category,book.Authors, book.Description, book.Quantity,
+		book.ID, book.Title, book.ISBN, book.Category, book.Authors, book.Description, book.Quantity,
 		book.DateCreated, book.DateUpdated,
 	)
 	if err != nil {
@@ -206,7 +206,7 @@ func Delete(ctx context.Context, id string, user auth.Claims, db *sqlx.DB) error
 	defer span.End()
 
 	// If you are not an admin and looking to retrieve someone else then you are rejected.
-	if !user.HasRole(auth.RoleAdmin) && user.Subject != id {
+	if !user.HasRole(auth.RoleAdmin) && user.StandardClaims.Raw != id {
 		return ErrForbidden
 	}
 

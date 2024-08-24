@@ -7,7 +7,8 @@
             "endpoint": "http://0.0.0.0:8080/realms/book-realm/protocol/openid-connect/token",
             "issuer": "http://0.0.0.0:8080/realms/book-realm",
             "redirectUrl": "http://0.0.0.0:8080/realms/book-realm/auth/callback",
-            "scopes": ["oidc","profile", "email"]
+            "scopes": ["oidc","profile", "email"],
+            "pubkey": "-----BEGIN ENCRYPTED PUBLIC KEY-----MIICozCCAYsCBgGRPfCueTANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDDApib29rLXJlYWxtMB4XDTI0MDgxMDIwMTYwOVoXDTM0MDgxMDIwMTc0OVowFTETMBEGA1UEAwwKYm9vay1yZWFsbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAIulGGnkjJVT2ysTBHFUCYfHyDdB1opGRvhzdd3ePYzwuZvHHxxsabtyjcsnRAfxXx1kW2soE3Jd13Nv5Vsb1k40kuoeQsodSyhOqpZMo3/ttJcSCQqk5EkVtWVCGIKAq3B4UMrhoSW+7cBzShaXyTnLUN9d0ElXiX/dAmMap/g58ZEqZKDA3mHskH25vacgqmTfnvilQTK+Jf4Q2OYeQHMSyf1xpMBAziM1LA6XNSzTGpZMAhmbfUKCThjicYELYEiN2D7Fu8nWaQ0u+5r8XR8f35NVsQO2myZm3eImDnHcC0rAruslpRJmaSgAVpZe9kHuEUMfGvaqiP9zSsPnCGECAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAedM+eKSCVwnCLdQoazwwSn3nVeiLd8QO95RNGlvGd/BEnEBhvnRWN8tlmPXo8SnR8OCrSZ0iFpG7EHORvEEVabocJyXD9DlA9669ERaR/ZjluGLC9bJpmMKGYGaKZge5qND0URnYoIIUIJgpTHSC0O9DFWtvVMqFYcdvQrEt/VcWANP/mi8n8pD8oqd2iGejDQ++yO0aZlELq+P0I1olGG6TvIGDEaH78VLYlo4gdjLGkWMgMugDiDs47b4J0l2wXXatQEYfZjS4ypizs2/DG2xC7NUWXxebW6awmlhKH15mFfR7dl4bnIbYnK3z9/Xx2EgAxRq3dGPFQShHRFR6cQ==-----END ENCRYPTED PUBLIC KEY-----"
         },
         "web": {
             "apiHost": "0.0.0.0:3000",

@@ -31,11 +31,11 @@ func API(build string, shutdown chan os.Signal, log *log.Logger, db *sqlx.DB, au
 		authenticator: authenticator,
 	}
 
-	app.Handle("GET", "/v1/users/all", u.List, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
-	app.Handle("POST", "/v1/users/create", u.Create, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
-	app.Handle("GET", "/v1/users/:id", u.Retrieve, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
-	app.Handle("PUT", "/v1/users/:id/update", u.Update, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
-	app.Handle("DELETE", "/v1/users/:id/delete", u.Delete, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
+	app.Handle("GET", "/v1/users/all", u.List, mid.Authentication(authenticator))
+	app.Handle("POST", "/v1/users/create", u.Create, mid.Authentication(authenticator))
+	app.Handle("GET", "/v1/users/:id", u.Retrieve, mid.Authentication(authenticator))
+	app.Handle("PUT", "/v1/users/:id/update", u.Update, mid.Authentication(authenticator))
+	app.Handle("DELETE", "/v1/users/:id/delete", u.Delete, mid.Authentication(authenticator))
 
 	// This routes are not authenticated
 	app.Handle("POST", "/v1/users/token", u.TokenAuthenticator)
@@ -48,30 +48,30 @@ func API(build string, shutdown chan os.Signal, log *log.Logger, db *sqlx.DB, au
 	}
 	app.Handle("GET", "/v1/books/all", bk.List, mid.Authentication(authenticator))
 	app.Handle("GET", "/v1/books/title", bk.RetrieveByTitle, mid.Authentication(authenticator))
-	app.Handle("POST", "/v1/books/create", bk.Create, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
+	app.Handle("POST", "/v1/books/create", bk.Create, mid.Authentication(authenticator))
 	app.Handle("GET", "/v1/books/:id", bk.Retrieve, mid.Authentication(authenticator))
-	app.Handle("PUT", "/v1/books/:id/update", bk.Update, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
-	app.Handle("DELETE", "/v1/books/:id/delete", bk.Delete, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
+	app.Handle("PUT", "/v1/books/:id/update", bk.Update, mid.Authentication(authenticator))
+	app.Handle("DELETE", "/v1/books/:id/delete", bk.Delete, mid.Authentication(authenticator))
 
 	// Register book-category endpoints.
 	ct := BookCategory{
 		db: db,
 	}
 	app.Handle("GET", "/v1/categories/all", ct.List, mid.Authentication(authenticator))
-	app.Handle("POST", "/v1/categories/create", ct.Create, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
-	app.Handle("PUT", "/v1/categories/:id/update", ct.Update, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
-	app.Handle("DELETE", "/v1/categories/:id/delete", ct.Delete, mid.Authentication(authenticator), mid.HasRole(auth.RoleAdmin))
-	app.Handle("GET", "/v1/categories/:id", ct.Retreive, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
+	app.Handle("POST", "/v1/categories/create", ct.Create, mid.Authentication(authenticator))
+	app.Handle("PUT", "/v1/categories/:id/update", ct.Update, mid.Authentication(authenticator))
+	app.Handle("DELETE", "/v1/categories/:id/delete", ct.Delete, mid.Authentication(authenticator))
+	app.Handle("GET", "/v1/categories/:id", ct.Retreive, mid.Authentication(authenticator))
 
 	// Register loans endpoints.
 	l := Loan{
 		db: db,
 	}
-	app.Handle("GET", "/v1/loans/:user_id/all", l.List, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
-	app.Handle("POST", "/v1/loans/:user_id/init", l.Create, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
-	app.Handle("PUT", "/v1/loans/:user_id/update/:id", l.Update, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
-	app.Handle("DELETE", "/v1/loans/:user_id/delete/:id", l.Delete, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
-	app.Handle("GET", "/v1/loans/:user_id/retrieve/:id", l.Retrieve, mid.Authentication(authenticator), mid.HasRole(auth.RoleUser))
+	app.Handle("GET", "/v1/loans/:user_id/all", l.List, mid.Authentication(authenticator))
+	app.Handle("POST", "/v1/loans/:user_id/init", l.Create, mid.Authentication(authenticator))
+	app.Handle("PUT", "/v1/loans/:user_id/update/:id", l.Update, mid.Authentication(authenticator))
+	app.Handle("DELETE", "/v1/loans/:user_id/delete/:id", l.Delete, mid.Authentication(authenticator))
+	app.Handle("GET", "/v1/loans/:user_id/retrieve/:id", l.Retrieve, mid.Authentication(authenticator))
 
 	return app
 }

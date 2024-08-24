@@ -64,7 +64,7 @@ func InitNewLoan(ctx context.Context, user auth.Claims, n NewLoan, now time.Time
 		BookQuantity: n.BookQuantity,
 		LoanDate:     now.UTC(),
 		ReturnDate:   now.Add(30).UTC(),
-		UserID:       user.Subject,
+		UserID:       user.StandardClaims.Raw,
 	}
 
 	const q = `INSERT INTO loans
@@ -73,7 +73,7 @@ func InitNewLoan(ctx context.Context, user auth.Claims, n NewLoan, now time.Time
 	_, err := db.ExecContext(
 		ctx, q,
 		loan.ID, loan.BookID, loan.BookISBN, loan.BookTitle, loan.BookQuantity,
-		loan.LoanDate, loan.ReturnDate, user.Subject,
+		loan.LoanDate, loan.ReturnDate, user.StandardClaims.Raw,
 	)
 	if err != nil {
 		return nil, err
@@ -161,9 +161,9 @@ func EndUpALoan(ctx context.Context, user auth.Claims, now time.Time, id string,
 		return ErrForbidden
 	}
 
-	loan, er := Retrieve(ctx, user, id, db, user.Subject)
+	loan, er := Retrieve(ctx, user, id, db, user.StandardClaims.Raw)
 	if er != nil {
-		if id != user.Id {
+		if id != user.Csrf {
 			return ErrInvalidID
 		}
 	}
@@ -207,9 +207,9 @@ func Update(ctx context.Context, id string, upd UpdateLoan, now time.Time, user 
 		return ErrForbidden
 	}
 
-	loan, err := Retrieve(ctx, user, id, db, user.Subject)
+	loan, err := Retrieve(ctx, user, id, db, user.StandardClaims.Raw)
 	if err != nil {
-		if id != user.Id {
+		if id != user.Csrf {
 			return err
 		}
 	}
@@ -245,14 +245,14 @@ func GetLoansByUuid(ctx context.Context, user auth.Claims, db *sqlx.DB, id strin
 
 	var loan Loan
 	if user.HasRole(auth.RoleUser) {
-		if id == user.Subject {
+		if id == user.StandardClaims.Raw {
 			const q = `SELECT * FROM loans WHERE loan_id = $1 AND user_id = $2`
 			if err := db.GetContext(ctx, &loan, q, id); err != nil {
 				if err == sql.ErrNoRows {
 					return nil, ErrNotFound
 				}
 
-				if id != user.Id {
+				if id != user.Csrf {
 					return nil, ErrForbidden
 				}
 

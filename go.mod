@@ -6,7 +6,6 @@ require (
 	contrib.go.opencensus.io/exporter/zipkin v0.1.1
 	github.com/alexedwards/scs/postgresstore v0.0.0-20200729112010-8c9ddd400378
 	github.com/ardanlabs/conf v1.2.0
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/dimfeld/httptreemux/v5 v5.0.2
 	github.com/dimiro1/darwin v0.0.0-20191008194338-370f81775d3b
 	github.com/go-playground/locales v0.13.0
@@ -29,7 +28,11 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-require github.com/coreos/go-oidc/v3 v3.11.0
+require (
+	github.com/coreos/go-oidc/v3 v3.11.0
+	github.com/golang-jwt/jwt/v5 v5.2.1
+	golang.org/x/oauth2 v0.21.0
+)
 
 require (
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
@@ -51,7 +54,6 @@ require (
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
-	golang.org/x/oauth2 v0.21.0 // indirect
 	golang.org/x/sys v0.22.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
