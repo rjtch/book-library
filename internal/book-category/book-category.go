@@ -33,7 +33,7 @@ var (
 	ErrForbidden = errors.New("Attempted action is not allowed")
 )
 
-//List retrieves a list of existing bookCategory from the databse
+// List retrieves a list of existing bookCategory from the databse
 func List(ctx context.Context, db *sqlx.DB) ([]BookCategory, error) {
 	ctx, span := trace.StartSpan(ctx, "internal.book-category.List")
 	defer span.End()
@@ -48,7 +48,7 @@ func List(ctx context.Context, db *sqlx.DB) ([]BookCategory, error) {
 	return category, nil
 }
 
-//Retrieve gets the specific bookCategory from the database
+// Retrieve gets the specific bookCategory from the database
 func Retrieve(ctx context.Context, user auth.Claims, db *sqlx.DB, id string) (*BookCategory, error) {
 	ctx, span := trace.StartSpan(ctx, "internal.book-category.Retrieve")
 	defer span.End()
@@ -76,7 +76,7 @@ func Retrieve(ctx context.Context, user auth.Claims, db *sqlx.DB, id string) (*B
 	return &b, nil
 }
 
-//RetrieveByCategory gets the specific bookCategory from the database by categoryName
+// RetrieveByCategory gets the specific bookCategory from the database by categoryName
 func RetrieveByCategory(ctx context.Context, user auth.Claims, db *sqlx.DB, categoryName string) (*BookCategory, error) {
 	ctx, span := trace.StartSpan(ctx, "internal.book-category.Retrieve")
 	defer span.End()
@@ -192,7 +192,7 @@ func Delete(ctx context.Context, id string, user auth.Claims, db *sqlx.DB) error
 	defer span.End()
 
 	// If you are not an admin and looking to retrieve someone else then you are rejected.
-	if !user.HasRole(auth.RoleAdmin) && user.Subject != id {
+	if !user.HasRole(auth.RoleAdmin) && user.StandardClaims.Raw != id {
 		return ErrForbidden
 	}
 

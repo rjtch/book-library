@@ -83,6 +83,7 @@ func run() error {
 		RedirectUrl:  viper.GetString("oauth.redirectUrl"),
 		Issuer:       viper.GetString("oauth.issuer"),
 		Scopes:       viper.GetStringSlice("oauth.scopes"),
+		PubKey:       viper.GetString("oauth.pubkey"),
 	}
 
 	db := auth.DB{
@@ -135,7 +136,7 @@ func run() error {
 
 	log.Println("main : Started : Initializing authentication support")
 
-	authenticator, err := auth.OAuthenticate(config.ClientID, config.ClientSecret, config.Endpoint.TokenURL, config.RedirectURL, oauth.Issuer, config.Scopes)
+	authenticator, err := auth.OAuthenticate(config.ClientID, config.ClientSecret, config.Endpoint.TokenURL, config.RedirectURL, oauth.Issuer, config.Scopes, oauth.PubKey)
 	if err != nil {
 		return errors.Wrap(err, "constructing authenticator")
 	} else {

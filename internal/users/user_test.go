@@ -7,6 +7,7 @@ import (
 	"github.com/book-library/internal/platform/auth"
 	"github.com/book-library/internal/tests"
 	"github.com/book-library/internal/users"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/go-cmp/cmp"
 	"github.com/pkg/errors"
 )
@@ -115,7 +116,7 @@ func TestAuthenticate(t *testing.T) {
 
 			now := time.Date(2018, time.October, 1, 0, 0, 0, 0, time.UTC)
 
-			u, err := users.Create(ctx, db, nu, now)
+			_, err := users.Create(ctx, db, nu, now)
 			if err != nil {
 				t.Fatalf("\t%s\tShould be able to create user : %s.", tests.Failed, err)
 			}
@@ -127,13 +128,7 @@ func TestAuthenticate(t *testing.T) {
 			}
 			t.Logf("\t%s\tShould be able to generate claims.", tests.Success)
 
-			want := auth.Claims{}
-			want.Subject = u.ID
-			want.Roles = u.Roles
-			want.ExpiresAt = now.Add(time.Hour).Unix()
-			want.IssuedAt = now.Unix()
-			want.Csrf = "19aa50d73857a340f0c9c87d3a9c63290d0097c6da47d1aaa001163dd45e2a76"
-
+			want := auth.NewClaims(jwt.Token{}, []string{auth.RoleAdmin, auth.RoleUser}, "718ffbea-f4a1-4667-8ae3-b349da52675e")
 			if diff := cmp.Diff(want, claims); diff != "" {
 				t.Fatalf("\t%s\tShould get back the expected claims. Diff:\n%s", tests.Failed, diff)
 			}

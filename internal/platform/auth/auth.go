@@ -67,9 +67,10 @@ type OAuthenticator struct {
 	RedirectUrl  string
 	Issuer       string
 	Scopes       []string
+	PubKey       string
 }
 
-func OAuthenticate(clientId string, secret string, endpoint string, redirect string, issuer string, scopes []string) (*OAuthenticator, error) {
+func OAuthenticate(clientId string, secret string, endpoint string, redirect string, issuer string, scopes []string, pubkey string) (*OAuthenticator, error) {
 	if clientId == "" {
 		return nil, ErrClientIDError
 	}
@@ -101,6 +102,7 @@ func OAuthenticate(clientId string, secret string, endpoint string, redirect str
 		RedirectUrl:  redirect,
 		Issuer:       issuer,
 		Scopes:       scopes,
+		PubKey:       pubkey,
 	}
 
 	return &auth, nil

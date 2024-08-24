@@ -2,9 +2,9 @@ package auth
 
 import (
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
+
+	jwt "github.com/golang-jwt/jwt/v5"
 	"github.com/pkg/errors"
-	"time"
 )
 
 // These are the expected values for Claims.Roles.
@@ -14,8 +14,8 @@ const (
 )
 
 type Role struct {
-	RoleAdmin  []string
-	RoleUser []string
+	RoleAdmin []string
+	RoleUser  []string
 }
 
 // ctxKey represents the type of value for the context key.
@@ -26,23 +26,19 @@ const Key ctxKey = 1
 
 // Claims represents the authorization claims transmitted via a JWT.
 type Claims struct {
-	Roles []string `json:"roles"`
-	jwt.StandardClaims
-	Csrf string `json:"csrf"`
+	Roles          []string  `json:"roles"`
+	StandardClaims jwt.Token `json:"standardClaims"`
+	Csrf           string    `json:"csrf"`
 }
 
 // NewClaims constructs a Claims value for the identified users. The Claims
 // expire within a specified duration of the provided time. Additional fields
 // of the Claims can be set after calling NewClaims is desired.
-func NewClaims(subject string, roles []string, now time.Time, expires time.Duration, csrf string) Claims {
+func NewClaims(token jwt.Token, roles []string, csrf string) Claims {
 	c := Claims{
-		Roles: roles,
-		Csrf: csrf,
-		StandardClaims: jwt.StandardClaims{
-			Subject:   subject,
-			IssuedAt:  now.Unix(),
-			ExpiresAt: now.Add(expires).Unix(),
-		},
+		Roles:          roles,
+		Csrf:           csrf,
+		StandardClaims: token,
 	}
 
 	return c
@@ -57,9 +53,16 @@ func (c Claims) Valid() error {
 			return fmt.Errorf("invalid role %q", r)
 		}
 	}
-	if err := c.StandardClaims.Valid(); err != nil {
+
+	t, err := c.StandardClaims.Claims.GetExpirationTime()
+	if err != nil {
 		return errors.Wrap(err, "validating standard claims")
 	}
+
+	if t.Time.IsZero() {
+		return errors.New("Token already expired")
+	}
+
 	return nil
 }
 
