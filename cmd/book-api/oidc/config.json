@@ -1,39 +1,40 @@
-
 {
-
-        "oauth": {
-            "clientSecret": "eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJiNDI5YTFkMy00ZjA1LTRkY2QtYTlkYy1iYTllNTJjMjRhOTcifQ.eyJleHAiOjE3MzE5NTc2NDMsImlhdCI6MTcyMzMxNzY0MywianRpIjoiYmVhZmM2ODEtZDY2Ny00YjMzLWJhYTctNzBhNzdjMjk3YzkzIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9ib29rLXJlYWxtIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9ib29rLXJlYWxtIiwidHlwIjoiSW5pdGlhbEFjY2Vzc1Rva2VuIn0.vLIJZWF0j9HJ7F-Gc1O74fNHamuxx2TPs10uXuOiv0Ur8K7TCkgtXvzSJQygHsHGh91P3kw7yJK2NQ5hTs2P-A",
-            "clientID": "book-auth",
-            "endpoint": "http://0.0.0.0:8080/realms/book-realm/protocol/openid-connect/token",
-            "issuer": "http://0.0.0.0:8080/realms/book-realm",
-            "redirectUrl": "http://0.0.0.0:8080/realms/book-realm/auth/callback",
-            "scopes": ["oidc","profile", "email"],
-            "pubkey": "-----BEGIN ENCRYPTED PUBLIC KEY-----MIICozCCAYsCBgGRPfCueTANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDDApib29rLXJlYWxtMB4XDTI0MDgxMDIwMTYwOVoXDTM0MDgxMDIwMTc0OVowFTETMBEGA1UEAwwKYm9vay1yZWFsbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAIulGGnkjJVT2ysTBHFUCYfHyDdB1opGRvhzdd3ePYzwuZvHHxxsabtyjcsnRAfxXx1kW2soE3Jd13Nv5Vsb1k40kuoeQsodSyhOqpZMo3/ttJcSCQqk5EkVtWVCGIKAq3B4UMrhoSW+7cBzShaXyTnLUN9d0ElXiX/dAmMap/g58ZEqZKDA3mHskH25vacgqmTfnvilQTK+Jf4Q2OYeQHMSyf1xpMBAziM1LA6XNSzTGpZMAhmbfUKCThjicYELYEiN2D7Fu8nWaQ0u+5r8XR8f35NVsQO2myZm3eImDnHcC0rAruslpRJmaSgAVpZe9kHuEUMfGvaqiP9zSsPnCGECAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAedM+eKSCVwnCLdQoazwwSn3nVeiLd8QO95RNGlvGd/BEnEBhvnRWN8tlmPXo8SnR8OCrSZ0iFpG7EHORvEEVabocJyXD9DlA9669ERaR/ZjluGLC9bJpmMKGYGaKZge5qND0URnYoIIUIJgpTHSC0O9DFWtvVMqFYcdvQrEt/VcWANP/mi8n8pD8oqd2iGejDQ++yO0aZlELq+P0I1olGG6TvIGDEaH78VLYlo4gdjLGkWMgMugDiDs47b4J0l2wXXatQEYfZjS4ypizs2/DG2xC7NUWXxebW6awmlhKH15mFfR7dl4bnIbYnK3z9/Xx2EgAxRq3dGPFQShHRFR6cQ==-----END ENCRYPTED PUBLIC KEY-----"
-        },
-        "web": {
-            "apiHost": "0.0.0.0:3000",
-            "debugHost": "0.0.0.0:4000",
-            "readTimeout": "5s",
-            "writeTimeout": "5s",
-            "shutdownTimeout": "5s"
-        },
-        "db": {
-            "user": "postgres",
-            "password": "postgres",
-            "host": "0.0.0.0",
-            "name": "postgres",
-            "disabledTls": "false"
-        },
-        "auth": {
-            "keyid": "1",
-            "privateKeyFile": "private.pem",
-            "algorithm": "RS256"
-        },
-        "zipkin": {
-            "localEndpoint": "0.0.0.0:3000",
-            "reporterUri": "http://zipkin:9411/api/v2/spans",
-            "serviceName": "books-api",
-            "probability": "0.05"
-        }
-    
+  "oauth": {
+    "clientSecret": "zGS8ndtzUZpF4XRQZmJjMXa8F1iprHcs",
+    "clientID": "account",
+    "endpoint": "http://0.0.0.0:8080/realms/book-realm/protocol/openid-connect/auth",
+    "issuer": "http://0.0.0.0:8080/realms/book-realm",
+    "publicKeyRS256": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzna5jY8BgK8XVSuuimEPbx2GrSE11Pg8VpIaOoKJq94JlXiSdAmOpTYkxIHRnEsreZ337hfhQOni\nAl/oPdvMbJ/iL5aNVwB4ie1d8lfAIWKmijPTLOIXni7ZoXA9yhXs0BHTTqISDMu0K7gnGf0ihGuX9+ge0tixBhK4lq0CfqdAGepm9UTc7dP4gqoB8X2eUcGBmUmdacunmDUR9MbGdbTz33SSuv1pUI5LZygtaxustUJZapCLRKLsuj34g0gt97ukqKT918E1w7jF5WGLBHBOhJIaeFnDKfAGHhop5nOZewk0bkcMFzdu4HQZNyHfDaGgjXiJeyHFmUSSY4v5qQIDAQAB",
+    "redirectUrl": "http://localhost:3000/login/oauth2/code/keycloak",
+    "scopes": [
+      "oidc",
+      "profile",
+      "email"
+    ]
+  },
+  "web": {
+    "apiHost": "0.0.0.0:3000",
+    "debugHost": "0.0.0.0:4000",
+    "readTimeout": "5s",
+    "writeTimeout": "5s",
+    "shutdownTimeout": "5s"
+  },
+  "db": {
+    "user": "postgres",
+    "password": "postgres",
+    "host": "0.0.0.0",
+    "name": "postgres",
+    "disabledTls": "false"
+  },
+  "auth": {
+    "keyid": "1",
+    "privateKeyFile": "private.pem",
+    "algorithm": "RS256"
+  },
+  "zipkin": {
+    "localEndpoint": "0.0.0.0:3000",
+    "reporterUri": "http://zipkin:9411/api/v2/spans",
+    "serviceName": "books-api",
+    "probability": "0.05"
+  }
 }

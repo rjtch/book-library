@@ -2,9 +2,11 @@ package mid
 
 import (
 	"context"
+	"crypto/rsa"
+	"crypto/x509"
+	"encoding/base64"
 	"log"
 	"net/http"
-	"os"
 	"strings"
 
 	"github.com/book-library/internal/platform/auth"
@@ -38,15 +40,20 @@ func Authentication(authenticator *auth.OAuthenticator) web.Middleware {
 		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 			ctx, span := trace.StartSpan(ctx, "internal.mid.Authentication")
 			defer span.End()
-
-			// Expecting: bearer <token>
-			authStr, err := extractClaims(w, r, authenticator.PubKey)
-			if err != nil {
+			stringToken := r.Header.Get(authorization)
+			// Parse the authorization header.
+			parts := strings.Split(stringToken, " ")
+			if len(parts) != 2 || strings.ToLower(parts[0]) != bearer {
 				return errors.New("expected authorization header format: bearer <token>")
 			}
 
+			err, token := extractClaims(w, r, ctx, authenticator)
+			if err != nil {
+				return errors.New(" authorization header token bearer not valid")
+			}
+
 			//Add claims to context so that they can be checked later on
-			ctx = context.WithValue(ctx, auth.Key, authStr)
+			ctx = context.WithValue(ctx, auth.Key, token)
 
 			return after(ctx, w, r, params)
 		}
@@ -55,40 +62,34 @@ func Authentication(authenticator *auth.OAuthenticator) web.Middleware {
 	return f
 }
 
-func extractClaims(_ http.ResponseWriter, request *http.Request, pubkey string) (error, *jwt.Token) {
+func extractClaims(w http.ResponseWriter, request *http.Request, ctx context.Context, oauth *auth.OAuthenticator) (error, *jwt.Token) {
 	stringToken := request.Header.Get(authorization)
+	secretKey, err := ParseRSAPublicKey(oauth.PublicKeyRS256)
+	if err != nil {
+		return errors.New("Cannot load certificate: " + err.Error()), nil
+	}
+
 	// Parse the authorization header.
 	parts := strings.Split(stringToken, " ")
 	if len(parts) != 2 || strings.ToLower(parts[0]) != bearer {
 		return errors.New("expected authorization header format: bearer <token>"), nil
 	}
 
-	// Create a file for the public key information in PEM form.
-	publicFile, err := os.Create("public.pem")
+	_, err = oauth.Provider.Verify(ctx, parts[1])
 	if err != nil {
-		return errors.New("creating public file: "), nil
-	}
-	defer publicFile.Close()
-
-	pubKey, err := os.ReadFile("public.pem")
-	if err != nil {
-		return errors.New("error public file: "), nil
+		http.Error(w, "Failed to verify ID Token: "+err.Error(), http.StatusInternalServerError)
+		return errors.New("Failed to verify ID Token " + err.Error()), nil
 	}
 
-	key, err := jwt.ParseRSAPublicKeyFromPEM([]byte(pubKey))
-	if err != nil {
-		return errors.New("failed to parse pubkey"), nil
-	}
-
-	token, err := jwt.Parse(parts[1], func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(parts[1], jwt.MapClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
-			return nil, errors.New("there's an error with the signing method")
+			return nil, errors.New("there's an error with the signing method " + err.Error())
 		}
-		return key, nil
+		return secretKey, nil
 	})
 
-	if err != nil {
-		return err, nil
+	if errors.Is(err, jwt.ErrSignatureInvalid) {
+		return errors.New(err.Error()), nil
 	}
 
 	if _, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
@@ -96,4 +97,20 @@ func extractClaims(_ http.ResponseWriter, request *http.Request, pubkey string) 
 	}
 
 	return nil, token
+}
+
+func ParseRSAPublicKey(base64Str string) (*rsa.PublicKey, error) {
+	buf, err := base64.StdEncoding.DecodeString(base64Str)
+	if err != nil {
+		return nil, err
+	}
+	parsedKey, err := x509.ParsePKIXPublicKey(buf)
+	if err != nil {
+		return nil, err
+	}
+	publicKey, ok := parsedKey.(*rsa.PublicKey)
+	if ok {
+		return publicKey, nil
+	}
+	return nil, errors.New("unexpected key type for public key")
 }
