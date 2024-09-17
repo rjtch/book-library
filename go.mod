@@ -3,7 +3,7 @@ module github.com/book-library
 go 1.22
 
 require (
-	contrib.go.opencensus.io/exporter/zipkin v0.1.1
+	contrib.go.opencensus.io/exporter/zipkin v0.1.2
 	github.com/alexedwards/scs/postgresstore v0.0.0-20200729112010-8c9ddd400378
 	github.com/ardanlabs/conf v1.2.0
 	github.com/dimfeld/httptreemux/v5 v5.0.2

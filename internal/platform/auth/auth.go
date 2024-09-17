@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"github.com/coreos/go-oidc/v3/oidc"
+	"golang.org/x/oauth2"
 	"time"
 
 	errors "github.com/pkg/errors"
@@ -61,49 +63,53 @@ type Zipkin struct {
 }
 
 type OAuthenticator struct {
-	ClientID     string
-	ClientSecret string
-	Endpoint     string
-	RedirectUrl  string
-	Issuer       string
-	Scopes       []string
-	PubKey       string
+	ClientID       string
+	ClientSecret   string
+	Endpoint       string
+	RedirectUrl    string
+	Issuer         string
+	PublicKeyRS256 string
+	Scopes         []string
+	Config         oauth2.Config
+	Provider       *oidc.IDTokenVerifier
 }
 
-func OAuthenticate(clientId string, secret string, endpoint string, redirect string, issuer string, scopes []string, pubkey string) (*OAuthenticator, error) {
-	if clientId == "" {
+func OAuthenticate(auth OAuthenticator) (*OAuthenticator, error) {
+	if auth.ClientID == "" {
 		return nil, ErrClientIDError
 	}
 
-	if secret == "" {
+	if auth.ClientSecret == "" {
 		return nil, ErrClientSecretError
 	}
 
-	if endpoint == "" {
+	if auth.Endpoint == "" {
 		return nil, ErrEndpointError
 	}
 
-	if redirect == "" {
+	if auth.RedirectUrl == "" {
 		return nil, ErrRedirectUrlError
 	}
 
-	if issuer == "" {
+	if auth.Issuer == "" {
 		return nil, ErrIssuerError
 	}
 
-	if len(scopes) == 0 {
+	if len(auth.Scopes) == 0 {
 		return nil, ErrScopesError
 	}
 
-	auth := OAuthenticator{
-		ClientID:     clientId,
-		ClientSecret: secret,
-		Endpoint:     endpoint,
-		RedirectUrl:  redirect,
-		Issuer:       issuer,
-		Scopes:       scopes,
-		PubKey:       pubkey,
+	oauth := OAuthenticator{
+		Config:         auth.Config,
+		Provider:       auth.Provider,
+		PublicKeyRS256: auth.PublicKeyRS256,
+		Issuer:         auth.Issuer,
+		Scopes:         auth.Scopes,
+		RedirectUrl:    auth.RedirectUrl,
+		Endpoint:       auth.Endpoint,
+		ClientID:       auth.ClientID,
+		ClientSecret:   auth.ClientSecret,
 	}
 
-	return &auth, nil
+	return &oauth, nil
 }

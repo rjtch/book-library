@@ -65,7 +65,7 @@ func run() error {
 	// =========================================================================
 	// Logging
 
-	log := log.New(os.Stdout, "BOOKS : ", log.LstdFlags|log.Lmicroseconds|log.Lshortfile)
+	logger := log.New(os.Stdout, "BOOKS : ", log.LstdFlags|log.Lmicroseconds|log.Lshortfile)
 	// read config files
 	viper.AddConfigPath(configPath)
 	viper.SetConfigName(configName)
@@ -77,13 +77,13 @@ func run() error {
 	// =========================================================================
 	// Configuration
 	oauth := auth.OAuthenticator{
-		ClientID:     viper.GetString("oauth.clientID"),
-		ClientSecret: viper.GetString("oauth.clientSecret"),
-		Endpoint:     viper.GetString("oauth.endpoint"),
-		RedirectUrl:  viper.GetString("oauth.redirectUrl"),
-		Issuer:       viper.GetString("oauth.issuer"),
-		Scopes:       viper.GetStringSlice("oauth.scopes"),
-		PubKey:       viper.GetString("oauth.pubkey"),
+		ClientID:       viper.GetString("oauth.clientID"),
+		ClientSecret:   viper.GetString("oauth.clientSecret"),
+		Endpoint:       viper.GetString("oauth.endpoint"),
+		RedirectUrl:    viper.GetString("oauth.redirectUrl"),
+		Issuer:         viper.GetString("oauth.issuer"),
+		PublicKeyRS256: viper.GetString("oauth.publicKeyRS256"),
+		Scopes:         viper.GetStringSlice("oauth.scopes"),
 	}
 
 	db := auth.DB{
@@ -114,7 +114,8 @@ func run() error {
 		return errors.Wrap(err, "Provider could not been  found")
 	}
 	oidcConfig := &oidc.Config{
-		ClientID: oauth.ClientID,
+		ClientID:                   oauth.ClientID,
+		InsecureSkipSignatureCheck: true,
 	}
 	verifier := provider.Verifier(oidcConfig)
 	config := oauth2.Config{
@@ -124,29 +125,34 @@ func run() error {
 		RedirectURL:  oauth.RedirectUrl,
 		Scopes:       oauth.Scopes,
 	}
+	// config for the authenticator
+	oauth.Config = config
+	oauth.Provider = verifier
 	// =========================================================================
 	// App Starting
 
 	// Print the build version for our logs. Also expose it under /debug/vars.
 	expvar.NewString("build").Set(build)
-	defer log.Println("main : Completed")
+	defer logger.Println("main : Completed")
 
 	// =========================================================================
 	// Initialize authentication support
 
-	log.Println("main : Started : Initializing authentication support")
+	logger.Println("main : Started : Initializing authentication support")
 
-	authenticator, err := auth.OAuthenticate(config.ClientID, config.ClientSecret, config.Endpoint.TokenURL, config.RedirectURL, oauth.Issuer, config.Scopes, oauth.PubKey)
+	authenticator, err := auth.OAuthenticate(oauth)
 	if err != nil {
+		logger.Println("constructing authenticator has failed")
 		return errors.Wrap(err, "constructing authenticator")
 	} else {
-		log.Println("Verifier %s", verifier)
+		logger.Println("Verifier %s", verifier)
 	}
+	authenticator.Config = oauth.Config
 
 	// =========================================================================
 	// Start Database
 
-	log.Println("main : Started : Initializing database support")
+	logger.Println("main : Started : Initializing database support")
 
 	dbank, err := database.Open(database.Config{
 		User:       db.User,
@@ -156,18 +162,19 @@ func run() error {
 		DisableTLS: db.DisableTLS,
 	})
 	if err != nil {
+		logger.Println("connecting to db has failed")
 		return errors.Wrap(err, "connecting to db")
 	}
 
 	defer func() {
-		log.Printf("main : Database Stopping : %s", db.Host)
+		logger.Printf("main : Database Stopping : %s", db.Host)
 		dbank.Close()
 	}()
 
 	// =========================================================================
 	// Start Tracing Support
 
-	log.Println("main : Started : Initializing zipkin tracing support")
+	logger.Println("main : Started : Initializing zipkin tracing support")
 
 	localEndpoint, err := openzipkin.NewEndpoint(zipkinServer.ServiceName, zipkinServer.LocalEndpoint)
 	if err != nil {
@@ -183,7 +190,7 @@ func run() error {
 	})
 
 	defer func() {
-		log.Printf("main : Tracing Stopping : %s", zipkinServer.LocalEndpoint)
+		logger.Printf("main : Tracing Stopping : %s", zipkinServer.LocalEndpoint)
 		reporter.Close()
 	}()
 
@@ -195,17 +202,17 @@ func run() error {
 	//
 	// Not concerned with shutting this down when the application is shutdown.
 
-	log.Println("main : Started : Initializing debugging support")
+	logger.Println("main : Started : Initializing debugging support")
 
 	go func() {
-		log.Printf("main : Debug Listening %s", web.DebugHost)
-		log.Printf("main : Debug Listener closed : %v", http.ListenAndServe(web.DebugHost, http.DefaultServeMux))
+		logger.Printf("main : Debug Listening %s", web.DebugHost)
+		logger.Printf("main : Debug Listener closed : %v", http.ListenAndServe(web.DebugHost, http.DefaultServeMux))
 	}()
 
 	// =========================================================================
 	// Start API Service
 
-	log.Println("main : Started : Initializing API support")
+	logger.Println("main : Started : Initializing API support")
 
 	// Make a channel to listen for an interrupt or terminate signal from the OS.
 	// Use a buffered channel because the signal package requires it.
@@ -214,7 +221,7 @@ func run() error {
 
 	api := http.Server{
 		Addr:         web.APIHost,
-		Handler:      handlers.API(build, shutdown, log, dbank, authenticator),
+		Handler:      handlers.API(build, shutdown, logger, dbank, authenticator),
 		ReadTimeout:  web.ReadTimeout,
 		WriteTimeout: web.WriteTimeout,
 	}
@@ -225,7 +232,7 @@ func run() error {
 
 	// Start the service listening for requests.
 	go func() {
-		log.Printf("main : API listening on %s", api.Addr)
+		logger.Printf("main : API listening on %s", api.Addr)
 		serverErrors <- api.ListenAndServe()
 	}()
 
@@ -239,7 +246,7 @@ func run() error {
 
 	case sig := <-shutdown:
 
-		log.Printf("main : %v : Start shutdown", sig)
+		logger.Printf("main : %v : Start shutdown", sig)
 
 		// Give outstanding requests a deadline for completion.
 		ctx, cancel := context.WithTimeout(context.Background(), web.ShutdownTimeout)
@@ -248,7 +255,7 @@ func run() error {
 		// Asking listener to shutdown and load shed.
 		err := api.Shutdown(ctx)
 		if err != nil {
-			log.Printf("main : Graceful shutdown did not complete in %v : %v", web.ShutdownTimeout, err)
+			logger.Printf("main : Graceful shutdown did not complete in %v : %v", web.ShutdownTimeout, err)
 			err = api.Close()
 		}
 

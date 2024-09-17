@@ -34,6 +34,7 @@ func (u *User) List(ctx context.Context, w http.ResponseWriter, r *http.Request,
 	ctx, span := trace.StartSpan(ctx, "handlers.users.List")
 	defer span.End()
 
+	//TODO fixed role
 	claims, ok := ctx.Value(auth.Key).(auth.Claims)
 	if !ok {
 		if !claims.HasRole(auth.RoleAdmin) {
