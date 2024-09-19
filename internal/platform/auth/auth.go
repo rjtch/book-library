@@ -23,8 +23,9 @@ var (
 	ErrScopesError = errors.New("scopes are missing or malformed")
 
 	//ErrKIDFormatError is used when kid format is not a string
-	ErrEndpointError = errors.New("endpoint is not provided")
-	ErrIssuerError   = errors.New("issuer is not provided")
+	ErrEndpointError  = errors.New("endpoint is not provided")
+	ErrIssuerError    = errors.New("issuer is not provided")
+	ErrPubKey256Error = errors.New("pubkey is not provided")
 )
 
 type Web struct {
@@ -93,6 +94,10 @@ func OAuthenticate(auth OAuthenticator) (*OAuthenticator, error) {
 
 	if auth.Issuer == "" {
 		return nil, ErrIssuerError
+	}
+
+	if auth.PublicKeyRS256 == "" {
+		return nil, ErrPubKey256Error
 	}
 
 	if len(auth.Scopes) == 0 {

@@ -1,10 +1,10 @@
 {
   "oauth": {
-    "clientSecret": "zGS8ndtzUZpF4XRQZmJjMXa8F1iprHcs",
+    "clientSecret": "MHmTDDduEkThdsIgORQnxAi3TZ3c4lsZ",
     "clientID": "account",
     "endpoint": "http://0.0.0.0:8080/realms/book-realm/protocol/openid-connect/auth",
     "issuer": "http://0.0.0.0:8080/realms/book-realm",
-    "publicKeyRS256": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzna5jY8BgK8XVSuuimEPbx2GrSE11Pg8VpIaOoKJq94JlXiSdAmOpTYkxIHRnEsreZ337hfhQOni\nAl/oPdvMbJ/iL5aNVwB4ie1d8lfAIWKmijPTLOIXni7ZoXA9yhXs0BHTTqISDMu0K7gnGf0ihGuX9+ge0tixBhK4lq0CfqdAGepm9UTc7dP4gqoB8X2eUcGBmUmdacunmDUR9MbGdbTz33SSuv1pUI5LZygtaxustUJZapCLRKLsuj34g0gt97ukqKT918E1w7jF5WGLBHBOhJIaeFnDKfAGHhop5nOZewk0bkcMFzdu4HQZNyHfDaGgjXiJeyHFmUSSY4v5qQIDAQAB",
+    "publicKeyRS256": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA8zdGmRcSXVA7NFXRIZCcPG7u7qvp6oHTOe1FZjSHaanpYd9LxL85giCS17yKebTzbHzQ45cVEpw5jMLSj37xh6kMK9fidgVFzXlhyOmZghAP2wX2/R9AxbvRfbfyVPPkFlq1kkm6BvYcoLoas8kaQhFQP3atB4PiROvxcSo5iP5HdMlXAoi4rzbznQoQYubf8FyopA1UmJWDKRuDs6K2NjysMVaQG0Gks2xLsHtCeig8ISPyrLlEwcA5oMrgGRBXxfLGODX0xh5OVtbcD6BhuPgk8OI2VoGLGVIWro8hzQ2lnSUgwrsd9RUf2oJXSToNO54j0s+Ci7ugs5VKeRJCCwIDAQAB",
     "redirectUrl": "http://localhost:3000/login/oauth2/code/keycloak",
     "scopes": [
       "oidc",

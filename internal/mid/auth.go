@@ -31,6 +31,7 @@ var ErrForbidden = web.NewRequestError(
 )
 
 // Authentication validates a jwt and the csrf cookie from the Authorization header
+// TODO extend this methode with role.
 func Authentication(authenticator *auth.OAuthenticator) web.Middleware {
 
 	//actual middleware to be execute
@@ -64,7 +65,7 @@ func Authentication(authenticator *auth.OAuthenticator) web.Middleware {
 
 func extractClaims(w http.ResponseWriter, request *http.Request, ctx context.Context, oauth *auth.OAuthenticator) (error, *jwt.Token) {
 	stringToken := request.Header.Get(authorization)
-	secretKey, err := ParseRSAPublicKey(oauth.PublicKeyRS256)
+	secretKey, err := parseRSAPublicKey(oauth.PublicKeyRS256)
 	if err != nil {
 		return errors.New("Cannot load certificate: " + err.Error()), nil
 	}
@@ -99,7 +100,7 @@ func extractClaims(w http.ResponseWriter, request *http.Request, ctx context.Con
 	return nil, token
 }
 
-func ParseRSAPublicKey(base64Str string) (*rsa.PublicKey, error) {
+func parseRSAPublicKey(base64Str string) (*rsa.PublicKey, error) {
 	buf, err := base64.StdEncoding.DecodeString(base64Str)
 	if err != nil {
 		return nil, err
@@ -113,4 +114,17 @@ func ParseRSAPublicKey(base64Str string) (*rsa.PublicKey, error) {
 		return publicKey, nil
 	}
 	return nil, errors.New("unexpected key type for public key")
+}
+
+func ParseRealmRoles(claims jwt.MapClaims) []string {
+	var realmRoles []string = make([]string, 0)
+
+	if claim, ok := claims["realm_access"]; ok {
+		if roles, ok := claim.(map[string]interface{})["roles"]; ok {
+			for _, role := range roles.([]interface{}) {
+				realmRoles = append(realmRoles, role.(string))
+			}
+		}
+	}
+	return realmRoles
 }

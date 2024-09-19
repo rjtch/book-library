@@ -51,7 +51,7 @@ services:
     environment:
       - KC_LOG_LEVEL=info
       - KC_HOSTNAME=0.0.0.0
-      - KC_HOSTNAME_PORT=8081
+      - KC_HOSTNAME_PORT=8080
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
     healthcheck:
@@ -60,7 +60,7 @@ services:
       timeout: 2s
       retries: 15
     ports:
-      - 8081:8081
+      - 8080:8080
 
   adminer:
     image: docker.io/library/adminer
@@ -77,7 +77,7 @@ services:
   postgres:
     image: docker.io/library/postgres:16
     restart: always
-    # platform: linux/amd64
+    platform: linux/amd64
     shm_size: 128mb
     user: postgres
     environment:
@@ -90,6 +90,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    # network_mode: host
+    network_mode: host
     ports:
       - "5432:5432"
