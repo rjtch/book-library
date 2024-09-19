@@ -9,7 +9,7 @@ import (
 
 // These are the expected values for Claims.Roles.
 const (
-	RoleAdmin = "ADMIN"
+	RoleAdmin = "Admin"
 	RoleUser  = "USER"
 )
 
@@ -19,10 +19,10 @@ type Role struct {
 }
 
 // ctxKey represents the type of value for the context key.
-type ctxKey int
+type ctxKey string
 
 // Key is used to store/retrieve a Claims value from a context.Context.
-const Key ctxKey = 1
+const Key ctxKey = "claim"
 
 // Claims represents the authorization claims transmitted via a JWT.
 type Claims struct {

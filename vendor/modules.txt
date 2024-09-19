@@ -1,4 +1,4 @@
-# contrib.go.opencensus.io/exporter/zipkin v0.1.1
+# contrib.go.opencensus.io/exporter/zipkin v0.1.2
 ## explicit
 contrib.go.opencensus.io/exporter/zipkin
 # github.com/alexedwards/scs/postgresstore v0.0.0-20200729112010-8c9ddd400378
@@ -13,8 +13,6 @@ github.com/coreos/go-oidc/v3/oidc
 # github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 ## explicit
 github.com/davecgh/go-spew/spew
-# github.com/dgrijalva/jwt-go v3.2.0+incompatible
-## explicit
 # github.com/dimfeld/httptreemux/v5 v5.0.2
 ## explicit; go 1.9
 github.com/dimfeld/httptreemux/v5
