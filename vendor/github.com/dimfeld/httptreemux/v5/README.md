@@ -7,6 +7,10 @@ This is inspired by [Julien Schmidt's httprouter](https://www.github.com/juliens
 
 Release notes may be found using the [Github releases tab](https://github.com/dimfeld/httptreemux/releases). Version numbers are compatible with the [Semantic Versioning 2.0.0](http://semver.org/) convention, and a new release is made after every change to the code.
 
+## Installing with Go Modules
+
+When using Go Modules, import this repository with `import "github.com/dimfeld/httptreemux/v5"` to ensure that you get the right version.
+
 ## Why?
 There are a lot of good routers out there. But looking at the ones that were really lightweight, I couldn't quite get something that fit with the route patterns I wanted. The code itself is simple enough, so I spent an evening writing this.
 
@@ -32,9 +36,15 @@ group.GET("/v1/:id", func(w http.ResponseWriter, r *http.Request, params map[str
 // UsingContext returns a version of the router or group with context support.
 ctxGroup := group.UsingContext() // sibling to 'group' node in tree
 ctxGroup.GET("/v2/:id", func(w http.ResponseWriter, r *http.Request) {
-    params := httptreemux.ContextParams(r.Context())
+    ctxData := httptreemux.ContextData(r.Context())
+    params := ctxData.Params()
     id := params["id"]
-    fmt.Fprintf(w, "GET /api/v2/%s", id)
+
+    // Useful for middleware to see which route was hit without dealing with wildcards
+    routePath := ctxData.Route()
+
+    // Prints GET /api/v2/:id id=...
+    fmt.Fprintf(w, "GET %s id=%s", routePath, id)
 })
 
 http.ListenAndServe(":8080", router)
@@ -54,9 +64,15 @@ router.GET("/:page", func(w http.ResponseWriter, r *http.Request) {
 
 group := router.NewGroup("/api")
 group.GET("/v1/:id", func(w http.ResponseWriter, r *http.Request) {
-    params := httptreemux.ContextParams(r.Context())
+    ctxData := httptreemux.ContextData(r.Context())
+    params := ctxData.Params()
     id := params["id"]
-    fmt.Fprintf(w, "GET /api/v1/%s", id)
+
+    // Useful for middleware to see which route was hit without dealing with wildcards
+    routePath := ctxData.Route()
+
+    // Prints GET /api/v1/:id id=...
+    fmt.Fprintf(w, "GET %s id=%s", routePath, id)
 })
 
 http.ListenAndServe(":8080", router)
@@ -173,6 +189,18 @@ These are the values accepted for RedirectBehavior. You may also add these value
 * Redirect308 - RFC7538 Permanent Redirect
 * UseHandler - Don't redirect to the canonical path. Just call the handler instead.
 
+### Case Insensitive Routing
+
+You can optionally allow case-insensitive routing by setting the _CaseInsensitive_ property on the router to true. 
+This allows you to make all routes case-insensitive. For example:
+```go
+router := httptreemux.New()
+router.CaseInsensitive
+router.GET("/My-RoUtE", pageHandler)
+```
+In this example, performing a GET request to /my-route will match the route and execute the _pageHandler_ functionality. 
+It's important to note that when using case-insensitive routing, the CaseInsensitive property must be set before routes are defined or there may be unexpected side effects. 
+
 #### Rationale/Usage
 On a POST request, most browsers that receive a 301 will submit a GET request to the redirected URL, meaning that any data will likely be lost. If you want to handle and avoid this behavior, you may use Redirect307, which causes most browsers to resubmit the request using the original method and request body.
 
@@ -236,7 +264,7 @@ code snippet that can perform this transformation for you, should you want it.
 When using `httprouter`, a route with a catch-all parameter (e.g. `/images/*path`) will match on URLs like `/images/` where the catch-all parameter is empty. This router does not match on empty catch-all parameters, but the behavior can be duplicated by adding a route without the catch-all (e.g. `/images/`).
 
 ## Middleware
-This package provides no middleware. But there are a lot of great options out there and it's pretty easy to write your own.
+This package provides no middleware. But there are a lot of great options out there and it's pretty easy to write your own. The router provides the `Use` and `UseHandler` functions to ease the creation of middleware chains. (Real documentation of these functions coming soon.)
 
 # Acknowledgements
 
