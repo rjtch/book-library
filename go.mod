@@ -6,7 +6,7 @@ require (
 	contrib.go.opencensus.io/exporter/zipkin v0.1.2
 	github.com/alexedwards/scs/postgresstore v0.0.0-20200729112010-8c9ddd400378
 	github.com/ardanlabs/conf v1.2.0
-	github.com/dimfeld/httptreemux/v5 v5.0.2
+	github.com/dimfeld/httptreemux/v5 v5.5.0
 	github.com/dimiro1/darwin v0.0.0-20191008194338-370f81775d3b
 	github.com/go-playground/locales v0.13.0
 	github.com/go-playground/universal-translator v0.17.0
