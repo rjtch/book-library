@@ -168,7 +168,10 @@ func run() error {
 
 	defer func() {
 		logger.Printf("main : Database Stopping : %s", db.Host)
-		dbank.Close()
+		err := dbank.Close()
+		if err != nil {
+			return
+		}
 	}()
 
 	// =========================================================================
@@ -191,7 +194,10 @@ func run() error {
 
 	defer func() {
 		logger.Printf("main : Tracing Stopping : %s", zipkinServer.LocalEndpoint)
-		reporter.Close()
+		err := reporter.Close()
+		if err != nil {
+			return
+		}
 	}()
 
 	// =========================================================================

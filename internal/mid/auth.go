@@ -7,6 +7,7 @@ import (
 	"encoding/base64"
 	"log"
 	"net/http"
+	"slices"
 	"strings"
 
 	"github.com/book-library/internal/platform/auth"
@@ -32,7 +33,7 @@ var ErrForbidden = web.NewRequestError(
 
 // Authentication validates a jwt and the csrf cookie from the Authorization header
 // TODO extend this methode with role.
-func Authentication(authenticator *auth.OAuthenticator) web.Middleware {
+func Authentication(authenticator *auth.OAuthenticator, role string) web.Middleware {
 
 	//actual middleware to be execute
 	f := func(after web.Handler) web.Handler {
@@ -48,7 +49,7 @@ func Authentication(authenticator *auth.OAuthenticator) web.Middleware {
 				return errors.New("expected authorization header format: bearer <token>")
 			}
 
-			err, token := extractClaims(w, r, ctx, authenticator)
+			err, token := extractClaims(w, r, ctx, authenticator, role)
 			if err != nil {
 				return errors.New(" authorization header token bearer not valid")
 			}
@@ -63,7 +64,7 @@ func Authentication(authenticator *auth.OAuthenticator) web.Middleware {
 	return f
 }
 
-func extractClaims(w http.ResponseWriter, request *http.Request, ctx context.Context, oauth *auth.OAuthenticator) (error, *jwt.Token) {
+func extractClaims(w http.ResponseWriter, request *http.Request, ctx context.Context, oauth *auth.OAuthenticator, role string) (error, *jwt.Token) {
 	stringToken := request.Header.Get(authorization)
 	secretKey, err := parseRSAPublicKey(oauth.PublicKeyRS256)
 	if err != nil {
@@ -89,6 +90,17 @@ func extractClaims(w http.ResponseWriter, request *http.Request, ctx context.Con
 		return secretKey, nil
 	})
 
+	claims, ok := ctx.Value(auth.Key).(*jwt.Token)
+	if !ok {
+		return errors.New("claims missing from context"), nil
+	}
+	roles := ParseRealmRoles(claims.Claims.(jwt.MapClaims))
+	if len(roles) == 0 {
+		return errors.New("Not roles related to the this user"), nil
+	}
+	if !slices.Contains(roles, role) {
+		return errors.New("You don't have the wright to see the required resources."), nil
+	}
 	if errors.Is(err, jwt.ErrSignatureInvalid) {
 		return errors.New(err.Error()), nil
 	}

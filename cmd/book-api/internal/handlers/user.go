@@ -2,10 +2,7 @@ package handlers
 
 import (
 	"context"
-	"github.com/book-library/internal/mid"
-	"github.com/golang-jwt/jwt/v5"
 	"net/http"
-	"slices"
 	"time"
 
 	"github.com/book-library/internal/platform/auth"
@@ -36,20 +33,6 @@ type User struct {
 func (u *User) List(ctx context.Context, w http.ResponseWriter, r *http.Request, params map[string]string) error {
 	ctx, span := trace.StartSpan(ctx, "handlers.users.List")
 	defer span.End()
-
-	//TODO fixed role
-	claims, ok := ctx.Value(auth.Key).(*jwt.Token)
-	if !ok {
-		return errors.New("claims missing from context")
-	}
-
-	roles := mid.ParseRealmRoles(claims.Claims.(jwt.MapClaims))
-	if len(roles) == 0 {
-		return errors.New("Not roles related to the this user")
-	}
-	if !slices.Contains(roles, "Admin") {
-		return errors.New("You don't have the wright to see the required resources.")
-	}
 
 	usr, err := users.List(ctx, u.Db)
 	if err != nil {
