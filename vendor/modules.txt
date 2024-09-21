@@ -27,13 +27,13 @@ github.com/fsnotify/fsnotify
 github.com/go-jose/go-jose/v4
 github.com/go-jose/go-jose/v4/cipher
 github.com/go-jose/go-jose/v4/json
-# github.com/go-playground/locales v0.13.0
-## explicit; go 1.13
+# github.com/go-playground/locales v0.14.1
+## explicit; go 1.17
 github.com/go-playground/locales
 github.com/go-playground/locales/currency
 github.com/go-playground/locales/en
-# github.com/go-playground/universal-translator v0.17.0
-## explicit; go 1.13
+# github.com/go-playground/universal-translator v0.18.1
+## explicit; go 1.18
 github.com/go-playground/universal-translator
 # github.com/golang-jwt/jwt/v5 v5.2.1
 ## explicit; go 1.18
