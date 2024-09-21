@@ -14,8 +14,8 @@ const (
 )
 
 type Role struct {
-	RoleAdmin []string
-	RoleUser  []string
+	RoleAdmin string
+	RoleUser  string
 }
 
 // ctxKey represents the type of value for the context key.

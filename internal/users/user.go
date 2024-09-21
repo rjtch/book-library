@@ -46,7 +46,7 @@ func List(ctx context.Context, db *sqlx.DB) ([]User, error) {
 	const q = `SELECT * FROM users`
 
 	if err := db.SelectContext(ctx, &users, q); err != nil {
-		return nil, errors.Wrap(err, "selecting users")
+		return nil, errors.Wrap(err, "error when selecting users")
 	}
 
 	return users, nil
