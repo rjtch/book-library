@@ -15,7 +15,7 @@ require (
 	github.com/gorilla/mux v1.7.4
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/leodido/go-urn v1.2.0 // indirect
-	github.com/lib/pq v1.4.0
+	github.com/lib/pq v1.10.9
 	github.com/openzipkin/zipkin-go v0.2.2
 	github.com/pkg/errors v0.9.1
 	github.com/rakyll/statik v0.1.7
